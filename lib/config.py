@@ -61,6 +61,7 @@ AUTO_COMMENT = _env("AUTO_COMMENT", " verified · XRayCheck")
 TEST_URL = _env("TEST_URL", "http://www.google.com/generate_204")
 TEST_URLS_STR = _env("TEST_URLS", "")
 TEST_URLS_HTTPS_STR = _env("TEST_URLS_HTTPS", "")
+TEST_URLS_FILE = _env("TEST_URLS_FILE", "")
 
 # Парсинг списков URL
 def _parse_url_list(url_str: str) -> list[str]:
@@ -76,8 +77,54 @@ def _parse_url_list(url_str: str) -> list[str]:
         urls = [url_str.strip()] if url_str.strip() else []
     return urls
 
+
+def _parse_url_file(path: str) -> list[str]:
+    """Парсит URL из текстового файла: один URL на строку, поддерживаются комментарии после #."""
+    if not path:
+        return []
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+    except OSError:
+        return []
+
+    urls: list[str] = []
+    for raw in lines:
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        # Поддержка "URL #comment"
+        line = line.split("#", 1)[0].strip()
+        if not line:
+            continue
+        if line.startswith(("http://", "https://")):
+            urls.append(line)
+    return urls
+
+
+def _dedup_keep_order(items: list[str]) -> list[str]:
+    out: list[str] = []
+    seen: set[str] = set()
+    for item in items:
+        if item in seen:
+            continue
+        seen.add(item)
+        out.append(item)
+    return out
+
 TEST_URLS = _parse_url_list(TEST_URLS_STR) if TEST_URLS_STR else []
 TEST_URLS_HTTPS = _parse_url_list(TEST_URLS_HTTPS_STR) if TEST_URLS_HTTPS_STR else []
+TEST_URLS_FILE_LIST = _parse_url_file(TEST_URLS_FILE) if TEST_URLS_FILE else []
+
+# URL из файла автоматически раскладываются по http/https
+if TEST_URLS_FILE_LIST:
+    for u in TEST_URLS_FILE_LIST:
+        if u.startswith("https://"):
+            TEST_URLS_HTTPS.append(u)
+        else:
+            TEST_URLS.append(u)
+TEST_URLS = _dedup_keep_order(TEST_URLS)
+TEST_URLS_HTTPS = _dedup_keep_order(TEST_URLS_HTTPS)
 
 # Если TEST_URLS не задан, используем TEST_URL как единственный URL
 if not TEST_URLS:
