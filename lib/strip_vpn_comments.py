@@ -8,6 +8,8 @@ AUTO_COMMENT задаётся переменной окружения (см. .en
 """
 
 import argparse
+import ipaddress
+import json
 import os
 import socket
 import sys
@@ -29,7 +31,7 @@ try:
 except ImportError:
     parse_proxy_url = None
 
-GEO_API = "http://ip-api.com/json/{ip}?fields=countryCode"
+GEO_API = "http://ip-api.com/json/{ip}?fields=status,country,countryCode"
 GEO_TIMEOUT = 3
 GEO_DELAY = 0.2  # пауза перед запросом в каждом потоке (лимит ip-api.com ~45/мин без ключа)
 # Потоки: DNS можно поднять до 24-32; geo - не выше 10-12, иначе легко 429 от ip-api
@@ -47,6 +49,12 @@ STRIP_FAST = (os.environ.get("STRIP_VPN_COMMENTS_FAST") or "").strip().lower() i
 )
 # Код страны по умолчанию для быстрого режима (например, RU), пусто = глобус.
 STRIP_CC_DEFAULT = (os.environ.get("STRIP_VPN_COMMENTS_CC") or "").strip().upper()
+STRIP_COUNTRY_DEFAULT = (os.environ.get("STRIP_VPN_COMMENTS_COUNTRY") or "").strip()
+STRIP_CIDR_FILE = (
+    (os.environ.get("STRIP_VPN_COMMENTS_CIDR_FILE") or "").strip()
+    or (os.environ.get("CIDR_WHITELIST_FILE") or "").strip()
+    or "cidrlist"
+)
 
 
 def get_auto_comment() -> str:
@@ -93,34 +101,104 @@ def get_host_from_link(link: str) -> str | None:
     return None
 
 
-def resolve_to_ip(host: str) -> str | None:
-    """Возвращает IP для хоста или None при ошибке."""
+def resolve_to_ipv4_all(host: str) -> list[str]:
+    """Возвращает все уникальные IPv4 для host (A-записи)."""
     if not host:
-        return None
-    if host.replace(".", "").isdigit():
-        return host
+        return []
     try:
-        return socket.gethostbyname(host)
-    except (socket.gaierror, OSError):
-        return None
+        ip_obj = ipaddress.ip_address(host)
+        return [str(ip_obj)] if ip_obj.version == 4 else []
+    except ValueError:
+        pass
+    try:
+        infos = socket.getaddrinfo(host, None, family=socket.AF_INET, type=socket.SOCK_STREAM)
+    except OSError:
+        return []
+    out: set[str] = set()
+    for info in infos:
+        sockaddr = info[4]
+        if sockaddr and sockaddr[0]:
+            out.add(sockaddr[0])
+    return sorted(out)
 
 
-def fetch_country_for_ip(ip: str, cache: dict) -> str:
-    """Получает countryCode для IP через ip-api.com; использует cache."""
+def _load_cidr_networks(path: str) -> list[ipaddress.IPv4Network]:
+    nets: list[ipaddress.IPv4Network] = []
+    if not path or not os.path.isfile(path):
+        return nets
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            for raw in f:
+                s = raw.strip()
+                if not s or s.startswith("#"):
+                    continue
+                try:
+                    net = ipaddress.ip_network(s, strict=False)
+                except ValueError:
+                    continue
+                if net.version == 4:
+                    nets.append(net)
+    except OSError:
+        return []
+    return nets
+
+
+def _ip_in_cidr_ranges(ip: str, ranges: list[ipaddress.IPv4Network]) -> bool:
+    if not ip or not ranges:
+        return False
+    try:
+        ip_obj = ipaddress.ip_address(ip)
+    except ValueError:
+        return False
+    if ip_obj.version != 4:
+        return False
+    return any(ip_obj in net for net in ranges)
+
+
+def fetch_country_for_ip(ip: str, cache: dict[str, tuple[str, str]]) -> tuple[str, str]:
+    """Получает (countryCode, countryName) для IP через ip-api.com; использует cache."""
     if ip in cache:
         return cache[ip]
     time.sleep(GEO_DELAY)
     try:
         req = urllib.request.Request(GEO_API.format(ip=ip), headers={"User-Agent": "XRayCheck/1.0"})
         with urllib.request.urlopen(req, timeout=GEO_TIMEOUT) as r:
-            import json
             data = json.loads(r.read().decode())
-            cc = data.get("countryCode") or ""
-            cache[ip] = cc
-            return cc
+            if str(data.get("status", "")).lower() != "success":
+                cache[ip] = ("", "")
+                return cache[ip]
+            cc = (data.get("countryCode") or "").strip().upper()
+            country = (data.get("country") or "").strip()
+            cache[ip] = (cc, country)
+            return cache[ip]
     except Exception:
-        cache[ip] = ""
-        return ""
+        cache[ip] = ("", "")
+        return cache[ip]
+
+
+def _pick_best_country(
+    host: str | None,
+    host_to_ips: dict[str, list[str]],
+    geo_cache: dict[str, tuple[str, str]],
+) -> tuple[str, str]:
+    ips = host_to_ips.get(host, []) if host else []
+    if not ips:
+        return ("", "")
+    # Выбираем наиболее частую страну среди всех A-записей хоста.
+    scores: dict[tuple[str, str], int] = {}
+    order: list[tuple[str, str]] = []
+    for ip in ips:
+        pair = geo_cache.get(ip, ("", ""))
+        if not pair[0]:
+            continue
+        if pair not in scores:
+            scores[pair] = 0
+            order.append(pair)
+        scores[pair] += 1
+    if not scores:
+        return ("", "")
+    best = max(order, key=lambda p: scores[p])
+    return best
 
 
 def process_file(
@@ -146,23 +224,23 @@ def process_file(
         links.append(link)
         hosts.append(get_host_from_link(link) if add_comment and not STRIP_FAST else None)
 
-    geo_cache: dict[str, str] = {}
-    host_to_ip: dict[str, str] = {}
+    geo_cache: dict[str, tuple[str, str]] = {}
+    host_to_ips: dict[str, list[str]] = {}
+    cidr_ranges = _load_cidr_networks(STRIP_CIDR_FILE) if add_comment and not STRIP_FAST else []
 
     if add_comment and not STRIP_FAST:
         # 1) Разрешаем все уникальные хосты в IP параллельно
         unique_hosts = sorted({h for h in hosts if h})
 
         def _resolve_host(h: str) -> None:
-            ip = resolve_to_ip(h) or ""
-            host_to_ip[h] = ip
+            host_to_ips[h] = resolve_to_ipv4_all(h)
 
         if unique_hosts:
             with ThreadPoolExecutor(max_workers=min(DNS_MAX_WORKERS, len(unique_hosts))) as executor:
                 list(executor.map(_resolve_host, unique_hosts))
 
         # 2) Для всех уникальных IP получаем countryCode (с кэшем) тоже параллельно
-        unique_ips = sorted({ip for ip in host_to_ip.values() if ip})
+        unique_ips = sorted({ip for ips in host_to_ips.values() for ip in ips if ip})
 
         def _fetch_cc(ip: str) -> None:
             fetch_country_for_ip(ip, geo_cache)
@@ -177,11 +255,16 @@ def process_file(
         if add_comment:
             if STRIP_FAST:
                 cc = STRIP_CC_DEFAULT or ""
+                country_name = STRIP_COUNTRY_DEFAULT or ""
+                is_lte = False
             else:
-                ip = host_to_ip.get(host, "") if host else ""
-                cc = geo_cache.get(ip, "")
+                cc, country_name = _pick_best_country(host, host_to_ips, geo_cache)
+                ips = host_to_ips.get(host, []) if host else []
+                is_lte = any(_ip_in_cidr_ranges(ip, cidr_ranges) for ip in ips)
             flag = country_code_to_flag(cc)
-            link = f"{link}#{flag} {get_auto_comment().strip()}"
+            country_label = f"{cc} {country_name}".strip() if cc or country_name else "UNK"
+            lte_label = " | LTE" if is_lte else ""
+            link = f"{link}#{flag} {country_label}{lte_label} {get_auto_comment().strip()}"
         result.append(link)
     out.write_text("\n".join(result) + ("\n" if result else ""), encoding="utf-8")
     print(f"Processed: {len(lines_in)} lines -> {len(result)} with new comment. Output: {out}")
