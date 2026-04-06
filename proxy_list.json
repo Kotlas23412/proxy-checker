@@ -3,7 +3,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇭🇺 Hungary | LTE #1",
+    "remarks": "🌍 Локация | LTE #1",
     "inbounds": [
       {
         "port": 10808,
@@ -38,25 +38,28 @@
         "settings": {
           "vnext": [
             {
-              "address": "217.13.104.213",
+              "address": "95.163.208.243",
               "port": 443,
               "users": [
                 {
-                  "id": "3466fe8f-1eb4-4050-906c-472cfca52b4a",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
+                  "id": "418ad4b9-d8be-447c-953d-e666fb154685",
+                  "encryption": "none"
                 }
               ]
             }
           ]
         },
         "streamSettings": {
-          "network": "tcp",
+          "network": "grpc",
+          "grpcSettings": {
+            "serviceName": "UpdateService"
+          },
           "security": "reality",
           "realitySettings": {
-            "serverName": "sun6-22.userapi.com",
-            "publicKey": "fhMqHujqxaRsM4oM5MOectW90_nHWj7AEftfbO3Ht0Q",
-            "shortId": ""
+            "serverName": "eh.vk.com",
+            "fingerprint": "chrome",
+            "publicKey": "_oEGDYSSHrqmbHEUoHbp6YnmNTcXTVdWXcDmpi3JdH0",
+            "shortId": "aefbcf7fc283bd55"
           }
         }
       },
@@ -169,11 +172,11 @@
         "settings": {
           "vnext": [
             {
-              "address": "212.193.152.120",
+              "address": "95.163.208.83",
               "port": 443,
               "users": [
                 {
-                  "id": "10d3d4c8-167e-4a4b-8516-cd328c91ab95",
+                  "id": "418ad4b9-d8be-447c-953d-e666fb154685",
                   "encryption": "none"
                 }
               ]
@@ -181,17 +184,16 @@
           ]
         },
         "streamSettings": {
-          "network": "ws",
-          "wsSettings": {
-            "path": "\/stream\/live",
-            "headers": {
-              "Host": "s35222.cdn.ngenix.net"
-            }
+          "network": "grpc",
+          "grpcSettings": {
+            "serviceName": "UpdateService"
           },
-          "security": "tls",
-          "tlsSettings": {
-            "serverName": "s35222.cdn.ngenix.net",
-            "fingerprint": "qq"
+          "security": "reality",
+          "realitySettings": {
+            "serverName": "eh.vk.com",
+            "fingerprint": "chrome",
+            "publicKey": "_oEGDYSSHrqmbHEUoHbp6YnmNTcXTVdWXcDmpi3JdH0",
+            "shortId": "aefbcf7fc283bd55"
           }
         }
       },
@@ -401,7 +403,142 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🌍 Локация | LTE #4",
+    "remarks": "🇦🇩 Andorra | LTE #4",
+    "inbounds": [
+      {
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "udp": true
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      },
+      {
+        "port": 10809,
+        "protocol": "http",
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      }
+    ],
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "vless",
+        "settings": {
+          "vnext": [
+            {
+              "address": "212.193.152.120",
+              "port": 443,
+              "users": [
+                {
+                  "id": "10d3d4c8-167e-4a4b-8516-cd328c91ab95",
+                  "encryption": "none"
+                }
+              ]
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "ws",
+          "wsSettings": {
+            "path": "\/stream\/live",
+            "headers": {
+              "Host": "s35222.cdn.ngenix.net"
+            }
+          },
+          "security": "tls",
+          "tlsSettings": {
+            "serverName": "s35222.cdn.ngenix.net",
+            "fingerprint": "qq"
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "domain": [
+            "domain:ru",
+            "domain:su",
+            "domain:xn--p1ai",
+            "domain:vk.com",
+            "domain:vk.ru",
+            "domain:userapi.com",
+            "domain:vk-cdn.net",
+            "domain:vkuser.net",
+            "domain:mvk.com",
+            "domain:yandex.ru",
+            "domain:yandex.net",
+            "domain:ya.ru",
+            "domain:kinopoisk.ru",
+            "domain:mail.ru",
+            "domain:ok.ru",
+            "domain:avito.ru",
+            "domain:avito.st",
+            "keyword:yandex",
+            "keyword:vkontakte",
+            "keyword:userapi",
+            "keyword:mail",
+            "keyword:rutube",
+            "keyword:sber",
+            "keyword:tinkoff",
+            "keyword:alfabank",
+            "keyword:vtb",
+            "keyword:gosuslugi"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "ip": [
+            "192.168.0.0\/16",
+            "10.0.0.0\/8",
+            "172.16.0.0\/12",
+            "127.0.0.0\/8",
+            "fc00::\/7",
+            "fe80::\/10",
+            "87.240.128.0\/18",
+            "93.186.224.0\/20",
+            "95.213.0.0\/18"
+          ],
+          "outboundTag": "direct"
+        }
+      ]
+    }
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🇦🇩 Andorra | LTE #5",
     "inbounds": [
       {
         "port": 10808,
