@@ -65,7 +65,6 @@ def build_xray_config(parsed: dict, socks_port: int) -> dict:
         }
     
     # Настройки для разных типов сетей
-    network = stream["network"]
     if network == "grpc":
         stream["grpcSettings"] = {
             "serviceName": parsed.get("grpcServiceName") or ""
@@ -144,6 +143,7 @@ def build_xray_config(parsed: dict, socks_port: int) -> dict:
     else:
         raise ValueError(f"Неподдерживаемый протокол: {protocol}")
     
+    # ВАЖНО: Убираем system-proxy! Теперь весь трафик идёт через Exit Node
     return {
         "log": {"loglevel": "error"},
         "inbounds": [
@@ -172,7 +172,6 @@ def reload_xray_config(proc: subprocess.Popen) -> bool:
     """
     Просит Xray перечитать конфиг с диска (тот же путь -c).
     На Linux/macOS: SIGHUP. На Windows не поддерживается (False).
-    Возвращает True, если сигнал отправлен и процесс ещё жив (poll is None).
     """
     if proc is None or proc.poll() is not None:
         return False
@@ -195,7 +194,6 @@ def run_xray(config_path: str, stderr_pipe: bool = False):
     if sys.platform == "win32":
         kwargs["creationflags"] = subprocess.CREATE_NO_WINDOW
     else:
-        # Новая сессия - процесс и дочерние можно завершить группой
         kwargs["start_new_session"] = True
     return subprocess.Popen(
         [config.XRAY_CMD, "run", "-config", config_path],
@@ -204,12 +202,11 @@ def run_xray(config_path: str, stderr_pipe: bool = False):
 
 
 def kill_xray_process(proc: subprocess.Popen, drain_stderr: bool = True) -> None:
-    """Гарантированно завершает процесс xray и при необходимости дочерние процессы."""
+    """Гарантированно завершает процесс xray."""
     if proc is None or proc.poll() is not None:
         return
-    # Закрываем stderr без блокирующего read() - иначе процесс мог бы не завершиться
     try:
-        if drain_stderr and getattr(proc, "stderr", None) and proc.stderr is not None:
+        if drain_stderr and getattr(proc, "stderr", None):
             try:
                 proc.stderr.close()
             except (OSError, ValueError):
@@ -218,31 +215,22 @@ def kill_xray_process(proc: subprocess.Popen, drain_stderr: bool = True) -> None
         pass
     try:
         proc.terminate()
-    except (OSError, ProcessLookupError):
-        pass
-    try:
         proc.wait(timeout=2)
         return
-    except subprocess.TimeoutExpired:
+    except (subprocess.TimeoutExpired, OSError, ProcessLookupError):
         pass
     try:
         if sys.platform != "win32":
-            try:
-                os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
-            except (OSError, ProcessLookupError):
-                proc.kill()
+            os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
         else:
             proc.kill()
-    except (OSError, ProcessLookupError):
-        pass
-    try:
         proc.wait(timeout=1)
-    except subprocess.TimeoutExpired:
+    except (OSError, ProcessLookupError, subprocess.TimeoutExpired):
         pass
 
 
 def check_xray_available() -> bool:
-    """Проверяет, что xray доступен (XRAY_CMD)."""
+    """Проверяет доступность xray."""
     try:
         p = subprocess.run(
             [config.XRAY_CMD, "version"],
@@ -251,174 +239,143 @@ def check_xray_available() -> bool:
             creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0,
         )
         return p.returncode == 0
-    except FileNotFoundError:
-        return False
-    except Exception:
+    except (FileNotFoundError, Exception):
         return False
 
 
 def _get_xray_platform_asset_name() -> str | None:
-    """Возвращает имя asset для текущей ОС и архитектуры (без .dgst)."""
+    """Определяет имя asset для текущей платформы."""
     machine = (platform.machine() or "").lower()
     system = (platform.system() or "").lower()
     is_64 = "64" in machine or machine in ("amd64", "x86_64", "aarch64", "arm64")
     is_arm = "arm" in machine or "aarch" in machine
+    
     if system == "windows":
         if is_arm:
             return "Xray-windows-arm64-v8a.zip"
         return "Xray-windows-64.zip" if is_64 else "Xray-windows-32.zip"
     if system == "linux":
         if is_arm:
-            return "Xray-linux-arm64-v8a.zip" if "64" in machine or "aarch" in machine else "Xray-linux-arm32-v7a.zip"
+            return "Xray-linux-arm64-v8a.zip" if "64" in machine else "Xray-linux-arm32-v7a.zip"
         return "Xray-linux-64.zip" if is_64 else "Xray-linux-32.zip"
     if system == "darwin":
-        if is_arm:
-            return "Xray-macos-arm64-v8a.zip"
-        return "Xray-macos-64.zip"
+        return "Xray-macos-arm64-v8a.zip" if is_arm else "Xray-macos-64.zip"
     return None
 
 
-_XRAY_DOWNLOAD_MAX_ATTEMPTS = 3
-_XRAY_DOWNLOAD_RETRY_DELAY = 10
-
-
 def _download_xray_to(dir_path: str) -> str | None:
-    """
-    Скачивает Xray-core с GitHub в dir_path. Возвращает путь к исполняемому файлу или None.
-    При обрыве соединения выполняет до 3 попыток с паузой 10 с.
-    """
+    """Скачивает Xray-core с GitHub."""
     asset_name = _get_xray_platform_asset_name()
     if not asset_name:
-        console.print(f"[yellow]Платформа не поддерживается для автоустановки:[/yellow] {platform.system()} / {platform.machine()}")
+        console.print(f"[yellow]Неподдерживаемая платформа:[/yellow] {platform.system()}/{platform.machine()}")
         return None
+    
     exe_name = "xray.exe" if sys.platform == "win32" else "xray"
     zip_path = os.path.join(dir_path, "xray.zip")
-    for attempt in range(1, _XRAY_DOWNLOAD_MAX_ATTEMPTS + 1):
+    
+    for attempt in range(1, 4):  # 3 попытки
         try:
             if attempt > 1:
-                console.print(f"[yellow]Повтор загрузки Xray-core, попытка {attempt}/{_XRAY_DOWNLOAD_MAX_ATTEMPTS}...[/yellow]")
+                console.print(f"[yellow]Повтор загрузки ({attempt}/3)...[/yellow]")
+                time.sleep(10)
+            
+            # Получаем latest release
             r = requests.get(XRAY_RELEASES_API, timeout=15)
             r.raise_for_status()
             data = r.json()
-            assets = data.get("assets") or []
+            
+            # Ищем нужный asset
             download_url = None
-            for a in assets:
-                name = (a.get("name") or "")
-                if name == asset_name and name.endswith(".zip") and not name.endswith(".dgst"):
+            for a in data.get("assets", []):
+                if a.get("name") == asset_name:
                     download_url = a.get("browser_download_url")
                     break
+            
             if not download_url:
-                console.print(f"[red]Не найден asset для платформы:[/red] {asset_name}")
+                console.print(f"[red]Asset не найден:[/red] {asset_name}")
                 return None
+            
             tag = data.get("tag_name", "unknown")
-            console.print(f"[cyan]Скачивание Xray-core {tag} ({asset_name})...[/cyan]")
-            try:
-                os.remove(zip_path)
-            except OSError:
-                pass
+            console.print(f"[cyan]Загрузка Xray {tag}...[/cyan]")
+            
+            # Скачиваем
             with requests.get(download_url, stream=True, timeout=90) as resp:
                 resp.raise_for_status()
                 with open(zip_path, "wb") as f:
                     for chunk in resp.iter_content(chunk_size=65536):
                         f.write(chunk)
-            with zipfile.ZipFile(zip_path, "r") as z:
-                for info in z.infolist():
-                    if info.is_dir():
-                        continue
-                    base = os.path.basename(info.filename.replace("\\", "/")).lower()
-                    if base != exe_name and not (exe_name == "xray" and base == "xray"):
-                        continue
-                    z.extract(info, dir_path)
-                    extracted = os.path.normpath(os.path.join(dir_path, info.filename))
-                    if os.path.isfile(extracted):
-                        try:
-                            os.chmod(extracted, 0o755)
-                        except OSError:
-                            pass
-                        try:
-                            os.remove(zip_path)
-                        except OSError:
-                            pass
-                        return os.path.abspath(extracted)
+            
+            # Распаковываем
             with zipfile.ZipFile(zip_path, "r") as z:
                 z.extractall(dir_path)
-            try:
-                os.remove(zip_path)
-            except OSError:
-                pass
-            for root, _dirs, files in os.walk(dir_path):
+            
+            os.remove(zip_path)
+            
+            # Ищем исполняемый файл
+            for root, _, files in os.walk(dir_path):
                 for f in files:
-                    if f.lower() == exe_name or (exe_name == "xray" and f == "xray"):
-                        path = os.path.abspath(os.path.join(root, f))
-                        try:
-                            os.chmod(path, 0o755)
-                        except OSError:
-                            pass
-                        return path
-            console.print("[red]В архиве не найден исполняемый файл xray.[/red]")
+                    if f.lower() == exe_name:
+                        path = os.path.join(root, f)
+                        os.chmod(path, 0o755)
+                        console.print(f"[green]Xray установлен:[/green] {path}")
+                        return os.path.abspath(path)
+            
+            console.print("[red]Исполняемый файл не найден в архиве[/red]")
             return None
-        except requests.RequestException as e:
+            
+        except Exception as e:
             if os.path.isfile(zip_path):
                 try:
                     os.remove(zip_path)
                 except OSError:
                     pass
-            if attempt < _XRAY_DOWNLOAD_MAX_ATTEMPTS:
-                console.print(f"[yellow]Ошибка загрузки (попытка {attempt}): {e}. Повтор через {_XRAY_DOWNLOAD_RETRY_DELAY} с...[/yellow]")
-                time.sleep(_XRAY_DOWNLOAD_RETRY_DELAY)
-            else:
-                console.print(f"[red]Ошибка загрузки Xray-core после {_XRAY_DOWNLOAD_MAX_ATTEMPTS} попыток:[/red] {e}")
+            if attempt == 3:
+                console.print(f"[red]Ошибка загрузки:[/red] {e}")
                 return None
-        except zipfile.BadZipFile as e:
-            console.print(f"[red]Ошибка архива:[/red] {e}")
-            try:
-                os.remove(zip_path)
-            except OSError:
-                pass
-            return None
-        except Exception as e:
-            console.print(f"[red]Ошибка установки Xray:[/red] {e}")
-            try:
-                os.remove(zip_path)
-            except OSError:
-                pass
-            return None
+    
     return None
 
 
 def ensure_xray() -> bool:
-    """
-    Убеждается, что xray доступен: XRAY_PATH, затем tools/xray в репо, PATH, xray_dist,
-    при необходимости скачивает Xray-core с GitHub. Возвращает True, если xray готов к использованию.
-    """
+    """Проверяет наличие xray и при необходимости скачивает."""
+    # 1. Проверяем XRAY_PATH из переменных окружения
     if os.environ.get("XRAY_PATH"):
         return check_xray_available()
+    
+    # 2. Проверяем PATH
     if check_xray_available():
         return True
+    
+    # 3. Проверяем tools/xray в репозитории
     from pathlib import Path
     script_dir = Path(__file__).resolve().parent
     if script_dir.name == "lib":
         script_dir = script_dir.parent
+    
     exe_name = "xray.exe" if sys.platform == "win32" else "xray"
     tools_xray = script_dir / "tools" / exe_name
+    
     if tools_xray.is_file():
         config.XRAY_CMD = str(tools_xray)
         if check_xray_available():
-            console.print(f"[green][OK][/green] Используется Xray из репо: {tools_xray}\n")
+            console.print(f"[green]Используется Xray из репо:[/green] {tools_xray}\n")
             return True
+    
+    # 4. Проверяем локальную директорию xray_dist
     xray_dir = script_dir / XRAY_DIR_NAME
-    local_path = str(xray_dir / exe_name)
-    if os.path.isfile(local_path):
-        # Используем глобальную переменную из config
-        config.XRAY_CMD = local_path
+    local_path = xray_dir / exe_name
+    
+    if local_path.is_file():
+        config.XRAY_CMD = str(local_path)
         if check_xray_available():
-            console.print(f"[green][OK][/green] Используется локальный Xray: {local_path}\n")
+            console.print(f"[green]Используется локальный Xray:[/green] {local_path}\n")
             return True
+    
+    # 5. Скачиваем
     os.makedirs(str(xray_dir), exist_ok=True)
     path = _download_xray_to(str(xray_dir))
     if path:
         config.XRAY_CMD = path
-        if check_xray_available():
-            console.print(f"[green][OK][/green] Xray-core установлен: {path}\n")
-            return True
+        return check_xray_available()
+    
     return False
