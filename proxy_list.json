@@ -306,13 +306,23 @@
             {
               "address": "5.253.189.215",
               "port": 443,
-              "method": "none",
+              "method": "aes-128-gcm",
               "password": "3e96ef7d-8637-42c2-ac73-75182196e755"
             }
           ]
         },
         "streamSettings": {
-          "network": "tcp"
+          "network": "ws",
+          "wsSettings": {
+            "path": "3e96ef7d-8637-42c2-ac73-75182196e755\/?ed\\=2560",
+            "headers": {
+              "Host": "mfvpn.fuchen.indevs.in"
+            }
+          },
+          "security": "tls",
+          "tlsSettings": {
+            "serverName": "mfvpn.fuchen.indevs.in"
+          }
         }
       },
       {
@@ -426,13 +436,23 @@
             {
               "address": "94.159.98.140",
               "port": 443,
-              "method": "none",
+              "method": "aes-128-gcm",
               "password": "14b02e2a-8930-4afb-8412-ea4a4954ca5b"
             }
           ]
         },
         "streamSettings": {
-          "network": "tcp"
+          "network": "ws",
+          "wsSettings": {
+            "path": "\/14b02e2a-8930-4afb-8412-ea4a4954ca5b\/?ed\\=2560",
+            "headers": {
+              "Host": "ylnhh.us.ci"
+            }
+          },
+          "security": "tls",
+          "tlsSettings": {
+            "serverName": "ylnhh.us.ci"
+          }
         }
       },
       {
@@ -546,13 +566,23 @@
             {
               "address": "199.181.197.38",
               "port": 443,
-              "method": "none",
+              "method": "aes-128-gcm",
               "password": "3e96ef7d-8637-42c2-ac73-75182196e755"
             }
           ]
         },
         "streamSettings": {
-          "network": "tcp"
+          "network": "ws",
+          "wsSettings": {
+            "path": "3e96ef7d-8637-42c2-ac73-75182196e755\/?ed=2560",
+            "headers": {
+              "Host": "mfvpn.fuchen.indevs.in"
+            }
+          },
+          "security": "tls",
+          "tlsSettings": {
+            "serverName": "mfvpn.fuchen.indevs.in"
+          }
         }
       },
       {
@@ -666,13 +696,23 @@
             {
               "address": "198.12.144.16",
               "port": 443,
-              "method": "none",
+              "method": "aes-128-gcm",
               "password": "14b02e2a-8930-4afb-8412-ea4a4954ca5b"
             }
           ]
         },
         "streamSettings": {
-          "network": "tcp"
+          "network": "ws",
+          "wsSettings": {
+            "path": "\/14b02e2a-8930-4afb-8412-ea4a4954ca5b\/?ed\\=2560",
+            "headers": {
+              "Host": "ylnhh.us.ci"
+            }
+          },
+          "security": "tls",
+          "tlsSettings": {
+            "serverName": "ylnhh.us.ci"
+          }
         }
       },
       {
@@ -786,13 +826,23 @@
             {
               "address": "45.40.154.16",
               "port": 443,
-              "method": "none",
+              "method": "aes-128-gcm",
               "password": "14b02e2a-8930-4afb-8412-ea4a4954ca5b"
             }
           ]
         },
         "streamSettings": {
-          "network": "tcp"
+          "network": "ws",
+          "wsSettings": {
+            "path": "\/14b02e2a-8930-4afb-8412-ea4a4954ca5b\/?ed\\=2560",
+            "headers": {
+              "Host": "ylnhh.us.ci"
+            }
+          },
+          "security": "tls",
+          "tlsSettings": {
+            "serverName": "ylnhh.us.ci"
+          }
         }
       },
       {
@@ -906,13 +956,23 @@
             {
               "address": "78.40.216.169",
               "port": 443,
-              "method": "none",
+              "method": "aes-128-gcm",
               "password": "14b02e2a-8930-4afb-8412-ea4a4954ca5b"
             }
           ]
         },
         "streamSettings": {
-          "network": "tcp"
+          "network": "ws",
+          "wsSettings": {
+            "path": "\/14b02e2a-8930-4afb-8412-ea4a4954ca5b\/?ed\\=2560",
+            "headers": {
+              "Host": "ylnhh.us.ci"
+            }
+          },
+          "security": "tls",
+          "tlsSettings": {
+            "serverName": "ylnhh.us.ci"
+          }
         }
       },
       {
@@ -1026,133 +1086,23 @@
             {
               "address": "45.40.147.16",
               "port": 443,
-              "method": "none",
+              "method": "aes-128-gcm",
               "password": "14b02e2a-8930-4afb-8412-ea4a4954ca5b"
             }
           ]
         },
         "streamSettings": {
-          "network": "tcp"
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      },
-      {
-        "tag": "block",
-        "protocol": "blackhole"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": [
-        {
-          "type": "field",
-          "protocol": [
-            "bittorrent"
-          ],
-          "outboundTag": "direct"
-        },
-        {
-          "type": "field",
-          "domain": [
-            "domain:ru",
-            "domain:su",
-            "domain:xn--p1ai",
-            "domain:vk.com",
-            "domain:vk.ru",
-            "domain:userapi.com",
-            "domain:vk-cdn.net",
-            "domain:vkuser.net",
-            "domain:mvk.com",
-            "domain:yandex.ru",
-            "domain:yandex.net",
-            "domain:ya.ru",
-            "domain:kinopoisk.ru",
-            "domain:mail.ru",
-            "domain:ok.ru",
-            "domain:avito.ru",
-            "domain:avito.st",
-            "keyword:yandex",
-            "keyword:vkontakte",
-            "keyword:userapi",
-            "keyword:mail",
-            "keyword:rutube",
-            "keyword:sber",
-            "keyword:tinkoff",
-            "keyword:alfabank",
-            "keyword:vtb",
-            "keyword:gosuslugi"
-          ],
-          "outboundTag": "direct"
-        },
-        {
-          "type": "field",
-          "ip": [
-            "192.168.0.0\/16",
-            "10.0.0.0\/8",
-            "172.16.0.0\/12",
-            "127.0.0.0\/8",
-            "fc00::\/7",
-            "fe80::\/10",
-            "87.240.128.0\/18",
-            "93.186.224.0\/20",
-            "95.213.0.0\/18"
-          ],
-          "outboundTag": "direct"
-        }
-      ]
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "🇩🇪 Германия #10",
-    "inbounds": [
-      {
-        "port": 10808,
-        "protocol": "socks",
-        "settings": {
-          "udp": true
-        },
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      },
-      {
-        "port": 10809,
-        "protocol": "http",
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      }
-    ],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "ss",
-        "settings": {
-          "servers": [
-            {
-              "address": "45.147.248.115",
-              "port": 443,
-              "method": "none",
-              "password": "14b02e2a-8930-4afb-8412-ea4a4954ca5b"
+          "network": "ws",
+          "wsSettings": {
+            "path": "\/14b02e2a-8930-4afb-8412-ea4a4954ca5b\/?ed\\=2560",
+            "headers": {
+              "Host": "ylnhh.us.ci"
             }
-          ]
-        },
-        "streamSettings": {
-          "network": "tcp"
+          },
+          "security": "tls",
+          "tlsSettings": {
+            "serverName": "ylnhh.us.ci"
+          }
         }
       },
       {
