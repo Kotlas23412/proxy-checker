@@ -3,7 +3,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🌐 Узел 91.197.1.218 #1",
+    "remarks": "🇱🇻 Латвия #1",
     "inbounds": [
       {
         "port": 10808,
@@ -86,7 +86,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🌐 Узел fix3.braidpro.online #2",
+    "remarks": "🇫🇮 Финляндия #2",
     "inbounds": [
       {
         "port": 10808,
@@ -141,178 +141,6 @@
             "fingerprint": "chrome",
             "publicKey": "HjFePi_ejebCJfFbCIQk8T1dU148E8q2LIqMrjBqBik",
             "shortId": "558319deaf4ae7b3"
-          }
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      },
-      {
-        "tag": "block",
-        "protocol": "blackhole"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": [
-        {
-          "type": "field",
-          "protocol": [
-            "bittorrent"
-          ],
-          "outboundTag": "direct"
-        }
-      ]
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "🌐 Узел 155.212.170.65 #3",
-    "inbounds": [
-      {
-        "port": 10808,
-        "protocol": "socks",
-        "settings": {
-          "udp": true
-        },
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      },
-      {
-        "port": 10809,
-        "protocol": "http",
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      }
-    ],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "vless",
-        "settings": {
-          "vnext": [
-            {
-              "address": "155.212.170.65",
-              "port": 2096,
-              "users": [
-                {
-                  "id": "b4bc10bf-80f9-40c9-b4e5-29817c2f0992",
-                  "encryption": "none"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "grpc",
-          "grpcSettings": {
-            "serviceName": "vless-grpc-reality"
-          },
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "id.vk.com",
-            "fingerprint": "chrome",
-            "publicKey": "SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc",
-            "shortId": ""
-          }
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      },
-      {
-        "tag": "block",
-        "protocol": "blackhole"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": [
-        {
-          "type": "field",
-          "protocol": [
-            "bittorrent"
-          ],
-          "outboundTag": "direct"
-        }
-      ]
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "🌐 Узел 155.212.169.142 #4",
-    "inbounds": [
-      {
-        "port": 10808,
-        "protocol": "socks",
-        "settings": {
-          "udp": true
-        },
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      },
-      {
-        "port": 10809,
-        "protocol": "http",
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      }
-    ],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "vless",
-        "settings": {
-          "vnext": [
-            {
-              "address": "155.212.169.142",
-              "port": 2096,
-              "users": [
-                {
-                  "id": "b4bc10bf-80f9-40c9-b4e5-29817c2f0992",
-                  "encryption": "none"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "grpc",
-          "grpcSettings": {
-            "serviceName": "vless-grpc-reality"
-          },
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "id.vk.com",
-            "fingerprint": "chrome",
-            "publicKey": "SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc",
-            "shortId": ""
           }
         }
       },
