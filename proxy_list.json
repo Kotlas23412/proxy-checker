@@ -2,7 +2,7 @@
   "log": {
     "loglevel": "warning"
   },
-  "remarks": "Multi Proxy Config",
+  "remarks": "🇩🇪 ФРГ | LTE #1 (SS)",
   "inbounds": [
     {
       "port": 10808,
@@ -26,29 +26,7 @@
   ],
   "outbounds": [
     {
-      "tag": "vmess-proxy",
-      "protocol": "vmess",
-      "settings": {
-        "vnext": [
-          {
-            "address": "ВСТАВЬ_СЮДА_ИЗ_vmесс",
-            "port": 443,
-            "users": [
-              {
-                "id": "UUID",
-                "alterId": 0,
-                "security": "auto"
-              }
-            ]
-          }
-        ]
-      },
-      "streamSettings": {
-        "network": "tcp"
-      }
-    },
-    {
-      "tag": "ss-proxy",
+      "tag": "proxy",
       "protocol": "shadowsocks",
       "settings": {
         "servers": [
@@ -95,7 +73,18 @@
           "domain:su",
           "domain:xn--p1ai",
           "domain:vk.com",
-          "domain:yandex.ru"
+          "domain:vk.ru",
+          "domain:yandex.ru",
+          "domain:mail.ru"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
+        "ip": [
+          "192.168.0.0/16",
+          "10.0.0.0/8",
+          "127.0.0.0/8"
         ],
         "outboundTag": "direct"
       }
