@@ -3,7 +3,259 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇨🇭 Швейцария #1",
+    "remarks": "🌐 Узел sweden.scroogethebest.com #1",
+    "inbounds": [
+      {
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "udp": true
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      },
+      {
+        "port": 10809,
+        "protocol": "http",
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      }
+    ],
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "vless",
+        "settings": {
+          "vnext": [
+            {
+              "address": "sweden.scroogethebest.com",
+              "port": 443,
+              "users": [
+                {
+                  "id": "411cfe73-8425-4504-a1bf-a7c04fb09245",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
+                }
+              ]
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "tcp",
+          "security": "reality",
+          "realitySettings": {
+            "serverName": "sweden.scroogethebest.com",
+            "fingerprint": "chrome",
+            "publicKey": "AYQOZFxjvHN-RIzKYEibwFiFsp03cdlWGdCmyFfuNVc",
+            "shortId": "4fa44664f6a566d3"
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        }
+      ]
+    }
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🌐 Узел 155.212.170.65 #2",
+    "inbounds": [
+      {
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "udp": true
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      },
+      {
+        "port": 10809,
+        "protocol": "http",
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      }
+    ],
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "vless",
+        "settings": {
+          "vnext": [
+            {
+              "address": "155.212.170.65",
+              "port": 2096,
+              "users": [
+                {
+                  "id": "b4bc10bf-80f9-40c9-b4e5-29817c2f0992",
+                  "encryption": "none"
+                }
+              ]
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "grpc",
+          "grpcSettings": {
+            "serviceName": "vless-grpc-reality"
+          },
+          "security": "reality",
+          "realitySettings": {
+            "serverName": "id.vk.com",
+            "fingerprint": "chrome",
+            "publicKey": "SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc",
+            "shortId": ""
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        }
+      ]
+    }
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🌐 Узел 94.159.98.140 #3",
+    "inbounds": [
+      {
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "udp": true
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      },
+      {
+        "port": 10809,
+        "protocol": "http",
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      }
+    ],
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "ss",
+        "settings": {
+          "servers": [
+            {
+              "address": "94.159.98.140",
+              "port": 443,
+              "method": "none",
+              "password": "14b02e2a-8930-4afb-8412-ea4a4954ca5b"
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "ws",
+          "wsSettings": {
+            "path": "\/14b02e2a-8930-4afb-8412-ea4a4954ca5b\/?ed\\=2560",
+            "headers": {
+              "Host": "ylnhh.us.ci"
+            }
+          },
+          "security": "tls",
+          "tlsSettings": {
+            "serverName": "ylnhh.us.ci"
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        }
+      ]
+    }
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🌐 Узел l90909l.vip #4",
     "inbounds": [
       {
         "port": 10808,
@@ -74,14 +326,22 @@
     ],
     "routing": {
       "domainStrategy": "IPIfNonMatch",
-      "rules": []
+      "rules": [
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        }
+      ]
     }
   },
   {
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇸🇪 Швеция #2",
+    "remarks": "🌐 Узел 5.253.189.215 #5",
     "inbounds": [
       {
         "port": 10808,
@@ -112,30 +372,28 @@
     "outbounds": [
       {
         "tag": "proxy",
-        "protocol": "vless",
+        "protocol": "ss",
         "settings": {
-          "vnext": [
+          "servers": [
             {
-              "address": "sweden.scroogethebest.com",
+              "address": "5.253.189.215",
               "port": 443,
-              "users": [
-                {
-                  "id": "411cfe73-8425-4504-a1bf-a7c04fb09245",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
+              "method": "none",
+              "password": "3e96ef7d-8637-42c2-ac73-75182196e755"
             }
           ]
         },
         "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "sweden.scroogethebest.com",
-            "fingerprint": "chrome",
-            "publicKey": "AYQOZFxjvHN-RIzKYEibwFiFsp03cdlWGdCmyFfuNVc",
-            "shortId": "4fa44664f6a566d3"
+          "network": "ws",
+          "wsSettings": {
+            "path": "3e96ef7d-8637-42c2-ac73-75182196e755\/?ed\\=2560",
+            "headers": {
+              "Host": "mfvpn.fuchen.indevs.in"
+            }
+          },
+          "security": "tls",
+          "tlsSettings": {
+            "serverName": "mfvpn.fuchen.indevs.in"
           }
         }
       },
@@ -150,235 +408,49 @@
     ],
     "routing": {
       "domainStrategy": "IPIfNonMatch",
-      "rules": []
+      "rules": [
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        }
+      ]
     }
   },
   {
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇳🇱 Нидерланды #3",
-    "inbounds": [],
-    "outbounds": [
+    "remarks": "🌐 Узел 78.40.216.169 #6",
+    "inbounds": [
       {
-        "tag": "proxy",
-        "protocol": "ss",
+        "port": 10808,
+        "protocol": "socks",
         "settings": {
-          "servers": [
-            {
-              "address": "5.253.189.215",
-              "port": 443,
-              "method": "none",
-              "password": "3e96ef7d-8637-42c2-ac73-75182196e755"
-            }
-          ]
+          "udp": true
         },
-        "streamSettings": {
-          "network": "ws",
-          "security": "tls",
-          "wsSettings": {
-            "path": "/3e96ef7d-8637-42c2-ac73-75182196e755/?ed=2560",
-            "headers": {
-              "Host": "mfvpn.fuchen.indevs.in"
-            }
-          },
-          "tlsSettings": {
-            "serverName": "mfvpn.fuchen.indevs.in"
-          }
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
         }
       },
       {
-        "tag": "direct",
-        "protocol": "freedom"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": []
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "🇩🇪 ФРГ #4",
-    "inbounds": [],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "ss",
-        "settings": {
-          "servers": [
-            {
-              "address": "94.159.98.140",
-              "port": 443,
-              "method": "none",
-              "password": "14b02e2a-8930-4afb-8412-ea4a4954ca5b"
-            }
+        "port": 10809,
+        "protocol": "http",
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
           ]
-        },
-        "streamSettings": {
-          "network": "ws",
-          "security": "tls",
-          "wsSettings": {
-            "path": "/14b02e2a-8930-4afb-8412-ea4a4954ca5b/?ed=2560",
-            "headers": {
-              "Host": "ylnhh.us.ci"
-            }
-          },
-          "tlsSettings": {
-            "serverName": "ylnhh.us.ci"
-          }
         }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
       }
     ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": []
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "🇺🇸 США #5",
-    "inbounds": [],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "ss",
-        "settings": {
-          "servers": [
-            {
-              "address": "199.181.197.38",
-              "port": 443,
-              "method": "none",
-              "password": "3e96ef7d-8637-42c2-ac73-75182196e755"
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "ws",
-          "security": "tls",
-          "wsSettings": {
-            "path": "/3e96ef7d-8637-42c2-ac73-75182196e755/?ed=2560",
-            "headers": {
-              "Host": "mfvpn.fuchen.indevs.in"
-            }
-          },
-          "tlsSettings": {
-            "serverName": "mfvpn.fuchen.indevs.in"
-          }
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": []
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "🇺🇸 США #6",
-    "inbounds": [],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "ss",
-        "settings": {
-          "servers": [
-            {
-              "address": "198.12.144.16",
-              "port": 443,
-              "method": "none",
-              "password": "14b02e2a-8930-4afb-8412-ea4a4954ca5b"
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "ws",
-          "security": "tls",
-          "wsSettings": {
-            "path": "/14b02e2a-8930-4afb-8412-ea4a4954ca5b/?ed=2560",
-            "headers": {
-              "Host": "ylnhh.us.ci"
-            }
-          },
-          "tlsSettings": {
-            "serverName": "ylnhh.us.ci"
-          }
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": []
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "🇺🇸 США #7",
-    "inbounds": [],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "ss",
-        "settings": {
-          "servers": [
-            {
-              "address": "45.40.154.16",
-              "port": 443,
-              "method": "none",
-              "password": "14b02e2a-8930-4afb-8412-ea4a4954ca5b"
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "ws",
-          "security": "tls",
-          "wsSettings": {
-            "path": "/14b02e2a-8930-4afb-8412-ea4a4954ca5b/?ed=2560",
-            "headers": {
-              "Host": "ylnhh.us.ci"
-            }
-          },
-          "tlsSettings": {
-            "serverName": "ylnhh.us.ci"
-          }
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": []
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "🇩🇪 ФРГ #8",
-    "inbounds": [],
     "outbounds": [
       {
         "tag": "proxy",
@@ -395,13 +467,13 @@
         },
         "streamSettings": {
           "network": "ws",
-          "security": "tls",
           "wsSettings": {
-            "path": "/14b02e2a-8930-4afb-8412-ea4a4954ca5b/?ed=2560",
+            "path": "\/14b02e2a-8930-4afb-8412-ea4a4954ca5b\/?ed\\=2560",
             "headers": {
               "Host": "ylnhh.us.ci"
             }
           },
+          "security": "tls",
           "tlsSettings": {
             "serverName": "ylnhh.us.ci"
           }
@@ -410,19 +482,221 @@
       {
         "tag": "direct",
         "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
       }
     ],
     "routing": {
       "domainStrategy": "IPIfNonMatch",
-      "rules": []
+      "rules": [
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        }
+      ]
     }
   },
   {
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇺🇸 США #9",
-    "inbounds": [],
+    "remarks": "🌐 Узел 45.40.154.16 #7",
+    "inbounds": [
+      {
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "udp": true
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      },
+      {
+        "port": 10809,
+        "protocol": "http",
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      }
+    ],
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "ss",
+        "settings": {
+          "servers": [
+            {
+              "address": "45.40.154.16",
+              "port": 443,
+              "method": "none",
+              "password": "14b02e2a-8930-4afb-8412-ea4a4954ca5b"
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "ws",
+          "wsSettings": {
+            "path": "\/14b02e2a-8930-4afb-8412-ea4a4954ca5b\/?ed\\=2560",
+            "headers": {
+              "Host": "ylnhh.us.ci"
+            }
+          },
+          "security": "tls",
+          "tlsSettings": {
+            "serverName": "ylnhh.us.ci"
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        }
+      ]
+    }
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🌐 Узел 199.181.197.38 #8",
+    "inbounds": [
+      {
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "udp": true
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      },
+      {
+        "port": 10809,
+        "protocol": "http",
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      }
+    ],
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "ss",
+        "settings": {
+          "servers": [
+            {
+              "address": "199.181.197.38",
+              "port": 443,
+              "method": "none",
+              "password": "3e96ef7d-8637-42c2-ac73-75182196e755"
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "ws",
+          "wsSettings": {
+            "path": "3e96ef7d-8637-42c2-ac73-75182196e755\/?ed=2560",
+            "headers": {
+              "Host": "mfvpn.fuchen.indevs.in"
+            }
+          },
+          "security": "tls",
+          "tlsSettings": {
+            "serverName": "mfvpn.fuchen.indevs.in"
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        }
+      ]
+    }
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🌐 Узел 45.40.147.16 #9",
+    "inbounds": [
+      {
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "udp": true
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      },
+      {
+        "port": 10809,
+        "protocol": "http",
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      }
+    ],
     "outbounds": [
       {
         "tag": "proxy",
@@ -439,13 +713,13 @@
         },
         "streamSettings": {
           "network": "ws",
-          "security": "tls",
           "wsSettings": {
-            "path": "/14b02e2a-8930-4afb-8412-ea4a4954ca5b/?ed=2560",
+            "path": "\/14b02e2a-8930-4afb-8412-ea4a4954ca5b\/?ed\\=2560",
             "headers": {
               "Host": "ylnhh.us.ci"
             }
           },
+          "security": "tls",
           "tlsSettings": {
             "serverName": "ylnhh.us.ci"
           }
@@ -454,55 +728,23 @@
       {
         "tag": "direct",
         "protocol": "freedom"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": []
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "🇩🇪 Германия #10",
-    "inbounds": [],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "ss",
-        "settings": {
-          "servers": [
-            {
-              "address": "45.147.248.115",
-              "port": 443,
-              "method": "none",
-              "password": "14b02e2a-8930-4afb-8412-ea4a4954ca5b"
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "ws",
-          "security": "tls",
-          "wsSettings": {
-            "path": "/14b02e2a-8930-4afb-8412-ea4a4954ca5b/?ed=2560",
-            "headers": {
-              "Host": "ylnhh.us.ci"
-            }
-          },
-          "tlsSettings": {
-            "serverName": "ylnhh.us.ci"
-          }
-        }
       },
       {
-        "tag": "direct",
-        "protocol": "freedom"
+        "tag": "block",
+        "protocol": "blackhole"
       }
     ],
     "routing": {
       "domainStrategy": "IPIfNonMatch",
-      "rules": []
+      "rules": [
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        }
+      ]
     }
   }
 ]
