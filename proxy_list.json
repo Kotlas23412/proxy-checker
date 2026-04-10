@@ -3,7 +3,128 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇸🇪 Швеция #1",
+    "remarks": "🇨🇦 Канада #1",
+    "inbounds": [
+      {
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "udp": true
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      },
+      {
+        "port": 10809,
+        "protocol": "http",
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      }
+    ],
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "trojan",
+        "settings": {
+          "servers": [
+            {
+              "address": "persiancdn.top",
+              "port": 443,
+              "password": "51410d3cb2931a01b366bb5c868264bf"
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "tcp",
+          "security": "tls",
+          "tlsSettings": {}
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "domain": [
+            "domain:ru",
+            "domain:su",
+            "domain:xn--p1ai",
+            "domain:vk.com",
+            "domain:vk.ru",
+            "domain:userapi.com",
+            "domain:vk-cdn.net",
+            "domain:vkuser.net",
+            "domain:mvk.com",
+            "domain:yandex.ru",
+            "domain:yandex.net",
+            "domain:ya.ru",
+            "domain:kinopoisk.ru",
+            "domain:mail.ru",
+            "domain:ok.ru",
+            "domain:avito.ru",
+            "domain:avito.st",
+            "keyword:yandex",
+            "keyword:vkontakte",
+            "keyword:userapi",
+            "keyword:mail",
+            "keyword:rutube",
+            "keyword:sber",
+            "keyword:tinkoff",
+            "keyword:alfabank",
+            "keyword:vtb",
+            "keyword:gosuslugi"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "ip": [
+            "192.168.0.0\/16",
+            "10.0.0.0\/8",
+            "172.16.0.0\/12",
+            "127.0.0.0\/8",
+            "fc00::\/7",
+            "fe80::\/10",
+            "87.240.128.0\/18",
+            "93.186.224.0\/20",
+            "95.213.0.0\/18"
+          ],
+          "outboundTag": "direct"
+        }
+      ]
+    }
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🇸🇪 Швеция #2",
     "inbounds": [
       {
         "port": 10808,
@@ -40,14 +161,13 @@
             {
               "address": "91.223.169.88",
               "port": 8443,
-              "method": "none",
+              "method": "aes-128-gcm",
               "password": "3e96ef7d-8637-42c2-ac73-75182196e755"
             }
           ]
         },
         "streamSettings": {
-          "network": "tcp",
-          "security": "none"
+          "network": "tcp"
         }
       },
       {
@@ -68,6 +188,54 @@
             "bittorrent"
           ],
           "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "domain": [
+            "domain:ru",
+            "domain:su",
+            "domain:xn--p1ai",
+            "domain:vk.com",
+            "domain:vk.ru",
+            "domain:userapi.com",
+            "domain:vk-cdn.net",
+            "domain:vkuser.net",
+            "domain:mvk.com",
+            "domain:yandex.ru",
+            "domain:yandex.net",
+            "domain:ya.ru",
+            "domain:kinopoisk.ru",
+            "domain:mail.ru",
+            "domain:ok.ru",
+            "domain:avito.ru",
+            "domain:avito.st",
+            "keyword:yandex",
+            "keyword:vkontakte",
+            "keyword:userapi",
+            "keyword:mail",
+            "keyword:rutube",
+            "keyword:sber",
+            "keyword:tinkoff",
+            "keyword:alfabank",
+            "keyword:vtb",
+            "keyword:gosuslugi"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "ip": [
+            "192.168.0.0\/16",
+            "10.0.0.0\/8",
+            "172.16.0.0\/12",
+            "127.0.0.0\/8",
+            "fc00::\/7",
+            "fe80::\/10",
+            "87.240.128.0\/18",
+            "93.186.224.0\/20",
+            "95.213.0.0\/18"
+          ],
+          "outboundTag": "direct"
         }
       ]
     }
@@ -76,7 +244,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇷🇺 Россия #2",
+    "remarks": "🇷🇺 Россия #3",
     "inbounds": [
       {
         "port": 10808,
@@ -151,6 +319,54 @@
             "bittorrent"
           ],
           "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "domain": [
+            "domain:ru",
+            "domain:su",
+            "domain:xn--p1ai",
+            "domain:vk.com",
+            "domain:vk.ru",
+            "domain:userapi.com",
+            "domain:vk-cdn.net",
+            "domain:vkuser.net",
+            "domain:mvk.com",
+            "domain:yandex.ru",
+            "domain:yandex.net",
+            "domain:ya.ru",
+            "domain:kinopoisk.ru",
+            "domain:mail.ru",
+            "domain:ok.ru",
+            "domain:avito.ru",
+            "domain:avito.st",
+            "keyword:yandex",
+            "keyword:vkontakte",
+            "keyword:userapi",
+            "keyword:mail",
+            "keyword:rutube",
+            "keyword:sber",
+            "keyword:tinkoff",
+            "keyword:alfabank",
+            "keyword:vtb",
+            "keyword:gosuslugi"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "ip": [
+            "192.168.0.0\/16",
+            "10.0.0.0\/8",
+            "172.16.0.0\/12",
+            "127.0.0.0\/8",
+            "fc00::\/7",
+            "fe80::\/10",
+            "87.240.128.0\/18",
+            "93.186.224.0\/20",
+            "95.213.0.0\/18"
+          ],
+          "outboundTag": "direct"
         }
       ]
     }
@@ -159,7 +375,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇳🇱 Нидерланды #3",
+    "remarks": "🇳🇱 Нидерланды #4",
     "inbounds": [
       {
         "port": 10808,
@@ -196,14 +412,13 @@
             {
               "address": "45.43.88.13",
               "port": 2053,
-              "method": "none",
+              "method": "aes-128-gcm",
               "password": "3e96ef7d-8637-42c2-ac73-75182196e755"
             }
           ]
         },
         "streamSettings": {
-          "network": "tcp",
-          "security": "none"
+          "network": "tcp"
         }
       },
       {
@@ -224,6 +439,54 @@
             "bittorrent"
           ],
           "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "domain": [
+            "domain:ru",
+            "domain:su",
+            "domain:xn--p1ai",
+            "domain:vk.com",
+            "domain:vk.ru",
+            "domain:userapi.com",
+            "domain:vk-cdn.net",
+            "domain:vkuser.net",
+            "domain:mvk.com",
+            "domain:yandex.ru",
+            "domain:yandex.net",
+            "domain:ya.ru",
+            "domain:kinopoisk.ru",
+            "domain:mail.ru",
+            "domain:ok.ru",
+            "domain:avito.ru",
+            "domain:avito.st",
+            "keyword:yandex",
+            "keyword:vkontakte",
+            "keyword:userapi",
+            "keyword:mail",
+            "keyword:rutube",
+            "keyword:sber",
+            "keyword:tinkoff",
+            "keyword:alfabank",
+            "keyword:vtb",
+            "keyword:gosuslugi"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "ip": [
+            "192.168.0.0\/16",
+            "10.0.0.0\/8",
+            "172.16.0.0\/12",
+            "127.0.0.0\/8",
+            "fc00::\/7",
+            "fe80::\/10",
+            "87.240.128.0\/18",
+            "93.186.224.0\/20",
+            "95.213.0.0\/18"
+          ],
+          "outboundTag": "direct"
         }
       ]
     }
@@ -232,7 +495,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇩🇪 ФРГ #4",
+    "remarks": "🇩🇪 ФРГ #5",
     "inbounds": [
       {
         "port": 10808,
@@ -269,14 +532,13 @@
             {
               "address": "94.159.98.123",
               "port": 443,
-              "method": "none",
+              "method": "aes-128-gcm",
               "password": "14b02e2a-8930-4afb-8412-ea4a4954ca5b"
             }
           ]
         },
         "streamSettings": {
-          "network": "tcp",
-          "security": "none"
+          "network": "tcp"
         }
       },
       {
@@ -297,6 +559,54 @@
             "bittorrent"
           ],
           "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "domain": [
+            "domain:ru",
+            "domain:su",
+            "domain:xn--p1ai",
+            "domain:vk.com",
+            "domain:vk.ru",
+            "domain:userapi.com",
+            "domain:vk-cdn.net",
+            "domain:vkuser.net",
+            "domain:mvk.com",
+            "domain:yandex.ru",
+            "domain:yandex.net",
+            "domain:ya.ru",
+            "domain:kinopoisk.ru",
+            "domain:mail.ru",
+            "domain:ok.ru",
+            "domain:avito.ru",
+            "domain:avito.st",
+            "keyword:yandex",
+            "keyword:vkontakte",
+            "keyword:userapi",
+            "keyword:mail",
+            "keyword:rutube",
+            "keyword:sber",
+            "keyword:tinkoff",
+            "keyword:alfabank",
+            "keyword:vtb",
+            "keyword:gosuslugi"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "ip": [
+            "192.168.0.0\/16",
+            "10.0.0.0\/8",
+            "172.16.0.0\/12",
+            "127.0.0.0\/8",
+            "fc00::\/7",
+            "fe80::\/10",
+            "87.240.128.0\/18",
+            "93.186.224.0\/20",
+            "95.213.0.0\/18"
+          ],
+          "outboundTag": "direct"
         }
       ]
     }
@@ -305,7 +615,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇸🇪 Швеция #5",
+    "remarks": "🇸🇪 Швеция #6",
     "inbounds": [
       {
         "port": 10808,
@@ -381,6 +691,54 @@
             "bittorrent"
           ],
           "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "domain": [
+            "domain:ru",
+            "domain:su",
+            "domain:xn--p1ai",
+            "domain:vk.com",
+            "domain:vk.ru",
+            "domain:userapi.com",
+            "domain:vk-cdn.net",
+            "domain:vkuser.net",
+            "domain:mvk.com",
+            "domain:yandex.ru",
+            "domain:yandex.net",
+            "domain:ya.ru",
+            "domain:kinopoisk.ru",
+            "domain:mail.ru",
+            "domain:ok.ru",
+            "domain:avito.ru",
+            "domain:avito.st",
+            "keyword:yandex",
+            "keyword:vkontakte",
+            "keyword:userapi",
+            "keyword:mail",
+            "keyword:rutube",
+            "keyword:sber",
+            "keyword:tinkoff",
+            "keyword:alfabank",
+            "keyword:vtb",
+            "keyword:gosuslugi"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "ip": [
+            "192.168.0.0\/16",
+            "10.0.0.0\/8",
+            "172.16.0.0\/12",
+            "127.0.0.0\/8",
+            "fc00::\/7",
+            "fe80::\/10",
+            "87.240.128.0\/18",
+            "93.186.224.0\/20",
+            "95.213.0.0\/18"
+          ],
+          "outboundTag": "direct"
         }
       ]
     }
@@ -389,7 +747,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇱🇻 Латвия #6",
+    "remarks": "🇱🇻 Латвия #7",
     "inbounds": [
       {
         "port": 10808,
@@ -426,14 +784,13 @@
             {
               "address": "195.123.210.147",
               "port": 443,
-              "method": "none",
+              "method": "aes-128-gcm",
               "password": "3e96ef7d-8637-42c2-ac73-75182196e755"
             }
           ]
         },
         "streamSettings": {
-          "network": "tcp",
-          "security": "none"
+          "network": "tcp"
         }
       },
       {
@@ -452,6 +809,54 @@
           "type": "field",
           "protocol": [
             "bittorrent"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "domain": [
+            "domain:ru",
+            "domain:su",
+            "domain:xn--p1ai",
+            "domain:vk.com",
+            "domain:vk.ru",
+            "domain:userapi.com",
+            "domain:vk-cdn.net",
+            "domain:vkuser.net",
+            "domain:mvk.com",
+            "domain:yandex.ru",
+            "domain:yandex.net",
+            "domain:ya.ru",
+            "domain:kinopoisk.ru",
+            "domain:mail.ru",
+            "domain:ok.ru",
+            "domain:avito.ru",
+            "domain:avito.st",
+            "keyword:yandex",
+            "keyword:vkontakte",
+            "keyword:userapi",
+            "keyword:mail",
+            "keyword:rutube",
+            "keyword:sber",
+            "keyword:tinkoff",
+            "keyword:alfabank",
+            "keyword:vtb",
+            "keyword:gosuslugi"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "ip": [
+            "192.168.0.0\/16",
+            "10.0.0.0\/8",
+            "172.16.0.0\/12",
+            "127.0.0.0\/8",
+            "fc00::\/7",
+            "fe80::\/10",
+            "87.240.128.0\/18",
+            "93.186.224.0\/20",
+            "95.213.0.0\/18"
           ],
           "outboundTag": "direct"
         }
