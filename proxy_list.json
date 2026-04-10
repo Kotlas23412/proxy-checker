@@ -2,7 +2,7 @@
   "log": {
     "loglevel": "warning"
   },
-  "remarks": "🇩🇪 ФРГ | LTE #1 (SS)",
+  "remarks": "🇩🇪 ФРГ | LTE #1 (decoded)",
   "inbounds": [
     {
       "port": 10808,
@@ -41,6 +41,10 @@
       "streamSettings": {
         "network": "ws",
         "security": "tls",
+        "tlsSettings": {
+          "serverName": "ylnhh.us.ci",
+          "allowInsecure": true
+        },
         "wsSettings": {
           "path": "/14b02e2a-8930-4afb-8412-ea4a4954ca5b/?ed=2560",
           "headers": {
@@ -75,7 +79,10 @@
           "domain:vk.com",
           "domain:vk.ru",
           "domain:yandex.ru",
-          "domain:mail.ru"
+          "domain:mail.ru",
+          "keyword:yandex",
+          "keyword:vk",
+          "keyword:mail"
         ],
         "outboundTag": "direct"
       },
@@ -84,7 +91,9 @@
         "ip": [
           "192.168.0.0/16",
           "10.0.0.0/8",
-          "127.0.0.0/8"
+          "127.0.0.0/8",
+          "fc00::/7",
+          "fe80::/10"
         ],
         "outboundTag": "direct"
       }
