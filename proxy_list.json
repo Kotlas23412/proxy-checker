@@ -3,7 +3,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🌐 Узел irancell.buzzmuzzpanel.online #1",
+    "remarks": "🇨🇦 Канада #1",
     "inbounds": [
       {
         "port": 10808,
@@ -76,7 +76,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🌐 Узел 45.40.147.16 #2",
+    "remarks": "🇺🇸 США #2",
     "inbounds": [
       {
         "port": 10808,
@@ -148,7 +148,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🌐 Узел 50.62.88.16 #3",
+    "remarks": "🇺🇸 США #3",
     "inbounds": [
       {
         "port": 10808,
@@ -220,7 +220,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🌐 Узел 69.84.182.16 #4",
+    "remarks": "🇺🇸 США #4",
     "inbounds": [
       {
         "port": 10808,
@@ -292,7 +292,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🌐 Узел persiancdn.top #5",
+    "remarks": "🇨🇦 Канада #5",
     "inbounds": [
       {
         "port": 10808,
@@ -365,7 +365,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🌐 Узел 91.223.169.88 #6",
+    "remarks": "🇸🇪 Швеция #6",
     "inbounds": [
       {
         "port": 10808,
@@ -402,6 +402,161 @@
             {
               "address": "91.223.169.88",
               "port": 8443,
+              "method": "none",
+              "password": "3e96ef7d-8637-42c2-ac73-75182196e755"
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "tcp"
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        }
+      ]
+    }
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🇷🇺 Россия #7",
+    "inbounds": [
+      {
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "udp": true
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      },
+      {
+        "port": 10809,
+        "protocol": "http",
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      }
+    ],
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "vless",
+        "settings": {
+          "vnext": [
+            {
+              "address": "79.174.77.187",
+              "port": 51517,
+              "users": [
+                {
+                  "id": "746666d3-480c-4406-ae15-de4c3290afb9",
+                  "encryption": "none"
+                }
+              ]
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "tcp",
+          "security": "reality",
+          "realitySettings": {
+            "serverName": "max.ru",
+            "fingerprint": "chrome",
+            "publicKey": "p_k6TuDidTlt2oZYa4n0qRcBOJ2kixL-WqfDsxaVly0",
+            "shortId": "af08"
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        }
+      ]
+    }
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🇳🇱 Нидерланды #8",
+    "inbounds": [
+      {
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "udp": true
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      },
+      {
+        "port": 10809,
+        "protocol": "http",
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      }
+    ],
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "ss",
+        "settings": {
+          "servers": [
+            {
+              "address": "45.43.88.13",
+              "port": 2053,
               "method": "none",
               "password": "3e96ef7d-8637-42c2-ac73-75182196e755"
             }
