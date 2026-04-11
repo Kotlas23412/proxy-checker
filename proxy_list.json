@@ -255,7 +255,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇺🇸 США #3",
+    "remarks": "🌐 Узел 216.205.52.16 #3",
     "inbounds": [
       {
         "port": 10808,
@@ -507,7 +507,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🌐 Узел l90909l.vip #5",
+    "remarks": "🇱🇻 Латвия #5",
     "inbounds": [
       {
         "port": 10808,
@@ -538,29 +538,154 @@
     "outbounds": [
       {
         "tag": "proxy",
-        "protocol": "vless",
+        "protocol": "shadowsocks",
         "settings": {
-          "vnext": [
+          "servers": [
             {
-              "address": "l90909l.vip",
-              "port": 8082,
-              "users": [
-                {
-                  "id": "b4bc10bf-80f9-40c9-b4e5-29817c2f0992",
-                  "encryption": "none"
-                }
-              ]
+              "address": "195.135.254.173",
+              "port": 8443,
+              "method": "none",
+              "password": "3e96ef7d-8637-42c2-ac73-75182196e755"
             }
           ]
         },
         "streamSettings": {
-          "network": "grpc",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "id.vk.com",
-            "fingerprint": "chrome",
-            "publicKey": "SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc",
-            "shortId": ""
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "/3e96ef7d-8637-42c2-ac73-75182196e755/?ed=2560",
+            "headers": {
+              "Host": "mfvpn.fuchen.indevs.in"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "mfvpn.fuchen.indevs.in"
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "domain": [
+            "domain:ru",
+            "domain:su",
+            "domain:xn--p1ai",
+            "domain:vk.com",
+            "domain:vk.ru",
+            "domain:userapi.com",
+            "domain:vk-cdn.net",
+            "domain:vkuser.net",
+            "domain:mvk.com",
+            "domain:yandex.ru",
+            "domain:yandex.net",
+            "domain:ya.ru",
+            "domain:kinopoisk.ru",
+            "domain:mail.ru",
+            "domain:ok.ru",
+            "domain:avito.ru",
+            "domain:avito.st",
+            "keyword:yandex",
+            "keyword:vkontakte",
+            "keyword:userapi",
+            "keyword:mail",
+            "keyword:rutube",
+            "keyword:sber",
+            "keyword:tinkoff",
+            "keyword:alfabank",
+            "keyword:vtb",
+            "keyword:gosuslugi"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "ip": [
+            "192.168.0.0/16",
+            "10.0.0.0/8",
+            "172.16.0.0/12",
+            "127.0.0.0/8",
+            "fc00::/7",
+            "fe80::/10",
+            "87.240.128.0/18",
+            "93.186.224.0/20",
+            "95.213.0.0/18"
+          ],
+          "outboundTag": "direct"
+        }
+      ]
+    }
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🇱🇻 Латвия #6",
+    "inbounds": [
+      {
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "udp": true
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      },
+      {
+        "port": 10809,
+        "protocol": "http",
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      }
+    ],
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "shadowsocks",
+        "settings": {
+          "servers": [
+            {
+              "address": "195.123.210.147",
+              "port": 443,
+              "method": "none",
+              "password": "3e96ef7d-8637-42c2-ac73-75182196e755"
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "/3e96ef7d-8637-42c2-ac73-75182196e755/?ed=2560",
+            "headers": {
+              "Host": "mfvpn.fuchen.indevs.in"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "mfvpn.fuchen.indevs.in"
           }
         }
       },
