@@ -1,18 +1,34 @@
 [
   {
-    "log": { "loglevel": "warning" },
+    "log": {
+      "loglevel": "warning"
+    },
     "remarks": "🇳🇱 Нидерланды #1",
     "inbounds": [
       {
         "port": 10808,
         "protocol": "socks",
-        "settings": { "udp": true },
-        "sniffing": { "enabled": true, "destOverride": ["http", "tls"] }
+        "settings": {
+          "udp": true
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
       },
       {
         "port": 10809,
         "protocol": "http",
-        "sniffing": { "enabled": true, "destOverride": ["http", "tls"] }
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
       }
     ],
     "outbounds": [
@@ -20,73 +36,89 @@
         "tag": "proxy",
         "protocol": "shadowsocks",
         "settings": {
-          "servers": [{ "address": "45.43.88.13", "port": 2053, "method": "none", "password": "3e96ef7d-8637-42c2-ac73-75182196e755" }]
+          "servers": [
+            {
+              "address": "45.43.88.13",
+              "port": 2053,
+              "method": "none",
+              "password": "3e96ef7d-8637-42c2-ac73-75182196e755"
+            }
+          ]
         },
         "streamSettings": {
-          "network": "ws", "security": "tls",
-          "wsSettings": { "path": "/3e96ef7d-8637-42c2-ac73-75182196e755/?ed=2560", "headers": { "Host": "mfvpn.fuchen.indevs.in" } },
-          "tlsSettings": { "serverName": "mfvpn.fuchen.indevs.in" }
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "/3e96ef7d-8637-42c2-ac73-75182196e755/?ed=2560",
+            "headers": {
+              "Host": "mfvpn.fuchen.indevs.in"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "mfvpn.fuchen.indevs.in"
+          }
         }
       },
-      { "tag": "direct", "protocol": "freedom" }
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      }
     ],
     "routing": {
       "domainStrategy": "IPIfNonMatch",
       "rules": [
         {
           "type": "field",
-          "domain": [
-            "domain:instagram.com",
-            "domain:cdninstagram.com",
-            "domain:fbcdn.net",
-            "domain:facebook.com",
-            "domain:fb.com",
-            "domain:meta.com",
-            "domain:whatsapp.com",
-            "domain:whatsapp.net",
-            "domain:speedtest.net",
-            "domain:fast.com",
-            "domain:nflxvideo.net",
-            "domain:netflix.com",
-            "domain:twitter.com",
-            "domain:x.com",
-            "domain:twimg.com",
-            "domain:t.co",
-            "domain:tiktok.com",
-            "domain:tiktokv.com",
-            "domain:youtube.com",
-            "domain:googlevideo.com",
-            "domain:google.com",
-            "domain:googleapis.com"
+          "protocol": [
+            "bittorrent"
           ],
-          "outboundTag": "proxy"
-        },
-        {
-          "type": "field",
-          "protocol": ["bittorrent"],
           "outboundTag": "direct"
         },
         {
           "type": "field",
           "domain": [
-            "domain:ru", "domain:su", "domain:xn--p1ai",
-            "domain:vk.com", "domain:vk.ru", "domain:userapi.com",
-            "domain:vk-cdn.net", "domain:vkuser.net", "domain:mvk.com",
-            "domain:yandex.ru", "domain:yandex.net", "domain:ya.ru",
-            "domain:kinopoisk.ru", "domain:mail.ru", "domain:ok.ru",
-            "domain:avito.ru", "domain:avito.st",
-            "keyword:yandex", "keyword:vkontakte", "keyword:userapi",
-            "keyword:mail", "keyword:rutube", "keyword:sber",
-            "keyword:tinkoff", "keyword:alfabank", "keyword:vtb", "keyword:gosuslugi"
+            "domain:ru",
+            "domain:su",
+            "domain:xn--p1ai",
+            "domain:vk.com",
+            "domain:vk.ru",
+            "domain:userapi.com",
+            "domain:vk-cdn.net",
+            "domain:vkuser.net",
+            "domain:mvk.com",
+            "domain:yandex.ru",
+            "domain:yandex.net",
+            "domain:ya.ru",
+            "domain:kinopoisk.ru",
+            "domain:mail.ru",
+            "domain:ok.ru",
+            "domain:avito.ru",
+            "domain:avito.st",
+            "keyword:yandex",
+            "keyword:vkontakte",
+            "keyword:userapi",
+            "keyword:mail",
+            "keyword:rutube",
+            "keyword:sber",
+            "keyword:tinkoff",
+            "keyword:alfabank",
+            "keyword:vtb",
+            "keyword:gosuslugi"
           ],
           "outboundTag": "direct"
         },
         {
           "type": "field",
           "ip": [
-            "192.168.0.0/16", "10.0.0.0/8", "172.16.0.0/12",
-            "127.0.0.0/8", "fc00::/7", "fe80::/10",
-            "87.240.128.0/18", "93.186.224.0/20", "95.213.0.0/18"
+            "192.168.0.0/16",
+            "10.0.0.0/8",
+            "172.16.0.0/12",
+            "127.0.0.0/8",
+            "fc00::/7",
+            "fe80::/10",
+            "87.240.128.0/18",
+            "93.186.224.0/20",
+            "95.213.0.0/18"
           ],
           "outboundTag": "direct"
         }
@@ -94,19 +126,35 @@
     }
   },
   {
-    "log": { "loglevel": "warning" },
+    "log": {
+      "loglevel": "warning"
+    },
     "remarks": "🇩🇪 Германия #2",
     "inbounds": [
       {
         "port": 10808,
         "protocol": "socks",
-        "settings": { "udp": true },
-        "sniffing": { "enabled": true, "destOverride": ["http", "tls"] }
+        "settings": {
+          "udp": true
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
       },
       {
         "port": 10809,
         "protocol": "http",
-        "sniffing": { "enabled": true, "destOverride": ["http", "tls"] }
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
       }
     ],
     "outbounds": [
@@ -114,56 +162,89 @@
         "tag": "proxy",
         "protocol": "shadowsocks",
         "settings": {
-          "servers": [{ "address": "94.159.98.140", "port": 443, "method": "none", "password": "14b02e2a-8930-4afb-8412-ea4a4954ca5b" }]
+          "servers": [
+            {
+              "address": "94.159.98.140",
+              "port": 443,
+              "method": "none",
+              "password": "14b02e2a-8930-4afb-8412-ea4a4954ca5b"
+            }
+          ]
         },
         "streamSettings": {
-          "network": "ws", "security": "tls",
-          "wsSettings": { "path": "/14b02e2a-8930-4afb-8412-ea4a4954ca5b/?ed=2560", "headers": { "Host": "ylnhh.us.ci" } },
-          "tlsSettings": { "serverName": "ylnhh.us.ci" }
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "/14b02e2a-8930-4afb-8412-ea4a4954ca5b/?ed=2560",
+            "headers": {
+              "Host": "ylnhh.us.ci"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "ylnhh.us.ci"
+          }
         }
       },
-      { "tag": "direct", "protocol": "freedom" }
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      }
     ],
     "routing": {
       "domainStrategy": "IPIfNonMatch",
       "rules": [
         {
           "type": "field",
-          "domain": [
-            "domain:instagram.com", "domain:cdninstagram.com",
-            "domain:fbcdn.net", "domain:facebook.com", "domain:fb.com",
-            "domain:meta.com", "domain:whatsapp.com", "domain:whatsapp.net",
-            "domain:speedtest.net", "domain:fast.com",
-            "domain:nflxvideo.net", "domain:netflix.com",
-            "domain:twitter.com", "domain:x.com", "domain:twimg.com", "domain:t.co",
-            "domain:tiktok.com", "domain:tiktokv.com",
-            "domain:youtube.com", "domain:googlevideo.com",
-            "domain:google.com", "domain:googleapis.com"
+          "protocol": [
+            "bittorrent"
           ],
-          "outboundTag": "proxy"
+          "outboundTag": "direct"
         },
-        { "type": "field", "protocol": ["bittorrent"], "outboundTag": "direct" },
         {
           "type": "field",
           "domain": [
-            "domain:ru", "domain:su", "domain:xn--p1ai",
-            "domain:vk.com", "domain:vk.ru", "domain:userapi.com",
-            "domain:vk-cdn.net", "domain:vkuser.net", "domain:mvk.com",
-            "domain:yandex.ru", "domain:yandex.net", "domain:ya.ru",
-            "domain:kinopoisk.ru", "domain:mail.ru", "domain:ok.ru",
-            "domain:avito.ru", "domain:avito.st",
-            "keyword:yandex", "keyword:vkontakte", "keyword:userapi",
-            "keyword:mail", "keyword:rutube", "keyword:sber",
-            "keyword:tinkoff", "keyword:alfabank", "keyword:vtb", "keyword:gosuslugi"
+            "domain:ru",
+            "domain:su",
+            "domain:xn--p1ai",
+            "domain:vk.com",
+            "domain:vk.ru",
+            "domain:userapi.com",
+            "domain:vk-cdn.net",
+            "domain:vkuser.net",
+            "domain:mvk.com",
+            "domain:yandex.ru",
+            "domain:yandex.net",
+            "domain:ya.ru",
+            "domain:kinopoisk.ru",
+            "domain:mail.ru",
+            "domain:ok.ru",
+            "domain:avito.ru",
+            "domain:avito.st",
+            "keyword:yandex",
+            "keyword:vkontakte",
+            "keyword:userapi",
+            "keyword:mail",
+            "keyword:rutube",
+            "keyword:sber",
+            "keyword:tinkoff",
+            "keyword:alfabank",
+            "keyword:vtb",
+            "keyword:gosuslugi"
           ],
           "outboundTag": "direct"
         },
         {
           "type": "field",
           "ip": [
-            "192.168.0.0/16", "10.0.0.0/8", "172.16.0.0/12",
-            "127.0.0.0/8", "fc00::/7", "fe80::/10",
-            "87.240.128.0/18", "93.186.224.0/20", "95.213.0.0/18"
+            "192.168.0.0/16",
+            "10.0.0.0/8",
+            "172.16.0.0/12",
+            "127.0.0.0/8",
+            "fc00::/7",
+            "fe80::/10",
+            "87.240.128.0/18",
+            "93.186.224.0/20",
+            "95.213.0.0/18"
           ],
           "outboundTag": "direct"
         }
@@ -171,19 +252,35 @@
     }
   },
   {
-    "log": { "loglevel": "warning" },
+    "log": {
+      "loglevel": "warning"
+    },
     "remarks": "🇺🇸 США #3",
     "inbounds": [
       {
         "port": 10808,
         "protocol": "socks",
-        "settings": { "udp": true },
-        "sniffing": { "enabled": true, "destOverride": ["http", "tls"] }
+        "settings": {
+          "udp": true
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
       },
       {
         "port": 10809,
         "protocol": "http",
-        "sniffing": { "enabled": true, "destOverride": ["http", "tls"] }
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
       }
     ],
     "outbounds": [
@@ -191,141 +288,89 @@
         "tag": "proxy",
         "protocol": "shadowsocks",
         "settings": {
-          "servers": [{ "address": "216.205.52.16", "port": 443, "method": "none", "password": "14b02e2a-8930-4afb-8412-ea4a4954ca5b" }]
+          "servers": [
+            {
+              "address": "216.205.52.16",
+              "port": 443,
+              "method": "none",
+              "password": "14b02e2a-8930-4afb-8412-ea4a4954ca5b"
+            }
+          ]
         },
         "streamSettings": {
-          "network": "ws", "security": "tls",
-          "wsSettings": { "path": "/14b02e2a-8930-4afb-8412-ea4a4954ca5b/?ed=2560", "headers": { "Host": "ylnhh.us.ci" } },
-          "tlsSettings": { "serverName": "ylnhh.us.ci" }
-        }
-      },
-      { "tag": "direct", "protocol": "freedom" }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": [
-        {
-          "type": "field",
-          "domain": [
-            "domain:instagram.com", "domain:cdninstagram.com",
-            "domain:fbcdn.net", "domain:facebook.com", "domain:fb.com",
-            "domain:meta.com", "domain:whatsapp.com", "domain:whatsapp.net",
-            "domain:speedtest.net", "domain:fast.com",
-            "domain:nflxvideo.net", "domain:netflix.com",
-            "domain:twitter.com", "domain:x.com", "domain:twimg.com", "domain:t.co",
-            "domain:tiktok.com", "domain:tiktokv.com",
-            "domain:youtube.com", "domain:googlevideo.com",
-            "domain:google.com", "domain:googleapis.com"
-          ],
-          "outboundTag": "proxy"
-        },
-        { "type": "field", "protocol": ["bittorrent"], "outboundTag": "direct" },
-        {
-          "type": "field",
-          "domain": [
-            "domain:ru", "domain:su", "domain:xn--p1ai",
-            "domain:vk.com", "domain:vk.ru", "domain:userapi.com",
-            "domain:vk-cdn.net", "domain:vkuser.net", "domain:mvk.com",
-            "domain:yandex.ru", "domain:yandex.net", "domain:ya.ru",
-            "domain:kinopoisk.ru", "domain:mail.ru", "domain:ok.ru",
-            "domain:avito.ru", "domain:avito.st",
-            "keyword:yandex", "keyword:vkontakte", "keyword:userapi",
-            "keyword:mail", "keyword:rutube", "keyword:sber",
-            "keyword:tinkoff", "keyword:alfabank", "keyword:vtb", "keyword:gosuslugi"
-          ],
-          "outboundTag": "direct"
-        },
-        {
-          "type": "field",
-          "ip": [
-            "192.168.0.0/16", "10.0.0.0/8", "172.16.0.0/12",
-            "127.0.0.0/8", "fc00::/7", "fe80::/10",
-            "87.240.128.0/18", "93.186.224.0/20", "95.213.0.0/18"
-          ],
-          "outboundTag": "direct"
-        }
-      ]
-    }
-  },
-  {
-    "log": { "loglevel": "warning" },
-    "remarks": "🇫🇮 Финляндия #4",
-    "inbounds": [
-      {
-        "port": 10808,
-        "protocol": "socks",
-        "settings": { "udp": true },
-        "sniffing": { "enabled": true, "destOverride": ["http", "tls"] }
-      },
-      {
-        "port": 10809,
-        "protocol": "http",
-        "sniffing": { "enabled": true, "destOverride": ["http", "tls"] }
-      }
-    ],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "vless",
-        "settings": {
-          "vnext": [{
-            "address": "finland-1.mutabor-sec.ru",
-            "port": 37623,
-            "users": [{ "id": "a3a90d47-df89-496b-a578-814d8c85d8fc", "encryption": "none" }]
-          }]
-        },
-        "streamSettings": {
-          "network": "tcp", "security": "reality",
-          "realitySettings": {
-            "serverName": "www.mutabor-sec.ru",
-            "fingerprint": "random",
-            "publicKey": "VSD97wC6JYviZSi66w6leWdOljj_dr4LaibgyoGDLnw",
-            "shortId": "458dfb15fb"
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "/14b02e2a-8930-4afb-8412-ea4a4954ca5b/?ed=2560",
+            "headers": {
+              "Host": "ylnhh.us.ci"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "ylnhh.us.ci"
           }
         }
       },
-      { "tag": "direct", "protocol": "freedom" }
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      }
     ],
     "routing": {
       "domainStrategy": "IPIfNonMatch",
       "rules": [
         {
           "type": "field",
-          "domain": [
-            "domain:instagram.com", "domain:cdninstagram.com",
-            "domain:fbcdn.net", "domain:facebook.com", "domain:fb.com",
-            "domain:meta.com", "domain:whatsapp.com", "domain:whatsapp.net",
-            "domain:speedtest.net", "domain:fast.com",
-            "domain:nflxvideo.net", "domain:netflix.com",
-            "domain:twitter.com", "domain:x.com", "domain:twimg.com", "domain:t.co",
-            "domain:tiktok.com", "domain:tiktokv.com",
-            "domain:youtube.com", "domain:googlevideo.com",
-            "domain:google.com", "domain:googleapis.com"
+          "protocol": [
+            "bittorrent"
           ],
-          "outboundTag": "proxy"
+          "outboundTag": "direct"
         },
-        { "type": "field", "protocol": ["bittorrent"], "outboundTag": "direct" },
         {
           "type": "field",
           "domain": [
-            "domain:ru", "domain:su", "domain:xn--p1ai",
-            "domain:vk.com", "domain:vk.ru", "domain:userapi.com",
-            "domain:vk-cdn.net", "domain:vkuser.net", "domain:mvk.com",
-            "domain:yandex.ru", "domain:yandex.net", "domain:ya.ru",
-            "domain:kinopoisk.ru", "domain:mail.ru", "domain:ok.ru",
-            "domain:avito.ru", "domain:avito.st",
-            "keyword:yandex", "keyword:vkontakte", "keyword:userapi",
-            "keyword:mail", "keyword:rutube", "keyword:sber",
-            "keyword:tinkoff", "keyword:alfabank", "keyword:vtb", "keyword:gosuslugi"
+            "domain:ru",
+            "domain:su",
+            "domain:xn--p1ai",
+            "domain:vk.com",
+            "domain:vk.ru",
+            "domain:userapi.com",
+            "domain:vk-cdn.net",
+            "domain:vkuser.net",
+            "domain:mvk.com",
+            "domain:yandex.ru",
+            "domain:yandex.net",
+            "domain:ya.ru",
+            "domain:kinopoisk.ru",
+            "domain:mail.ru",
+            "domain:ok.ru",
+            "domain:avito.ru",
+            "domain:avito.st",
+            "keyword:yandex",
+            "keyword:vkontakte",
+            "keyword:userapi",
+            "keyword:mail",
+            "keyword:rutube",
+            "keyword:sber",
+            "keyword:tinkoff",
+            "keyword:alfabank",
+            "keyword:vtb",
+            "keyword:gosuslugi"
           ],
           "outboundTag": "direct"
         },
         {
           "type": "field",
           "ip": [
-            "192.168.0.0/16", "10.0.0.0/8", "172.16.0.0/12",
-            "127.0.0.0/8", "fc00::/7", "fe80::/10",
-            "87.240.128.0/18", "93.186.224.0/20", "95.213.0.0/18"
+            "192.168.0.0/16",
+            "10.0.0.0/8",
+            "172.16.0.0/12",
+            "127.0.0.0/8",
+            "fc00::/7",
+            "fe80::/10",
+            "87.240.128.0/18",
+            "93.186.224.0/20",
+            "95.213.0.0/18"
           ],
           "outboundTag": "direct"
         }
@@ -333,19 +378,35 @@
     }
   },
   {
-    "log": { "loglevel": "warning" },
-    "remarks": "🇩🇪 Германия #5",
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🇩🇪 Германия #4",
     "inbounds": [
       {
         "port": 10808,
         "protocol": "socks",
-        "settings": { "udp": true },
-        "sniffing": { "enabled": true, "destOverride": ["http", "tls"] }
+        "settings": {
+          "udp": true
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
       },
       {
         "port": 10809,
         "protocol": "http",
-        "sniffing": { "enabled": true, "destOverride": ["http", "tls"] }
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
       }
     ],
     "outbounds": [
@@ -353,133 +414,89 @@
         "tag": "proxy",
         "protocol": "shadowsocks",
         "settings": {
-          "servers": [{ "address": "78.40.216.169", "port": 443, "method": "none", "password": "14b02e2a-8930-4afb-8412-ea4a4954ca5b" }]
+          "servers": [
+            {
+              "address": "78.40.216.169",
+              "port": 443,
+              "method": "none",
+              "password": "14b02e2a-8930-4afb-8412-ea4a4954ca5b"
+            }
+          ]
         },
         "streamSettings": {
-          "network": "ws", "security": "tls",
-          "wsSettings": { "path": "/14b02e2a-8930-4afb-8412-ea4a4954ca5b/?ed=2560", "headers": { "Host": "ylnhh.us.ci" } },
-          "tlsSettings": { "serverName": "ylnhh.us.ci" }
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "/14b02e2a-8930-4afb-8412-ea4a4954ca5b/?ed=2560",
+            "headers": {
+              "Host": "ylnhh.us.ci"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "ylnhh.us.ci"
+          }
         }
       },
-      { "tag": "direct", "protocol": "freedom" }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": [
-        {
-          "type": "field",
-          "domain": [
-            "domain:instagram.com", "domain:cdninstagram.com",
-            "domain:fbcdn.net", "domain:facebook.com", "domain:fb.com",
-            "domain:meta.com", "domain:whatsapp.com", "domain:whatsapp.net",
-            "domain:speedtest.net", "domain:fast.com",
-            "domain:nflxvideo.net", "domain:netflix.com",
-            "domain:twitter.com", "domain:x.com", "domain:twimg.com", "domain:t.co",
-            "domain:tiktok.com", "domain:tiktokv.com",
-            "domain:youtube.com", "domain:googlevideo.com",
-            "domain:google.com", "domain:googleapis.com"
-          ],
-          "outboundTag": "proxy"
-        },
-        { "type": "field", "protocol": ["bittorrent"], "outboundTag": "direct" },
-        {
-          "type": "field",
-          "domain": [
-            "domain:ru", "domain:su", "domain:xn--p1ai",
-            "domain:vk.com", "domain:vk.ru", "domain:userapi.com",
-            "domain:vk-cdn.net", "domain:vkuser.net", "domain:mvk.com",
-            "domain:yandex.ru", "domain:yandex.net", "domain:ya.ru",
-            "domain:kinopoisk.ru", "domain:mail.ru", "domain:ok.ru",
-            "domain:avito.ru", "domain:avito.st",
-            "keyword:yandex", "keyword:vkontakte", "keyword:userapi",
-            "keyword:mail", "keyword:rutube", "keyword:sber",
-            "keyword:tinkoff", "keyword:alfabank", "keyword:vtb", "keyword:gosuslugi"
-          ],
-          "outboundTag": "direct"
-        },
-        {
-          "type": "field",
-          "ip": [
-            "192.168.0.0/16", "10.0.0.0/8", "172.16.0.0/12",
-            "127.0.0.0/8", "fc00::/7", "fe80::/10",
-            "87.240.128.0/18", "93.186.224.0/20", "95.213.0.0/18"
-          ],
-          "outboundTag": "direct"
-        }
-      ]
-    }
-  },
-  {
-    "log": { "loglevel": "warning" },
-    "remarks": "🇱🇻 Латвия #6",
-    "inbounds": [
       {
-        "port": 10808,
-        "protocol": "socks",
-        "settings": { "udp": true },
-        "sniffing": { "enabled": true, "destOverride": ["http", "tls"] }
-      },
-      {
-        "port": 10809,
-        "protocol": "http",
-        "sniffing": { "enabled": true, "destOverride": ["http", "tls"] }
+        "tag": "direct",
+        "protocol": "freedom"
       }
     ],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "shadowsocks",
-        "settings": {
-          "servers": [{ "address": "193.68.89.220", "port": 8443, "method": "none", "password": "3e96ef7d-8637-42c2-ac73-75182196e755" }]
-        },
-        "streamSettings": {
-          "network": "ws", "security": "tls",
-          "wsSettings": { "path": "/3e96ef7d-8637-42c2-ac73-75182196e755/?ed=2560", "headers": { "Host": "mfvpn.fuchen.indevs.in" } },
-          "tlsSettings": { "serverName": "mfvpn.fuchen.indevs.in" }
-        }
-      },
-      { "tag": "direct", "protocol": "freedom" }
-    ],
     "routing": {
       "domainStrategy": "IPIfNonMatch",
       "rules": [
         {
           "type": "field",
-          "domain": [
-            "domain:instagram.com", "domain:cdninstagram.com",
-            "domain:fbcdn.net", "domain:facebook.com", "domain:fb.com",
-            "domain:meta.com", "domain:whatsapp.com", "domain:whatsapp.net",
-            "domain:speedtest.net", "domain:fast.com",
-            "domain:nflxvideo.net", "domain:netflix.com",
-            "domain:twitter.com", "domain:x.com", "domain:twimg.com", "domain:t.co",
-            "domain:tiktok.com", "domain:tiktokv.com",
-            "domain:youtube.com", "domain:googlevideo.com",
-            "domain:google.com", "domain:googleapis.com"
+          "protocol": [
+            "bittorrent"
           ],
-          "outboundTag": "proxy"
+          "outboundTag": "direct"
         },
-        { "type": "field", "protocol": ["bittorrent"], "outboundTag": "direct" },
         {
           "type": "field",
           "domain": [
-            "domain:ru", "domain:su", "domain:xn--p1ai",
-            "domain:vk.com", "domain:vk.ru", "domain:userapi.com",
-            "domain:vk-cdn.net", "domain:vkuser.net", "domain:mvk.com",
-            "domain:yandex.ru", "domain:yandex.net", "domain:ya.ru",
-            "domain:kinopoisk.ru", "domain:mail.ru", "domain:ok.ru",
-            "domain:avito.ru", "domain:avito.st",
-            "keyword:yandex", "keyword:vkontakte", "keyword:userapi",
-            "keyword:mail", "keyword:rutube", "keyword:sber",
-            "keyword:tinkoff", "keyword:alfabank", "keyword:vtb", "keyword:gosuslugi"
+            "domain:ru",
+            "domain:su",
+            "domain:xn--p1ai",
+            "domain:vk.com",
+            "domain:vk.ru",
+            "domain:userapi.com",
+            "domain:vk-cdn.net",
+            "domain:vkuser.net",
+            "domain:mvk.com",
+            "domain:yandex.ru",
+            "domain:yandex.net",
+            "domain:ya.ru",
+            "domain:kinopoisk.ru",
+            "domain:mail.ru",
+            "domain:ok.ru",
+            "domain:avito.ru",
+            "domain:avito.st",
+            "keyword:yandex",
+            "keyword:vkontakte",
+            "keyword:userapi",
+            "keyword:mail",
+            "keyword:rutube",
+            "keyword:sber",
+            "keyword:tinkoff",
+            "keyword:alfabank",
+            "keyword:vtb",
+            "keyword:gosuslugi"
           ],
           "outboundTag": "direct"
         },
         {
           "type": "field",
           "ip": [
-            "192.168.0.0/16", "10.0.0.0/8", "172.16.0.0/12",
-            "127.0.0.0/8", "fc00::/7", "fe80::/10",
-            "87.240.128.0/18", "93.186.224.0/20", "95.213.0.0/18"
+            "192.168.0.0/16",
+            "10.0.0.0/8",
+            "172.16.0.0/12",
+            "127.0.0.0/8",
+            "fc00::/7",
+            "fe80::/10",
+            "87.240.128.0/18",
+            "93.186.224.0/20",
+            "95.213.0.0/18"
           ],
           "outboundTag": "direct"
         }
@@ -487,96 +504,35 @@
     }
   },
   {
-    "log": { "loglevel": "warning" },
-    "remarks": "🇸🇪 Швеция #7",
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🌐 Узел l90909l.vip #5",
     "inbounds": [
       {
         "port": 10808,
         "protocol": "socks",
-        "settings": { "udp": true },
-        "sniffing": { "enabled": true, "destOverride": ["http", "tls"] }
-      },
-      {
-        "port": 10809,
-        "protocol": "http",
-        "sniffing": { "enabled": true, "destOverride": ["http", "tls"] }
-      }
-    ],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "shadowsocks",
         "settings": {
-          "servers": [{ "address": "91.223.169.88", "port": 8443, "method": "none", "password": "3e96ef7d-8637-42c2-ac73-75182196e755" }]
+          "udp": true
         },
-        "streamSettings": {
-          "network": "ws", "security": "tls",
-          "wsSettings": { "path": "/3e96ef7d-8637-42c2-ac73-75182196e755/?ed=2560", "headers": { "Host": "mfvpn.fuchen.indevs.in" } },
-          "tlsSettings": { "serverName": "mfvpn.fuchen.indevs.in" }
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
         }
-      },
-      { "tag": "direct", "protocol": "freedom" }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": [
-        {
-          "type": "field",
-          "domain": [
-            "domain:instagram.com", "domain:cdninstagram.com",
-            "domain:fbcdn.net", "domain:facebook.com", "domain:fb.com",
-            "domain:meta.com", "domain:whatsapp.com", "domain:whatsapp.net",
-            "domain:speedtest.net", "domain:fast.com",
-            "domain:nflxvideo.net", "domain:netflix.com",
-            "domain:twitter.com", "domain:x.com", "domain:twimg.com", "domain:t.co",
-            "domain:tiktok.com", "domain:tiktokv.com",
-            "domain:youtube.com", "domain:googlevideo.com",
-            "domain:google.com", "domain:googleapis.com"
-          ],
-          "outboundTag": "proxy"
-        },
-        { "type": "field", "protocol": ["bittorrent"], "outboundTag": "direct" },
-        {
-          "type": "field",
-          "domain": [
-            "domain:ru", "domain:su", "domain:xn--p1ai",
-            "domain:vk.com", "domain:vk.ru", "domain:userapi.com",
-            "domain:vk-cdn.net", "domain:vkuser.net", "domain:mvk.com",
-            "domain:yandex.ru", "domain:yandex.net", "domain:ya.ru",
-            "domain:kinopoisk.ru", "domain:mail.ru", "domain:ok.ru",
-            "domain:avito.ru", "domain:avito.st",
-            "keyword:yandex", "keyword:vkontakte", "keyword:userapi",
-            "keyword:mail", "keyword:rutube", "keyword:sber",
-            "keyword:tinkoff", "keyword:alfabank", "keyword:vtb", "keyword:gosuslugi"
-          ],
-          "outboundTag": "direct"
-        },
-        {
-          "type": "field",
-          "ip": [
-            "192.168.0.0/16", "10.0.0.0/8", "172.16.0.0/12",
-            "127.0.0.0/8", "fc00::/7", "fe80::/10",
-            "87.240.128.0/18", "93.186.224.0/20", "95.213.0.0/18"
-          ],
-          "outboundTag": "direct"
-        }
-      ]
-    }
-  },
-  {
-    "log": { "loglevel": "warning" },
-    "remarks": "🌐 Узел l90909l.vip #8",
-    "inbounds": [
-      {
-        "port": 10808,
-        "protocol": "socks",
-        "settings": { "udp": true },
-        "sniffing": { "enabled": true, "destOverride": ["http", "tls"] }
       },
       {
         "port": 10809,
         "protocol": "http",
-        "sniffing": { "enabled": true, "destOverride": ["http", "tls"] }
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
       }
     ],
     "outbounds": [
@@ -584,14 +540,22 @@
         "tag": "proxy",
         "protocol": "vless",
         "settings": {
-          "vnext": [{
-            "address": "l90909l.vip",
-            "port": 8082,
-            "users": [{ "id": "b4bc10bf-80f9-40c9-b4e5-29817c2f0992", "encryption": "none" }]
-          }]
+          "vnext": [
+            {
+              "address": "l90909l.vip",
+              "port": 8082,
+              "users": [
+                {
+                  "id": "b4bc10bf-80f9-40c9-b4e5-29817c2f0992",
+                  "encryption": "none"
+                }
+              ]
+            }
+          ]
         },
         "streamSettings": {
-          "network": "grpc", "security": "reality",
+          "network": "grpc",
+          "security": "reality",
           "realitySettings": {
             "serverName": "id.vk.com",
             "fingerprint": "chrome",
@@ -600,48 +564,66 @@
           }
         }
       },
-      { "tag": "direct", "protocol": "freedom" }
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      }
     ],
     "routing": {
       "domainStrategy": "IPIfNonMatch",
       "rules": [
         {
           "type": "field",
-          "domain": [
-            "domain:instagram.com", "domain:cdninstagram.com",
-            "domain:fbcdn.net", "domain:facebook.com", "domain:fb.com",
-            "domain:meta.com", "domain:whatsapp.com", "domain:whatsapp.net",
-            "domain:speedtest.net", "domain:fast.com",
-            "domain:nflxvideo.net", "domain:netflix.com",
-            "domain:twitter.com", "domain:x.com", "domain:twimg.com", "domain:t.co",
-            "domain:tiktok.com", "domain:tiktokv.com",
-            "domain:youtube.com", "domain:googlevideo.com",
-            "domain:google.com", "domain:googleapis.com"
+          "protocol": [
+            "bittorrent"
           ],
-          "outboundTag": "proxy"
+          "outboundTag": "direct"
         },
-        { "type": "field", "protocol": ["bittorrent"], "outboundTag": "direct" },
         {
           "type": "field",
           "domain": [
-            "domain:ru", "domain:su", "domain:xn--p1ai",
-            "domain:vk.com", "domain:vk.ru", "domain:userapi.com",
-            "domain:vk-cdn.net", "domain:vkuser.net", "domain:mvk.com",
-            "domain:yandex.ru", "domain:yandex.net", "domain:ya.ru",
-            "domain:kinopoisk.ru", "domain:mail.ru", "domain:ok.ru",
-            "domain:avito.ru", "domain:avito.st",
-            "keyword:yandex", "keyword:vkontakte", "keyword:userapi",
-            "keyword:mail", "keyword:rutube", "keyword:sber",
-            "keyword:tinkoff", "keyword:alfabank", "keyword:vtb", "keyword:gosuslugi"
+            "domain:ru",
+            "domain:su",
+            "domain:xn--p1ai",
+            "domain:vk.com",
+            "domain:vk.ru",
+            "domain:userapi.com",
+            "domain:vk-cdn.net",
+            "domain:vkuser.net",
+            "domain:mvk.com",
+            "domain:yandex.ru",
+            "domain:yandex.net",
+            "domain:ya.ru",
+            "domain:kinopoisk.ru",
+            "domain:mail.ru",
+            "domain:ok.ru",
+            "domain:avito.ru",
+            "domain:avito.st",
+            "keyword:yandex",
+            "keyword:vkontakte",
+            "keyword:userapi",
+            "keyword:mail",
+            "keyword:rutube",
+            "keyword:sber",
+            "keyword:tinkoff",
+            "keyword:alfabank",
+            "keyword:vtb",
+            "keyword:gosuslugi"
           ],
           "outboundTag": "direct"
         },
         {
           "type": "field",
           "ip": [
-            "192.168.0.0/16", "10.0.0.0/8", "172.16.0.0/12",
-            "127.0.0.0/8", "fc00::/7", "fe80::/10",
-            "87.240.128.0/18", "93.186.224.0/20", "95.213.0.0/18"
+            "192.168.0.0/16",
+            "10.0.0.0/8",
+            "172.16.0.0/12",
+            "127.0.0.0/8",
+            "fc00::/7",
+            "fe80::/10",
+            "87.240.128.0/18",
+            "93.186.224.0/20",
+            "95.213.0.0/18"
           ],
           "outboundTag": "direct"
         }
