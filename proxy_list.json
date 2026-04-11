@@ -3,7 +3,50 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇫🇮 Финляндия #1",
+    "remarks": "🇸🇪 Швеция #1",
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "shadowsocks",
+        "settings": {
+          "servers": [
+            {
+              "address": "91.223.169.88",
+              "port": 8443,
+              "method": "none",
+              "password": "3e96ef7d-8637-42c2-ac73-75182196e755"
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "/3e96ef7d-8637-42c2-ac73-75182196e755/?ed=2560",
+            "headers": {
+              "Host": "mfvpn.fuchen.indevs.in"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "mfvpn.fuchen.indevs.in"
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": []
+    }
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🇫🇮 Финляндия #2",
     "outbounds": [
       {
         "tag": "proxy",
@@ -16,8 +59,7 @@
               "users": [
                 {
                   "id": "a3a90d47-df89-496b-a578-814d8c85d8fc",
-                  "encryption": "none",
-                  "flow": ""
+                  "encryption": "none"
                 }
               ]
             }
@@ -48,7 +90,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇳🇱 Нидерланды #2",
+    "remarks": "🇩🇪 Германия #3",
     "outbounds": [
       {
         "tag": "proxy",
@@ -56,8 +98,51 @@
         "settings": {
           "servers": [
             {
-              "address": "45.43.88.13",
-              "port": 2053,
+              "address": "94.159.98.123",
+              "port": 443,
+              "method": "none",
+              "password": "14b02e2a-8930-4afb-8412-ea4a4954ca5b"
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "/14b02e2a-8930-4afb-8412-ea4a4954ca5b/?ed=2560",
+            "headers": {
+              "Host": "ylnhh.us.ci"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "ylnhh.us.ci"
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": []
+    }
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🇺🇸 США #4",
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "shadowsocks",
+        "settings": {
+          "servers": [
+            {
+              "address": "199.181.197.38",
+              "port": 443,
               "method": "none",
               "password": "3e96ef7d-8637-42c2-ac73-75182196e755"
             }
@@ -67,7 +152,7 @@
           "network": "ws",
           "security": "tls",
           "wsSettings": {
-            "path": "\/3e96ef7d-8637-42c2-ac73-75182196e755\/?ed=2560",
+            "path": "/3e96ef7d-8637-42c2-ac73-75182196e755/?ed=2560",
             "headers": {
               "Host": "mfvpn.fuchen.indevs.in"
             }
@@ -91,7 +176,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇺🇸 США #3",
+    "remarks": "🇱🇻 Латвия #5",
     "outbounds": [
       {
         "tag": "proxy",
@@ -99,7 +184,7 @@
         "settings": {
           "servers": [
             {
-              "address": "170.114.45.38",
+              "address": "37.128.207.179",
               "port": 443,
               "method": "none",
               "password": "3e96ef7d-8637-42c2-ac73-75182196e755"
@@ -110,13 +195,99 @@
           "network": "ws",
           "security": "tls",
           "wsSettings": {
-            "path": "\/3e96ef7d-8637-42c2-ac73-75182196e755\/?ed=2560",
+            "path": "/3e96ef7d-8637-42c2-ac73-75182196e755/?ed=2560",
             "headers": {
               "Host": "mfvpn.fuchen.indevs.in"
             }
           },
           "tlsSettings": {
             "serverName": "mfvpn.fuchen.indevs.in"
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": []
+    }
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🇳🇱 Нидерланды #6",
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "shadowsocks",
+        "settings": {
+          "servers": [
+            {
+              "address": "45.43.88.13",
+              "port": 2053,
+              "method": "none",
+              "password": "3e96ef7d-8637-42c2-ac73-75182196e755"
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "/3e96ef7d-8637-42c2-ac73-75182196e755/?ed=2560",
+            "headers": {
+              "Host": "mfvpn.fuchen.indevs.in"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "mfvpn.fuchen.indevs.in"
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": []
+    }
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🇺🇸 США #7",
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "shadowsocks",
+        "settings": {
+          "servers": [
+            {
+              "address": "45.40.147.16",
+              "port": 443,
+              "method": "none",
+              "password": "14b02e2a-8930-4afb-8412-ea4a4954ca5b"
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "/14b02e2a-8930-4afb-8412-ea4a4954ca5b/?ed=2560",
+            "headers": {
+              "Host": "ylnhh.us.ci"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "ylnhh.us.ci"
           }
         }
       },
