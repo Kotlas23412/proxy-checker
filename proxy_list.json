@@ -3,25 +3,34 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇺🇳 Узел persiancdn.top #1",
+    "remarks": "🇺🇳 Финляндия #1",
     "outbounds": [
       {
         "tag": "proxy",
-        "protocol": "trojan",
+        "protocol": "vless",
         "settings": {
-          "servers": [
+          "vnext": [
             {
-              "address": "persiancdn.top",
-              "port": 443,
-              "password": "51410d3cb2931a01b366bb5c868264bf"
+              "address": "finland-1.mutabor-sec.ru",
+              "port": 37623,
+              "users": [
+                {
+                  "id": "a3a90d47-df89-496b-a578-814d8c85d8fc",
+                  "encryption": "none",
+                  "flow": ""
+                }
+              ]
             }
           ]
         },
         "streamSettings": {
           "network": "tcp",
-          "security": "tls",
-          "tlsSettings": {
-            "serverName": ""
+          "security": "reality",
+          "realitySettings": {
+            "serverName": "www.mutabor-sec.ru",
+            "fingerprint": "random",
+            "publicKey": "VSD97wC6JYviZSi66w6leWdOljj_dr4LaibgyoGDLnw",
+            "shortId": "458dfb15fb"
           }
         }
       },
@@ -55,52 +64,16 @@
           ]
         },
         "streamSettings": {
-          "network": "tcp",
-          "security": "none"
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": []
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "🇺🇳 Россия #3",
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "vless",
-        "settings": {
-          "vnext": [
-            {
-              "address": "79.174.77.187",
-              "port": 28041,
-              "users": [
-                {
-                  "id": "1eb392bf-20a8-4025-8a6d-d64b4d9d1269",
-                  "encryption": "none",
-                  "flow": ""
-                }
-              ]
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "3e96ef7d-8637-42c2-ac73-75182196e755\/?ed\\=2560",
+            "headers": {
+              "Host": "mfvpn.fuchen.indevs.in"
             }
-          ]
-        },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "ads.x5.ru",
-            "fingerprint": "chrome",
-            "publicKey": "ozW-oCciEpojv2dzzfgpRs6ZS-Oj7SLKJ4-a5OnWmAU",
-            "shortId": "1230"
+          },
+          "tlsSettings": {
+            "serverName": "mfvpn.fuchen.indevs.in"
           }
         }
       },
@@ -118,41 +91,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇺🇳 Германия #4",
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "ss",
-        "settings": {
-          "servers": [
-            {
-              "address": "94.159.98.123",
-              "port": 443,
-              "method": "none",
-              "password": "14b02e2a-8930-4afb-8412-ea4a4954ca5b"
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "none"
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": []
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "🇺🇳 Нидерланды #5",
+    "remarks": "🇺🇳 Нидерланды #3",
     "outbounds": [
       {
         "tag": "proxy",
@@ -168,52 +107,16 @@
           ]
         },
         "streamSettings": {
-          "network": "tcp",
-          "security": "none"
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": []
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "🇺🇳 Германия #6",
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "vless",
-        "settings": {
-          "vnext": [
-            {
-              "address": "144.31.219.98",
-              "port": 443,
-              "users": [
-                {
-                  "id": "322ffd77-9adc-4e10-8302-a8bcc14555a0",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "3e96ef7d-8637-42c2-ac73-75182196e755\/?ed\\=2560",
+            "headers": {
+              "Host": "mfvpn.fuchen.indevs.in"
             }
-          ]
-        },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "google.com",
-            "fingerprint": "chrome",
-            "publicKey": "_e21PkbpGda7PXEBs8y8iJiKVkEYkZGR_Sfs5rCO_HM",
-            "shortId": "a1b2c3d4"
+          },
+          "tlsSettings": {
+            "serverName": "mfvpn.fuchen.indevs.in"
           }
         }
       },
@@ -231,7 +134,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇺🇳 Россия #7",
+    "remarks": "🇺🇳 Швеция #4",
     "outbounds": [
       {
         "tag": "proxy",
@@ -239,11 +142,11 @@
         "settings": {
           "vnext": [
             {
-              "address": "84.201.173.177",
+              "address": "sweden.scroogethebest.com",
               "port": 443,
               "users": [
                 {
-                  "id": "1c1914bb-2847-48d8-a336-b2edcd3d0d34",
+                  "id": "411cfe73-8425-4504-a1bf-a7c04fb09245",
                   "encryption": "none",
                   "flow": "xtls-rprx-vision"
                 }
@@ -255,10 +158,10 @@
           "network": "tcp",
           "security": "reality",
           "realitySettings": {
-            "serverName": "tunnel.vk-apps.com",
-            "fingerprint": "chrome",
-            "publicKey": "Fhii1Ui9Pk35hUS28za8SnL5yb7Lz6FXdv-J0xF8jBM",
-            "shortId": "6d615073"
+            "serverName": "sweden.scroogethebest.com",
+            "fingerprint": "random",
+            "publicKey": "AYQOZFxjvHN-RIzKYEibwFiFsp03cdlWGdCmyFfuNVc",
+            "shortId": "4fa44664f6a566d3"
           }
         }
       },
@@ -276,7 +179,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇺🇳 Россия #8",
+    "remarks": "🇺🇳 Узел l90909l.vip #5",
     "outbounds": [
       {
         "tag": "proxy",
@@ -284,11 +187,99 @@
         "settings": {
           "vnext": [
             {
-              "address": "84.201.173.177",
+              "address": "l90909l.vip",
+              "port": 8082,
+              "users": [
+                {
+                  "id": "b4bc10bf-80f9-40c9-b4e5-29817c2f0992",
+                  "encryption": "none",
+                  "flow": ""
+                }
+              ]
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "grpc",
+          "security": "reality",
+          "realitySettings": {
+            "serverName": "id.vk.com",
+            "fingerprint": "chrome",
+            "publicKey": "SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc",
+            "shortId": ""
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": []
+    }
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🇺🇳 Узел 170.114.45.38 #6",
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "ss",
+        "settings": {
+          "servers": [
+            {
+              "address": "170.114.45.38",
+              "port": 443,
+              "method": "none",
+              "password": "3e96ef7d-8637-42c2-ac73-75182196e755"
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "3e96ef7d-8637-42c2-ac73-75182196e755\/?ed\\=2560",
+            "headers": {
+              "Host": "mfvpn.fuchen.indevs.in"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "mfvpn.fuchen.indevs.in"
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": []
+    }
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🇺🇳 Узел vl.vcloudn.com #7",
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "vless",
+        "settings": {
+          "vnext": [
+            {
+              "address": "vl.vcloudn.com",
               "port": 443,
               "users": [
                 {
-                  "id": "8ad9301b-e805-4953-9ea8-63820203c985",
+                  "id": "4f9a44a0-d4fa-4cff-b138-c757c8d4911e",
                   "encryption": "none",
                   "flow": "xtls-rprx-vision"
                 }
@@ -300,10 +291,10 @@
           "network": "tcp",
           "security": "reality",
           "realitySettings": {
-            "serverName": "tunnel.vk-apps.com",
-            "fingerprint": "chrome",
-            "publicKey": "Fhii1Ui9Pk35hUS28za8SnL5yb7Lz6FXdv-J0xF8jBM",
-            "shortId": "6d615073"
+            "serverName": "vl.vcloudn.com",
+            "fingerprint": "random",
+            "publicKey": "Os2D7nFxb5yKX4gQEUXsbTN4pBMCo-U47OJg9dhqDms",
+            "shortId": "b7f990b5d50a7ae6"
           }
         }
       },
