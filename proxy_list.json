@@ -3,7 +3,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇳🇱 Нидерланды #1",
+    "remarks": "🇺🇸 США #1",
     "inbounds": [
       {
         "port": 10808,
@@ -35,34 +35,32 @@
       {
         "tag": "proxy",
         "protocol": "vless",
-        "fragment": {
-          "packets": "tlshello",
-          "length": "10-30",
-          "interval": "10-20"
-        },
         "settings": {
           "vnext": [
             {
-              "address": "195.133.63.155",
-              "port": 443,
+              "address": "8.35.211.89",
+              "port": 2087,
               "users": [
                 {
-                  "id": "90c9c25c-df6c-4438-83d3-ef97166a9184",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
+                  "id": "6461860a-d367-4d47-8e82-7d8e1047a152",
+                  "encryption": "none"
                 }
               ]
             }
           ]
         },
         "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "www.cloudflare.com",
-            "fingerprint": "qq",
-            "publicKey": "A3PWLCRX9oeSyPvrmrwj2jUXcLo2uCwAISRBHtNE1Xw",
-            "shortId": "9a4c1d8f2e3b4a11"
+          "network": "ws",
+          "wsSettings": {
+            "path": "\/",
+            "headers": {
+              "Host": "aier.eu.cc"
+            }
+          },
+          "security": "tls",
+          "tlsSettings": {
+            "serverName": "aier.eu.cc",
+            "fingerprint": "chrome"
           }
         }
       },
@@ -116,7 +114,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇪🇪 Эстония #2",
+    "remarks": "🇺🇸 США #2",
     "inbounds": [
       {
         "port": 10808,
@@ -148,34 +146,32 @@
       {
         "tag": "proxy",
         "protocol": "vless",
-        "fragment": {
-          "packets": "tlshello",
-          "length": "10-30",
-          "interval": "10-20"
-        },
         "settings": {
           "vnext": [
             {
-              "address": "77.239.126.121",
-              "port": 7443,
+              "address": "8.35.211.246",
+              "port": 2053,
               "users": [
                 {
-                  "id": "9c31cf36-7616-437e-9917-fd029ed9ab5f",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
+                  "id": "6461860a-d367-4d47-8e82-7d8e1047a152",
+                  "encryption": "none"
                 }
               ]
             }
           ]
         },
         "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "chat.deepseek.com",
-            "fingerprint": "chrome",
-            "publicKey": "5QAO98ot2U7TcGs_f6EEaQjCzNOJLNHqPf6smYsdFVI",
-            "shortId": "d82fb387"
+          "network": "ws",
+          "wsSettings": {
+            "path": "\/",
+            "headers": {
+              "Host": "aier.eu.cc"
+            }
+          },
+          "security": "tls",
+          "tlsSettings": {
+            "serverName": "aier.eu.cc",
+            "fingerprint": "chrome"
           }
         }
       },
@@ -229,7 +225,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇳🇱 Нидерланды #3",
+    "remarks": "🇺🇸 США #3",
     "inbounds": [
       {
         "port": 10808,
@@ -261,260 +257,31 @@
       {
         "tag": "proxy",
         "protocol": "vless",
-        "fragment": {
-          "packets": "tlshello",
-          "length": "10-30",
-          "interval": "10-20"
-        },
         "settings": {
           "vnext": [
             {
-              "address": "72.56.78.142",
-              "port": 443,
+              "address": "8.35.211.181",
+              "port": 2083,
               "users": [
                 {
-                  "id": "90c9c25c-df6c-4438-83d3-ef97166a9184",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
+                  "id": "6461860a-d367-4d47-8e82-7d8e1047a152",
+                  "encryption": "none"
                 }
               ]
             }
           ]
         },
         "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "www.cloudflare.com",
-            "fingerprint": "chrome",
-            "publicKey": "A3PWLCRX9oeSyPvrmrwj2jUXcLo2uCwAISRBHtNE1Xw",
-            "shortId": "9a4c1d8f2e3b4a11"
-          }
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      },
-      {
-        "tag": "block",
-        "protocol": "blackhole"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": [
-        {
-          "type": "field",
-          "outboundTag": "direct",
-          "domain": [
-            "regexp:.*\\.ru$",
-            "regexp:.*\\.рф$",
-            "regexp:.*\\.su$",
-            "domain:yandex.ru",
-            "domain:yandex.net",
-            "domain:ya.ru",
-            "domain:vk.com",
-            "domain:mail.ru",
-            "domain:sberbank.ru",
-            "domain:gosuslugi.ru"
-          ]
-        },
-        {
-          "type": "field",
-          "outboundTag": "direct",
-          "ip": [
-            "geoip:ru",
-            "geoip:private"
-          ]
-        },
-        {
-          "type": "field",
-          "protocol": [
-            "bittorrent"
-          ],
-          "outboundTag": "direct"
-        }
-      ]
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "🇵🇱 Польша #4",
-    "inbounds": [
-      {
-        "port": 10808,
-        "protocol": "socks",
-        "settings": {
-          "udp": true
-        },
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      },
-      {
-        "port": 10809,
-        "protocol": "http",
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      }
-    ],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "vless",
-        "fragment": {
-          "packets": "tlshello",
-          "length": "10-30",
-          "interval": "10-20"
-        },
-        "settings": {
-          "vnext": [
-            {
-              "address": "pl01.kubservice.icu",
-              "port": 443,
-              "users": [
-                {
-                  "id": "a2299480-c2b4-40e4-836a-3693c2ced4c4",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
+          "network": "ws",
+          "wsSettings": {
+            "headers": {
+              "Host": "aier.eu.cc"
             }
-          ]
-        },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "pl01.kubservice.icu",
-            "fingerprint": "qq",
-            "publicKey": "z-TKWOWgZLfzQ-wNdwXQqVwaUgCmbchM2Xtrk1NGynU",
-            "shortId": ""
-          }
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      },
-      {
-        "tag": "block",
-        "protocol": "blackhole"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": [
-        {
-          "type": "field",
-          "outboundTag": "direct",
-          "domain": [
-            "regexp:.*\\.ru$",
-            "regexp:.*\\.рф$",
-            "regexp:.*\\.su$",
-            "domain:yandex.ru",
-            "domain:yandex.net",
-            "domain:ya.ru",
-            "domain:vk.com",
-            "domain:mail.ru",
-            "domain:sberbank.ru",
-            "domain:gosuslugi.ru"
-          ]
-        },
-        {
-          "type": "field",
-          "outboundTag": "direct",
-          "ip": [
-            "geoip:ru",
-            "geoip:private"
-          ]
-        },
-        {
-          "type": "field",
-          "protocol": [
-            "bittorrent"
-          ],
-          "outboundTag": "direct"
-        }
-      ]
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "🇵🇱 Польша #5",
-    "inbounds": [
-      {
-        "port": 10808,
-        "protocol": "socks",
-        "settings": {
-          "udp": true
-        },
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      },
-      {
-        "port": 10809,
-        "protocol": "http",
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      }
-    ],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "vless",
-        "fragment": {
-          "packets": "tlshello",
-          "length": "10-30",
-          "interval": "10-20"
-        },
-        "settings": {
-          "vnext": [
-            {
-              "address": "pl02.kubservice.icu",
-              "port": 443,
-              "users": [
-                {
-                  "id": "758e5d79-df2b-4db6-aa2e-506bad730a1f",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "pl02.kubservice.icu",
-            "fingerprint": "chrome",
-            "publicKey": "z-TKWOWgZLfzQ-wNdwXQqVwaUgCmbchM2Xtrk1NGynU",
-            "shortId": ""
+          },
+          "security": "tls",
+          "tlsSettings": {
+            "serverName": "aier.eu.cc",
+            "fingerprint": "chrome"
           }
         }
       },
