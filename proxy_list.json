@@ -3,7 +3,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇨🇭 Швейцария #1",
+    "remarks": "🇳🇱 Нидерланды #1",
     "inbounds": [
       {
         "port": 10808,
@@ -43,11 +43,11 @@
         "settings": {
           "vnext": [
             {
-              "address": "45.95.232.229",
-              "port": 52000,
+              "address": "195.133.63.155",
+              "port": 443,
               "users": [
                 {
-                  "id": "fd2bfdd2-68eb-49b0-98ad-ed82f901edde",
+                  "id": "90c9c25c-df6c-4438-83d3-ef97166a9184",
                   "encryption": "none",
                   "flow": "xtls-rprx-vision"
                 }
@@ -59,10 +59,10 @@
           "network": "tcp",
           "security": "reality",
           "realitySettings": {
-            "serverName": "music.yandex.ru",
-            "fingerprint": "chrome",
-            "publicKey": "KXqoXRnGxHCnTT17cRpFRhKNj_3km3DnWEJ5L3FtSwg",
-            "shortId": "edd8887128ea"
+            "serverName": "www.cloudflare.com",
+            "fingerprint": "qq",
+            "publicKey": "A3PWLCRX9oeSyPvrmrwj2jUXcLo2uCwAISRBHtNE1Xw",
+            "shortId": "9a4c1d8f2e3b4a11"
           }
         }
       },
@@ -116,7 +116,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇫🇮 Финляндия #2",
+    "remarks": "🇪🇪 Эстония #2",
     "inbounds": [
       {
         "port": 10808,
@@ -156,11 +156,11 @@
         "settings": {
           "vnext": [
             {
-              "address": "in-fi-he.ray-balance.space",
-              "port": 443,
+              "address": "77.239.126.121",
+              "port": 7443,
               "users": [
                 {
-                  "id": "0eca1f22-e5a1-4888-a0fa-c2345e87cf2f",
+                  "id": "9c31cf36-7616-437e-9917-fd029ed9ab5f",
                   "encryption": "none",
                   "flow": "xtls-rprx-vision"
                 }
@@ -172,9 +172,235 @@
           "network": "tcp",
           "security": "reality",
           "realitySettings": {
-            "serverName": "eh.vk.com",
+            "serverName": "chat.deepseek.com",
             "fingerprint": "chrome",
-            "publicKey": "Q2tOlk0AlcufziQD1uUzBzb8Y2a_0Jp1Dq2KCnC1Z08",
+            "publicKey": "5QAO98ot2U7TcGs_f6EEaQjCzNOJLNHqPf6smYsdFVI",
+            "shortId": "d82fb387"
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "domain": [
+            "regexp:.*\\.ru$",
+            "regexp:.*\\.рф$",
+            "regexp:.*\\.su$",
+            "domain:yandex.ru",
+            "domain:yandex.net",
+            "domain:ya.ru",
+            "domain:vk.com",
+            "domain:mail.ru",
+            "domain:sberbank.ru",
+            "domain:gosuslugi.ru"
+          ]
+        },
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "ip": [
+            "geoip:ru",
+            "geoip:private"
+          ]
+        },
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        }
+      ]
+    }
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🇳🇱 Нидерланды #3",
+    "inbounds": [
+      {
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "udp": true
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      },
+      {
+        "port": 10809,
+        "protocol": "http",
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      }
+    ],
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "vless",
+        "fragment": {
+          "packets": "tlshello",
+          "length": "10-30",
+          "interval": "10-20"
+        },
+        "settings": {
+          "vnext": [
+            {
+              "address": "72.56.78.142",
+              "port": 443,
+              "users": [
+                {
+                  "id": "90c9c25c-df6c-4438-83d3-ef97166a9184",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
+                }
+              ]
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "tcp",
+          "security": "reality",
+          "realitySettings": {
+            "serverName": "www.cloudflare.com",
+            "fingerprint": "chrome",
+            "publicKey": "A3PWLCRX9oeSyPvrmrwj2jUXcLo2uCwAISRBHtNE1Xw",
+            "shortId": "9a4c1d8f2e3b4a11"
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "domain": [
+            "regexp:.*\\.ru$",
+            "regexp:.*\\.рф$",
+            "regexp:.*\\.su$",
+            "domain:yandex.ru",
+            "domain:yandex.net",
+            "domain:ya.ru",
+            "domain:vk.com",
+            "domain:mail.ru",
+            "domain:sberbank.ru",
+            "domain:gosuslugi.ru"
+          ]
+        },
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "ip": [
+            "geoip:ru",
+            "geoip:private"
+          ]
+        },
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        }
+      ]
+    }
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🇵🇱 Польша #4",
+    "inbounds": [
+      {
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "udp": true
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      },
+      {
+        "port": 10809,
+        "protocol": "http",
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      }
+    ],
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "vless",
+        "fragment": {
+          "packets": "tlshello",
+          "length": "10-30",
+          "interval": "10-20"
+        },
+        "settings": {
+          "vnext": [
+            {
+              "address": "pl01.kubservice.icu",
+              "port": 443,
+              "users": [
+                {
+                  "id": "a2299480-c2b4-40e4-836a-3693c2ced4c4",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
+                }
+              ]
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "tcp",
+          "security": "reality",
+          "realitySettings": {
+            "serverName": "pl01.kubservice.icu",
+            "fingerprint": "qq",
+            "publicKey": "z-TKWOWgZLfzQ-wNdwXQqVwaUgCmbchM2Xtrk1NGynU",
             "shortId": ""
           }
         }
@@ -229,7 +455,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇨🇭 Швейцария #3",
+    "remarks": "🇵🇱 Польша #5",
     "inbounds": [
       {
         "port": 10808,
@@ -269,11 +495,11 @@
         "settings": {
           "vnext": [
             {
-              "address": "swiss-2.illusion-vpn.ru",
-              "port": 52000,
+              "address": "pl02.kubservice.icu",
+              "port": 443,
               "users": [
                 {
-                  "id": "fd2bfdd2-68eb-49b0-98ad-ed82f901edde",
+                  "id": "758e5d79-df2b-4db6-aa2e-506bad730a1f",
                   "encryption": "none",
                   "flow": "xtls-rprx-vision"
                 }
@@ -285,10 +511,10 @@
           "network": "tcp",
           "security": "reality",
           "realitySettings": {
-            "serverName": "music.yandex.ru",
+            "serverName": "pl02.kubservice.icu",
             "fingerprint": "chrome",
-            "publicKey": "KXqoXRnGxHCnTT17cRpFRhKNj_3km3DnWEJ5L3FtSwg",
-            "shortId": "edd8887128ea"
+            "publicKey": "z-TKWOWgZLfzQ-wNdwXQqVwaUgCmbchM2Xtrk1NGynU",
+            "shortId": ""
           }
         }
       },
