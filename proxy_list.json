@@ -3,7 +3,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇫🇮 Финляндия #1",
+    "remarks": "🇷🇺 Россия #1",
     "inbounds": [
       {
         "port": 10808,
@@ -35,14 +35,19 @@
       {
         "tag": "proxy",
         "protocol": "vless",
+        "fragment": {
+          "packets": "tlshello",
+          "length": "10-30",
+          "interval": "10-20"
+        },
         "settings": {
           "vnext": [
             {
-              "address": "204.168.163.95",
+              "address": "node111.mechvpn.online",
               "port": 443,
               "users": [
                 {
-                  "id": "0eca1f22-e5a1-4888-a0fa-c2345e87cf2f",
+                  "id": "6d916d55-fead-4ff3-a3a9-83e175ea8ad7",
                   "encryption": "none",
                   "flow": "xtls-rprx-vision"
                 }
@@ -52,13 +57,8 @@
         },
         "streamSettings": {
           "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "eh.vk.com",
-            "fingerprint": "chrome",
-            "publicKey": "Q2tOlk0AlcufziQD1uUzBzb8Y2a_0Jp1Dq2KCnC1Z08",
-            "shortId": ""
-          }
+          "security": "tls",
+          "tlsSettings": {}
         }
       },
       {
@@ -75,88 +75,20 @@
       "rules": [
         {
           "type": "field",
-          "protocol": [
-            "bittorrent"
-          ],
-          "outboundTag": "direct"
-        }
-      ]
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "🇷🇺 Россия #2",
-    "inbounds": [
-      {
-        "port": 10808,
-        "protocol": "socks",
-        "settings": {
-          "udp": true
-        },
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      },
-      {
-        "port": 10809,
-        "protocol": "http",
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      }
-    ],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "vless",
-        "settings": {
-          "vnext": [
-            {
-              "address": "51.250.117.39",
-              "port": 443,
-              "users": [
-                {
-                  "id": "c41a8b2a-f8bc-4d4e-a924-5a4c2599a56b",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
-            }
+          "outboundTag": "direct",
+          "domain": [
+            "geosite:ru",
+            "domain:ru"
           ]
         },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "tunnel.vk-apps.com",
-            "fingerprint": "chrome",
-            "publicKey": "EzS6YGgfE-F0jR0-xXB5rVBh-1oNSC17oquln8hK4Wo",
-            "shortId": "dce3019e"
-          }
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      },
-      {
-        "tag": "block",
-        "protocol": "blackhole"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": [
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "ip": [
+            "geoip:ru",
+            "geoip:private"
+          ]
+        },
         {
           "type": "field",
           "protocol": [
@@ -171,7 +103,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇫🇮 Финляндия #3",
+    "remarks": "🇫🇮 Финляндия #2",
     "inbounds": [
       {
         "port": 10808,
@@ -203,90 +135,11 @@
       {
         "tag": "proxy",
         "protocol": "vless",
-        "settings": {
-          "vnext": [
-            {
-              "address": "in-fi-he.ray-balance.space",
-              "port": 443,
-              "users": [
-                {
-                  "id": "0eca1f22-e5a1-4888-a0fa-c2345e87cf2f",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
-            }
-          ]
+        "fragment": {
+          "packets": "tlshello",
+          "length": "10-30",
+          "interval": "10-20"
         },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "eh.vk.com",
-            "fingerprint": "chrome",
-            "publicKey": "Q2tOlk0AlcufziQD1uUzBzb8Y2a_0Jp1Dq2KCnC1Z08",
-            "shortId": ""
-          }
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      },
-      {
-        "tag": "block",
-        "protocol": "blackhole"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": [
-        {
-          "type": "field",
-          "protocol": [
-            "bittorrent"
-          ],
-          "outboundTag": "direct"
-        }
-      ]
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "🇫🇮 Финляндия #4",
-    "inbounds": [
-      {
-        "port": 10808,
-        "protocol": "socks",
-        "settings": {
-          "udp": true
-        },
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      },
-      {
-        "port": 10809,
-        "protocol": "http",
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      }
-    ],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "vless",
         "settings": {
           "vnext": [
             {
@@ -327,6 +180,22 @@
       "rules": [
         {
           "type": "field",
+          "outboundTag": "direct",
+          "domain": [
+            "geosite:ru",
+            "domain:ru"
+          ]
+        },
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "ip": [
+            "geoip:ru",
+            "geoip:private"
+          ]
+        },
+        {
+          "type": "field",
           "protocol": [
             "bittorrent"
           ],
@@ -339,7 +208,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇷🇺 Россия #5",
+    "remarks": "🇨🇭 Швейцария #3",
     "inbounds": [
       {
         "port": 10808,
@@ -371,14 +240,19 @@
       {
         "tag": "proxy",
         "protocol": "vless",
+        "fragment": {
+          "packets": "tlshello",
+          "length": "10-30",
+          "interval": "10-20"
+        },
         "settings": {
           "vnext": [
             {
-              "address": "51.250.117.39",
-              "port": 443,
+              "address": "45.95.232.229",
+              "port": 52000,
               "users": [
                 {
-                  "id": "110bf810-e596-475f-a54f-c960fef5981f",
+                  "id": "fd2bfdd2-68eb-49b0-98ad-ed82f901edde",
                   "encryption": "none",
                   "flow": "xtls-rprx-vision"
                 }
@@ -390,10 +264,10 @@
           "network": "tcp",
           "security": "reality",
           "realitySettings": {
-            "serverName": "tunnel.vk-apps.com",
+            "serverName": "music.yandex.ru",
             "fingerprint": "chrome",
-            "publicKey": "EzS6YGgfE-F0jR0-xXB5rVBh-1oNSC17oquln8hK4Wo",
-            "shortId": "dce3019e"
+            "publicKey": "KXqoXRnGxHCnTT17cRpFRhKNj_3km3DnWEJ5L3FtSwg",
+            "shortId": "edd8887128ea"
           }
         }
       },
@@ -411,6 +285,22 @@
       "rules": [
         {
           "type": "field",
+          "outboundTag": "direct",
+          "domain": [
+            "geosite:ru",
+            "domain:ru"
+          ]
+        },
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "ip": [
+            "geoip:ru",
+            "geoip:private"
+          ]
+        },
+        {
+          "type": "field",
           "protocol": [
             "bittorrent"
           ],
@@ -423,7 +313,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇷🇺 Россия #6",
+    "remarks": "🇳🇱 Нидерланды #4",
     "inbounds": [
       {
         "port": 10808,
@@ -455,14 +345,19 @@
       {
         "tag": "proxy",
         "protocol": "vless",
+        "fragment": {
+          "packets": "tlshello",
+          "length": "10-30",
+          "interval": "10-20"
+        },
         "settings": {
           "vnext": [
             {
-              "address": "node111.mechvpn.online",
+              "address": "in-nl-1c.ray-balance.space",
               "port": 443,
               "users": [
                 {
-                  "id": "6d916d55-fead-4ff3-a3a9-83e175ea8ad7",
+                  "id": "0eca1f22-e5a1-4888-a0fa-c2345e87cf2f",
                   "encryption": "none",
                   "flow": "xtls-rprx-vision"
                 }
@@ -472,8 +367,13 @@
         },
         "streamSettings": {
           "network": "tcp",
-          "security": "tls",
-          "tlsSettings": {}
+          "security": "reality",
+          "realitySettings": {
+            "serverName": "eh.vk.com",
+            "fingerprint": "chrome",
+            "publicKey": "1Hr3vZv1JC7PuvH8iGfA7LyMHi2afnvp9y_q507I0Ew",
+            "shortId": ""
+          }
         }
       },
       {
@@ -490,6 +390,22 @@
       "rules": [
         {
           "type": "field",
+          "outboundTag": "direct",
+          "domain": [
+            "geosite:ru",
+            "domain:ru"
+          ]
+        },
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "ip": [
+            "geoip:ru",
+            "geoip:private"
+          ]
+        },
+        {
+          "type": "field",
           "protocol": [
             "bittorrent"
           ],
@@ -502,7 +418,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇨🇭 Швейцария #7",
+    "remarks": "🇫🇮 Финляндия #5",
     "inbounds": [
       {
         "port": 10808,
@@ -534,6 +450,116 @@
       {
         "tag": "proxy",
         "protocol": "vless",
+        "fragment": {
+          "packets": "tlshello",
+          "length": "10-30",
+          "interval": "10-20"
+        },
+        "settings": {
+          "vnext": [
+            {
+              "address": "in-fi-he.ray-balance.space",
+              "port": 443,
+              "users": [
+                {
+                  "id": "0eca1f22-e5a1-4888-a0fa-c2345e87cf2f",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
+                }
+              ]
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "tcp",
+          "security": "reality",
+          "realitySettings": {
+            "serverName": "eh.vk.com",
+            "fingerprint": "chrome",
+            "publicKey": "Q2tOlk0AlcufziQD1uUzBzb8Y2a_0Jp1Dq2KCnC1Z08",
+            "shortId": ""
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "domain": [
+            "geosite:ru",
+            "domain:ru"
+          ]
+        },
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "ip": [
+            "geoip:ru",
+            "geoip:private"
+          ]
+        },
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        }
+      ]
+    }
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🇨🇭 Швейцария #6",
+    "inbounds": [
+      {
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "udp": true
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      },
+      {
+        "port": 10809,
+        "protocol": "http",
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      }
+    ],
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "vless",
+        "fragment": {
+          "packets": "tlshello",
+          "length": "10-30",
+          "interval": "10-20"
+        },
         "settings": {
           "vnext": [
             {
@@ -572,6 +598,127 @@
     "routing": {
       "domainStrategy": "IPIfNonMatch",
       "rules": [
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "domain": [
+            "geosite:ru",
+            "domain:ru"
+          ]
+        },
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "ip": [
+            "geoip:ru",
+            "geoip:private"
+          ]
+        },
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        }
+      ]
+    }
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🇳🇱 Нидерланды #7",
+    "inbounds": [
+      {
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "udp": true
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      },
+      {
+        "port": 10809,
+        "protocol": "http",
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      }
+    ],
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "vless",
+        "fragment": {
+          "packets": "tlshello",
+          "length": "10-30",
+          "interval": "10-20"
+        },
+        "settings": {
+          "vnext": [
+            {
+              "address": "in-nl-1c.ray-balance.space",
+              "port": 443,
+              "users": [
+                {
+                  "id": "0eca1f22-e5a1-4888-a0fa-c2345e87cf2f",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
+                }
+              ]
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "tcp",
+          "security": "reality",
+          "realitySettings": {
+            "serverName": "eh.vk.com",
+            "fingerprint": "qq",
+            "publicKey": "1Hr3vZv1JC7PuvH8iGfA7LyMHi2afnvp9y_q507I0Ew",
+            "shortId": ""
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "domain": [
+            "geosite:ru",
+            "domain:ru"
+          ]
+        },
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "ip": [
+            "geoip:ru",
+            "geoip:private"
+          ]
+        },
         {
           "type": "field",
           "protocol": [
@@ -621,26 +768,25 @@
         "settings": {
           "vnext": [
             {
-              "address": "45.89.190.153",
+              "address": "85.239.61.193",
               "port": 443,
               "users": [
                 {
-                  "id": "8ae7b082-8ada-4352-a66e-c0ab7e48d3ed",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
+                  "id": "023a6c5c-6933-4735-90bc-fa435b955927",
+                  "encryption": "none"
                 }
               ]
             }
           ]
         },
         "streamSettings": {
-          "network": "tcp",
+          "network": "raw",
           "security": "reality",
           "realitySettings": {
-            "serverName": "portal.kontiplus.ru",
-            "fingerprint": "random",
-            "publicKey": "UxIul3SC4GBqKQz-jtM520nmVkKnmtElSYRnko4jw0w",
-            "shortId": "2356645674"
+            "serverName": "yahoo.com",
+            "fingerprint": "chrome",
+            "publicKey": "iNHjpSHOGfa1qz-EIC2NG2iV_zcvEx0DC3FD936YURk",
+            "shortId": "8820"
           }
         }
       },
@@ -658,172 +804,20 @@
       "rules": [
         {
           "type": "field",
-          "protocol": [
-            "bittorrent"
-          ],
-          "outboundTag": "direct"
-        }
-      ]
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "🇨🇭 Швейцария #9",
-    "inbounds": [
-      {
-        "port": 10808,
-        "protocol": "socks",
-        "settings": {
-          "udp": true
-        },
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      },
-      {
-        "port": 10809,
-        "protocol": "http",
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      }
-    ],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "vless",
-        "settings": {
-          "vnext": [
-            {
-              "address": "45.95.232.229",
-              "port": 52000,
-              "users": [
-                {
-                  "id": "fd2bfdd2-68eb-49b0-98ad-ed82f901edde",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
-            }
+          "outboundTag": "direct",
+          "domain": [
+            "geosite:ru",
+            "domain:ru"
           ]
         },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "music.yandex.ru",
-            "fingerprint": "chrome",
-            "publicKey": "KXqoXRnGxHCnTT17cRpFRhKNj_3km3DnWEJ5L3FtSwg",
-            "shortId": "edd8887128ea"
-          }
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      },
-      {
-        "tag": "block",
-        "protocol": "blackhole"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": [
         {
           "type": "field",
-          "protocol": [
-            "bittorrent"
-          ],
-          "outboundTag": "direct"
-        }
-      ]
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "🇳🇱 Нидерланды #10",
-    "inbounds": [
-      {
-        "port": 10808,
-        "protocol": "socks",
-        "settings": {
-          "udp": true
-        },
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      },
-      {
-        "port": 10809,
-        "protocol": "http",
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      }
-    ],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "vless",
-        "settings": {
-          "vnext": [
-            {
-              "address": "in-nl-1c.ray-balance.space",
-              "port": 443,
-              "users": [
-                {
-                  "id": "0eca1f22-e5a1-4888-a0fa-c2345e87cf2f",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
-            }
+          "outboundTag": "direct",
+          "ip": [
+            "geoip:ru",
+            "geoip:private"
           ]
         },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "eh.vk.com",
-            "fingerprint": "chrome",
-            "publicKey": "1Hr3vZv1JC7PuvH8iGfA7LyMHi2afnvp9y_q507I0Ew",
-            "shortId": ""
-          }
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      },
-      {
-        "tag": "block",
-        "protocol": "blackhole"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": [
         {
           "type": "field",
           "protocol": [
