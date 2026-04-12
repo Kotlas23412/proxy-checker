@@ -1,65 +1,105 @@
-name: Decode to ProxyPay
+name: Decode to ProxyPay (Python)
 
 on:
-  workflow_dispatch:  # Ручной запуск
+  workflow_dispatch:
   push:
     paths:
-      - 'config.txt'  # Запуск при изменении config.txt
-  schedule:
-    - cron: '0 */6 * * *'  # Каждые 6 часов
+      - 'config.txt'
 
 jobs:
-  decode-to-proxypay:
+  decode:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Права на запись в репозиторий
+      contents: write
     
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       
-    - name: Decode Base64 to proxypay.txt
+    - name: Decode with Python
       run: |
-        echo "🔓 Декодирование Base64 в proxypay.txt..."
-        base64 -d config.txt > proxypay.txt
-        echo "✅ Файл proxypay.txt создан!"
+        python3 << 'PYTHON_SCRIPT'
+        import base64
+        import gzip
+        import zlib
+        import sys
         
-    - name: Show statistics
+        print("🔓 Декодирование Base64...")
+        
+        # Читаем файл
+        with open('config.txt', 'r') as f:
+            encoded = f.read().strip()
+        
+        # Декодируем Base64
+        decoded_bytes = base64.b64decode(encoded)
+        
+        # Пробуем разные методы распаковки
+        result = None
+        
+        # Метод 1: Обычный текст
+        try:
+            result = decoded_bytes.decode('utf-8')
+            print("✅ Обычный Base64 текст")
+        except UnicodeDecodeError:
+            pass
+        
+        # Метод 2: Gzip
+        if not result:
+            try:
+                result = gzip.decompress(decoded_bytes).decode('utf-8')
+                print("✅ Распаковано через Gzip")
+            except:
+                pass
+        
+        # Метод 3: Zlib
+        if not result:
+            try:
+                result = zlib.decompress(decoded_bytes).decode('utf-8')
+                print("✅ Распаковано через Zlib")
+            except:
+                pass
+        
+        # Метод 4: Zlib с отрицательным wbits (raw deflate)
+        if not result:
+            try:
+                result = zlib.decompress(decoded_bytes, -zlib.MAX_WBITS).decode('utf-8')
+                print("✅ Распаковано через Zlib (raw)")
+            except:
+                pass
+        
+        if not result:
+            print("❌ Не удалось декодировать")
+            print(f"Первые 50 байт: {decoded_bytes[:50]}")
+            sys.exit(1)
+        
+        # Сохраняем
+        with open('proxypay.txt', 'w', encoding='utf-8') as f:
+            f.write(result)
+        
+        # Статистика
+        lines = result.strip().split('\n')
+        vless = sum(1 for l in lines if l.startswith('vless://'))
+        vmess = sum(1 for l in lines if l.startswith('vmess://'))
+        trojan = sum(1 for l in lines if l.startswith('trojan://'))
+        ss = sum(1 for l in lines if l.startswith('ss://'))
+        
+        print(f"\n📊 Статистика:")
+        print(f"🟢 VLESS:  {vless}")
+        print(f"🔵 VMESS:  {vmess}")
+        print(f"🟡 Trojan: {trojan}")
+        print(f"🟣 SS:     {ss}")
+        print(f"📦 Всего:  {vless + vmess + trojan + ss}")
+        
+        print(f"\n📄 Первые 3 сервера:")
+        for line in lines[:3]:
+            if line.strip():
+                print(line[:80] + "..." if len(line) > 80 else line)
+        
+        PYTHON_SCRIPT
+        
+    - name: Commit results
       run: |
-        echo "📊 Статистика серверов в proxypay.txt:"
-        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        
-        vless=$(grep -c "^vless://" proxypay.txt 2>/dev/null || echo 0)
-        vmess=$(grep -c "^vmess://" proxypay.txt 2>/dev/null || echo 0)
-        trojan=$(grep -c "^trojan://" proxypay.txt 2>/dev/null || echo 0)
-        ss=$(grep -c "^ss://" proxypay.txt 2>/dev/null || echo 0)
-        total=$((vless + vmess + trojan + ss))
-        
-        echo "🟢 VLESS:      $vless"
-        echo "🔵 VMESS:      $vmess"
-        echo "🟡 Trojan:     $trojan"
-        echo "🟣 Shadowsocks: $ss"
-        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        echo "📦 Всего:      $total серверов"
-        
-        # Показываем первые 3 строки для проверки
-        echo ""
-        echo "🔍 Первые 3 сервера:"
-        head -n 3 proxypay.txt || true
-        
-    - name: Commit and push proxypay.txt
-      run: |
-        git config --local user.name "GitHub Actions Bot"
-        git config --local user.email "actions@github.com"
-        
-        # Добавляем файл
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
         git add proxypay.txt
-        
-        # Коммитим только если есть изменения
-        if git diff --staged --quiet; then
-          echo "ℹ️ Нет изменений в proxypay.txt"
-        else
-          git commit -m "🔄 Обновлен proxypay.txt - $(date '+%Y-%m-%d %H:%M:%S')"
-          git push
-          echo "✅ Файл proxypay.txt обновлен и загружен в репозиторий!"
-        fi
+        git diff --staged --quiet || git commit -m "🔄 Updated proxypay.txt"
+        git push
