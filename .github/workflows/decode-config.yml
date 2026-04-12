@@ -1,49 +1,65 @@
-name: Decode Base64 Config
+name: Decode to ProxyPay
 
 on:
+  workflow_dispatch:  # Ручной запуск
   push:
-    branches: [ main, master ]
-  workflow_dispatch:  # Ручной запуск через UI
+    paths:
+      - 'config.txt'  # Запуск при изменении config.txt
   schedule:
     - cron: '0 */6 * * *'  # Каждые 6 часов
 
 jobs:
-  decode-and-process:
+  decode-to-proxypay:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Права на запись в репозиторий
     
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
       
-    - name: Decode Base64 config
+    - name: Decode Base64 to proxypay.txt
       run: |
-        echo "🔓 Декодирование Base64..."
-        base64 -d config.txt > decoded_config.txt
-        echo "✅ Готово!"
+        echo "🔓 Декодирование Base64 в proxypay.txt..."
+        base64 -d config.txt > proxypay.txt
+        echo "✅ Файл proxypay.txt создан!"
         
-    - name: Count servers
+    - name: Show statistics
       run: |
-        echo "📊 Подсчет серверов..."
-        vless=$(grep -c "^vless://" decoded_config.txt || echo 0)
-        vmess=$(grep -c "^vmess://" decoded_config.txt || echo 0)
-        trojan=$(grep -c "^trojan://" decoded_config.txt || echo 0)
+        echo "📊 Статистика серверов в proxypay.txt:"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         
-        echo "VLESS: $vless"
-        echo "VMESS: $vmess"
-        echo "Trojan: $trojan"
+        vless=$(grep -c "^vless://" proxypay.txt 2>/dev/null || echo 0)
+        vmess=$(grep -c "^vmess://" proxypay.txt 2>/dev/null || echo 0)
+        trojan=$(grep -c "^trojan://" proxypay.txt 2>/dev/null || echo 0)
+        ss=$(grep -c "^ss://" proxypay.txt 2>/dev/null || echo 0)
+        total=$((vless + vmess + trojan + ss))
         
-        # Разделяем по типам
-        grep "^vless://" decoded_config.txt > vless_servers.txt 2>/dev/null || true
-        grep "^vmess://" decoded_config.txt > vmess_servers.txt 2>/dev/null || true
-        grep "^trojan://" decoded_config.txt > trojan_servers.txt 2>/dev/null || true
+        echo "🟢 VLESS:      $vless"
+        echo "🔵 VMESS:      $vmess"
+        echo "🟡 Trojan:     $trojan"
+        echo "🟣 Shadowsocks: $ss"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "📦 Всего:      $total серверов"
         
-    - name: Upload decoded configs
-      uses: actions/upload-artifact@v3
-      with:
-        name: decoded-configs
-        path: |
-          decoded_config.txt
-          vless_servers.txt
-          vmess_servers.txt
-          trojan_servers.txt
-        retention-days: 30
+        # Показываем первые 3 строки для проверки
+        echo ""
+        echo "🔍 Первые 3 сервера:"
+        head -n 3 proxypay.txt || true
+        
+    - name: Commit and push proxypay.txt
+      run: |
+        git config --local user.name "GitHub Actions Bot"
+        git config --local user.email "actions@github.com"
+        
+        # Добавляем файл
+        git add proxypay.txt
+        
+        # Коммитим только если есть изменения
+        if git diff --staged --quiet; then
+          echo "ℹ️ Нет изменений в proxypay.txt"
+        else
+          git commit -m "🔄 Обновлен proxypay.txt - $(date '+%Y-%m-%d %H:%M:%S')"
+          git push
+          echo "✅ Файл proxypay.txt обновлен и загружен в репозиторий!"
+        fi
