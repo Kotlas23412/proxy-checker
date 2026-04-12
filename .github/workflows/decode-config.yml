@@ -3,9 +3,7 @@ name: Decode Base64 Config
 on:
   push:
     branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
-  workflow_dispatch:  # Ручной запуск
+  workflow_dispatch:  # Ручной запуск через UI
   schedule:
     - cron: '0 */6 * * *'  # Каждые 6 часов
 
@@ -19,34 +17,27 @@ jobs:
       
     - name: Decode Base64 config
       run: |
-        echo "🔓 Декодирование Base64 конфигурации..."
-        
-        # Читаем Base64 из файла и декодируем
+        echo "🔓 Декодирование Base64..."
         base64 -d config.txt > decoded_config.txt
+        echo "✅ Готово!"
         
-        echo "✅ Декодирование завершено"
-        
-    - name: Parse and format servers
+    - name: Count servers
       run: |
-        echo "📋 Обработка серверов..."
+        echo "📊 Подсчет серверов..."
+        vless=$(grep -c "^vless://" decoded_config.txt || echo 0)
+        vmess=$(grep -c "^vmess://" decoded_config.txt || echo 0)
+        trojan=$(grep -c "^trojan://" decoded_config.txt || echo 0)
         
-        # Подсчет серверов
-        vless_count=$(grep -c "^vless://" decoded_config.txt || true)
-        vmess_count=$(grep -c "^vmess://" decoded_config.txt || true)
-        trojan_count=$(grep -c "^trojan://" decoded_config.txt || true)
-        
-        echo "🌐 Найдено серверов:"
-        echo "  - VLESS: $vless_count"
-        echo "  - VMESS: $vmess_count"
-        echo "  - Trojan: $trojan_count"
-        echo "  - Всего: $((vless_count + vmess_count + trojan_count))"
+        echo "VLESS: $vless"
+        echo "VMESS: $vmess"
+        echo "Trojan: $trojan"
         
         # Разделяем по типам
-        grep "^vless://" decoded_config.txt > vless_servers.txt || true
-        grep "^vmess://" decoded_config.txt > vmess_servers.txt || true
-        grep "^trojan://" decoded_config.txt > trojan_servers.txt || true
+        grep "^vless://" decoded_config.txt > vless_servers.txt 2>/dev/null || true
+        grep "^vmess://" decoded_config.txt > vmess_servers.txt 2>/dev/null || true
+        grep "^trojan://" decoded_config.txt > trojan_servers.txt 2>/dev/null || true
         
-    - name: Upload decoded config
+    - name: Upload decoded configs
       uses: actions/upload-artifact@v3
       with:
         name: decoded-configs
@@ -56,20 +47,3 @@ jobs:
           vmess_servers.txt
           trojan_servers.txt
         retention-days: 30
-        
-    - name: Create summary
-      run: |
-        echo "# 📊 Результаты декодирования" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "## Статистика серверов" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "| Тип | Количество |" >> $GITHUB_STEP_SUMMARY
-        echo "|-----|------------|" >> $GITHUB_STEP_SUMMARY
-        echo "| VLESS | $(grep -c "^vless://" decoded_config.txt || echo 0) |" >> $GITHUB_STEP_SUMMARY
-        echo "| VMESS | $(grep -c "^vmess://" decoded_config.txt || echo 0) |" >> $GITHUB_STEP_SUMMARY
-        echo "| Trojan | $(grep -c "^trojan://" decoded_config.txt || echo 0) |" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "## Первые 5 серверов (превью)" >> $GITHUB_STEP_SUMMARY
-        echo '```' >> $GITHUB_STEP_SUMMARY
-        head -n 5 decoded_config.txt >> $GITHUB_STEP_SUMMARY || true
-        echo '```' >> $GITHUB_STEP_SUMMARY
