@@ -3,120 +3,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇷🇺 Россия #1",
-    "inbounds": [
-      {
-        "port": 10808,
-        "protocol": "socks",
-        "settings": {
-          "udp": true
-        },
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      },
-      {
-        "port": 10809,
-        "protocol": "http",
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      }
-    ],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "vless",
-        "fragment": {
-          "packets": "tlshello",
-          "length": "10-30",
-          "interval": "10-20"
-        },
-        "settings": {
-          "vnext": [
-            {
-              "address": "se2.skywhirl.store",
-              "port": 443,
-              "users": [
-                {
-                  "id": "691c7b19-d124-47dd-8893-88cf02c31322",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "sw2.skywhirl.store",
-            "fingerprint": "chrome",
-            "publicKey": "kF3TSdUofDoKo1TqZcqY9dq1SoQ4iu_bQHAf2mVuWmk",
-            "shortId": "e6a7cc15e112d7f9"
-          }
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      },
-      {
-        "tag": "block",
-        "protocol": "blackhole"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": [
-        {
-          "type": "field",
-          "outboundTag": "direct",
-          "domain": [
-            "regexp:.*\\.ru$",
-            "regexp:.*\\.рф$",
-            "regexp:.*\\.su$",
-            "domain:yandex.ru",
-            "domain:yandex.net",
-            "domain:ya.ru",
-            "domain:vk.com",
-            "domain:mail.ru",
-            "domain:sberbank.ru",
-            "domain:gosuslugi.ru"
-          ]
-        },
-        {
-          "type": "field",
-          "outboundTag": "direct",
-          "ip": [
-            "geoip:ru",
-            "geoip:private"
-          ]
-        },
-        {
-          "type": "field",
-          "protocol": [
-            "bittorrent"
-          ],
-          "outboundTag": "direct"
-        }
-      ]
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "🇱🇻 Латвия #2",
+    "remarks": "🇱🇻 Латвия #1",
     "inbounds": [
       {
         "port": 10808,
@@ -229,7 +116,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇳🇱 Нидерланды #3",
+    "remarks": "🇳🇱 Нидерланды #2",
     "inbounds": [
       {
         "port": 10808,
@@ -342,7 +229,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇱🇻 Латвия #4",
+    "remarks": "🇱🇻 Латвия #3",
     "inbounds": [
       {
         "port": 10808,
@@ -455,7 +342,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇱🇻 Латвия | LTE #5",
+    "remarks": "🇱🇻 Латвия | LTE #4",
     "inbounds": [
       {
         "port": 10808,
