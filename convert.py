@@ -2,6 +2,7 @@
 import json
 import urllib.parse
 import os
+import re
 
 def create_v2ray_config(outbound_data, remark):
     """Создает полную V2Ray конфигурацию из данных outbound"""
@@ -89,6 +90,45 @@ def create_v2ray_config(outbound_data, remark):
     
     return config
 
+# Глобальная база данных Reality параметров из configs2.txt
+REALITY_DATABASE = {}
+
+def load_reality_database(filename='configs2.txt'):
+    """Загружает Reality параметры из полной конфигурации"""
+    global REALITY_DATABASE
+    
+    if not os.path.exists(filename):
+        return
+    
+    try:
+        with open(filename, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        config = json.loads(content)
+        outbounds = config.get('outbounds', [])
+        
+        for outbound in outbounds:
+            tag = outbound.get('tag', '')
+            settings = outbound.get('settings', {})
+            vnext = settings.get('vnext', [{}])[0]
+            address = vnext.get('address', '')
+            
+            stream_settings = outbound.get('streamSettings', {})
+            reality_settings = stream_settings.get('realitySettings', {})
+            
+            if reality_settings and address:
+                REALITY_DATABASE[address] = {
+                    'publicKey': reality_settings.get('publicKey', ''),
+                    'shortId': reality_settings.get('shortId', ''),
+                    'serverName': reality_settings.get('serverName', address),
+                    'fingerprint': reality_settings.get('fingerprint', 'chrome'),
+                    'spiderX': reality_settings.get('spiderX', '')
+                }
+                print(f"  🔑 Загружены Reality параметры для {address} (tag: {tag})")
+    
+    except Exception as e:
+        print(f"  ⚠️  Ошибка загрузки Reality базы: {e}")
+
 def process_simple_vless_config(config_obj, idx):
     """Обрабатывает упрощенный формат конфигурации VLESS"""
     
@@ -97,6 +137,10 @@ def process_simple_vless_config(config_obj, idx):
     user_id = config_obj.get('uuid', '')
     name = config_obj.get('name', f'proxy-{idx+1}')
     
+    if not address or not user_id:
+        print(f"  ✗ Пропущена конфигурация: отсутствует address или uuid")
+        return None, None
+    
     # Определяем flow из поля encryption (неправильное название в исходном JSON)
     flow = config_obj.get('encryption', '')
     if flow and 'xtls' not in flow.lower() and 'vision' not in flow.lower():
@@ -104,21 +148,52 @@ def process_simple_vless_config(config_obj, idx):
     
     network = config_obj.get('type', 'tcp')
     
-    # Проверяем наличие Reality параметров
-    pbk = config_obj.get('realityPubKey', '')
-    sid = config_obj.get('realityShortId', '')
+    # Проверяем Reality параметры в самом конфиге
+    pbk = config_obj.get('realityPubKey', '').strip()
+    sid = config_obj.get('realityShortId', '').strip()
+    sni = config_obj.get('sni', '').strip()
+    fp = config_obj.get('utlsFingerprint', '').strip()
     
-    # Если есть pbk или sid, значит используется Reality
+    # Если параметры пустые, ищем в базе данных по адресу
+    if not pbk or not sid:
+        if address in REALITY_DATABASE:
+            reality_data = REALITY_DATABASE[address]
+            pbk = reality_data['publicKey']
+            sid = reality_data['shortId']
+            if not sni:
+                sni = reality_data['serverName']
+            if not fp:
+                fp = reality_data['fingerprint']
+            print(f"  ℹ️  Использованы Reality параметры из базы для {address}")
+        else:
+            print(f"  ⚠️  Reality параметры не найдены для {address}")
+            # Пробуем найти по похожему домену
+            for db_address, reality_data in REALITY_DATABASE.items():
+                if address in db_address or db_address in address:
+                    pbk = reality_data['publicKey']
+                    sid = reality_data['shortId']
+                    if not sni:
+                        sni = reality_data['serverName']
+                    if not fp:
+                        fp = reality_data['fingerprint']
+                    print(f"  ℹ️  Найдены похожие Reality параметры от {db_address}")
+                    break
+    
+    # Если всё ещё нет параметров, это ошибка
+    if not pbk:
+        print(f"  ✗ КРИТИЧЕСКАЯ ОШИБКА: publicKey не найден для {address}")
+        print(f"     Добавьте сервер в configs2.txt или укажите параметры вручную")
+        return None, None
+    
+    # Определяем security
     if pbk or sid:
         security = 'reality'
     else:
         security = config_obj.get('security', 'none')
     
-    sni = config_obj.get('sni', '')
     if not sni and security == 'reality':
         sni = address  # Используем адрес сервера как SNI
     
-    fp = config_obj.get('utlsFingerprint', 'chrome')
     if not fp or fp == '':
         fp = 'chrome'
     
@@ -148,7 +223,7 @@ def process_simple_vless_config(config_obj, idx):
     # Добавляем flow если есть
     if flow:
         new_outbound["settings"]["vnext"][0]["users"][0]["flow"] = flow
-        # Добавляем fragment для xtls-rprx-vision
+        # Добавляем sockopt для xtls-rprx-vision
         if "vision" in flow.lower():
             new_outbound["streamSettings"]["sockopt"] = {
                 "tcpNoDelay": True,
@@ -160,6 +235,7 @@ def process_simple_vless_config(config_obj, idx):
     params = {
         'type': network,
         'encryption': 'none',  # VLESS encryption всегда none
+        'security': security
     }
     
     if flow:
@@ -187,6 +263,12 @@ def process_simple_vless_config(config_obj, idx):
         if sid:
             params['sid'] = sid
             reality_settings['shortId'] = sid
+        
+        # Проверяем spiderX в базе
+        if address in REALITY_DATABASE and REALITY_DATABASE[address].get('spiderX'):
+            spiderX = REALITY_DATABASE[address]['spiderX']
+            params['spx'] = spiderX
+            reality_settings['spiderX'] = spiderX
         
         new_outbound["streamSettings"]["realitySettings"] = reality_settings
     
@@ -281,7 +363,7 @@ def process_simple_vless_config(config_obj, idx):
     # Формируем query string для ссылки
     query = '&'.join([f"{k}={urllib.parse.quote(str(v))}" for k, v in params.items()])
     
-    # Формируем имя (убираем эмодзи если нужно)
+    # Формируем имя (убираем лишние пробелы)
     name_clean = name.strip()
     name_encoded = urllib.parse.quote(name_clean)
     
@@ -400,6 +482,7 @@ def process_outbound(outbound, remark, idx):
             params['spx'] = spiderX
             reality_settings['spiderX'] = spiderX
         
+        params['security'] = 'reality'
         new_outbound["streamSettings"]["realitySettings"] = reality_settings
     
     # TLS настройки
@@ -649,7 +732,16 @@ def process_config_file(filename, output_filename, source_name):
         
         print(f"\n🔗 Первые 3 ссылки из {output_filename}:")
         for i, link in enumerate(all_links[:3], 1):
-            print(f"{i}. {link[:100]}...")
+            # Декодируем имя для читаемости
+            try:
+                link_parts = link.split('#')
+                if len(link_parts) == 2:
+                    decoded_name = urllib.parse.unquote(link_parts[1])
+                    print(f"{i}. {link_parts[0][:70]}...#{decoded_name}")
+                else:
+                    print(f"{i}. {link[:100]}...")
+            except:
+                print(f"{i}. {link[:100]}...")
     else:
         print(f"\n❌ Не удалось сгенерировать ни одной ссылки из {filename}!")
         print("Проверьте формат конфигураций в файле")
@@ -658,8 +750,12 @@ def process_config_file(filename, output_filename, source_name):
 
 def main():
     print("=" * 60)
-    print("V2Ray Multi-Config Converter v2.0")
+    print("V2Ray Multi-Config Converter v2.1")
     print("=" * 60)
+    
+    # Сначала загружаем Reality базу из configs2.txt
+    print("\n🔐 Загрузка Reality параметров из configs2.txt...")
+    load_reality_database('configs2.txt')
     
     total_links = 0
     all_json_configs = []
