@@ -43,11 +43,11 @@
         "settings": {
           "vnext": [
             {
-              "address": "158.160.222.45",
+              "address": "94.228.125.209",
               "port": 443,
               "users": [
                 {
-                  "id": "d81f5a32-792a-4be4-b11c-852e63011a5c",
+                  "id": "86d1f8d3-d552-4518-8756-33f90eba86f4",
                   "encryption": "none",
                   "flow": "xtls-rprx-vision"
                 }
@@ -59,10 +59,10 @@
           "network": "tcp",
           "security": "reality",
           "realitySettings": {
-            "serverName": "max.ru",
-            "fingerprint": "chrome",
-            "publicKey": "I7qSMEZs5k5RhE4TWI4SjVJZMnF_Ay-vFYhvyUtTuAM",
-            "shortId": "9f42684c1b"
+            "serverName": "goodcardboard.shop",
+            "fingerprint": "randomized",
+            "publicKey": "rDPZZOBMmBb_mNKPEewzp9Uu6zkGrP7XOVpnRzetXDc",
+            "shortId": ""
           }
         }
       },
@@ -116,7 +116,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇩🇪 ФРГ | LTE #2",
+    "remarks": "🇷🇺 Россия #2",
     "inbounds": [
       {
         "port": 10808,
@@ -147,28 +147,482 @@
     "outbounds": [
       {
         "tag": "proxy",
-        "protocol": "ss",
+        "protocol": "vless",
+        "fragment": {
+          "packets": "tlshello",
+          "length": "10-30",
+          "interval": "10-20"
+        },
         "settings": {
-          "servers": [
+          "vnext": [
             {
-              "address": "89.169.6.69",
+              "address": "94.228.125.209",
               "port": 443,
-              "method": "none",
-              "password": "14b02e2a-8930-4afb-8412-ea4a4954ca5b"
+              "users": [
+                {
+                  "id": "28f00bff-8e91-4079-8367-37456064ce25",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
+                }
+              ]
             }
           ]
         },
         "streamSettings": {
-          "network": "ws",
-          "wsSettings": {
-            "path": "\/14b02e2a-8930-4afb-8412-ea4a4954ca5b\/?ed\\=2560",
-            "headers": {
-              "Host": "ylnhh.us.ci"
+          "network": "tcp",
+          "security": "reality",
+          "realitySettings": {
+            "serverName": "goodcardboard.shop",
+            "fingerprint": "randomized",
+            "publicKey": "rDPZZOBMmBb_mNKPEewzp9Uu6zkGrP7XOVpnRzetXDc",
+            "shortId": ""
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "domain": [
+            "regexp:.*\\.ru$",
+            "regexp:.*\\.рф$",
+            "regexp:.*\\.su$",
+            "domain:yandex.ru",
+            "domain:yandex.net",
+            "domain:ya.ru",
+            "domain:vk.com",
+            "domain:mail.ru",
+            "domain:sberbank.ru",
+            "domain:gosuslugi.ru"
+          ]
+        },
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "ip": [
+            "geoip:ru",
+            "geoip:private"
+          ]
+        },
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        }
+      ]
+    }
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🇷🇺 Россия #3",
+    "inbounds": [
+      {
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "udp": true
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      },
+      {
+        "port": 10809,
+        "protocol": "http",
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      }
+    ],
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "vless",
+        "fragment": {
+          "packets": "tlshello",
+          "length": "10-30",
+          "interval": "10-20"
+        },
+        "settings": {
+          "vnext": [
+            {
+              "address": "94.228.125.209",
+              "port": 443,
+              "users": [
+                {
+                  "id": "833e6581-1e04-45ae-ad79-eeca56fbf808",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
+                }
+              ]
             }
-          },
-          "security": "tls",
-          "tlsSettings": {
-            "serverName": "ylnhh.us.ci"
+          ]
+        },
+        "streamSettings": {
+          "network": "tcp",
+          "security": "reality",
+          "realitySettings": {
+            "serverName": "goodcardboard.shop",
+            "fingerprint": "randomized",
+            "publicKey": "rDPZZOBMmBb_mNKPEewzp9Uu6zkGrP7XOVpnRzetXDc",
+            "shortId": ""
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "domain": [
+            "regexp:.*\\.ru$",
+            "regexp:.*\\.рф$",
+            "regexp:.*\\.su$",
+            "domain:yandex.ru",
+            "domain:yandex.net",
+            "domain:ya.ru",
+            "domain:vk.com",
+            "domain:mail.ru",
+            "domain:sberbank.ru",
+            "domain:gosuslugi.ru"
+          ]
+        },
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "ip": [
+            "geoip:ru",
+            "geoip:private"
+          ]
+        },
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        }
+      ]
+    }
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🇷🇺 Россия #4",
+    "inbounds": [
+      {
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "udp": true
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      },
+      {
+        "port": 10809,
+        "protocol": "http",
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      }
+    ],
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "vless",
+        "fragment": {
+          "packets": "tlshello",
+          "length": "10-30",
+          "interval": "10-20"
+        },
+        "settings": {
+          "vnext": [
+            {
+              "address": "85.193.88.82",
+              "port": 443,
+              "users": [
+                {
+                  "id": "833e6581-1e04-45ae-ad79-eeca56fbf808",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
+                }
+              ]
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "tcp",
+          "security": "reality",
+          "realitySettings": {
+            "serverName": "goodcardboard.shop",
+            "fingerprint": "randomized",
+            "publicKey": "rDPZZOBMmBb_mNKPEewzp9Uu6zkGrP7XOVpnRzetXDc",
+            "shortId": ""
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "domain": [
+            "regexp:.*\\.ru$",
+            "regexp:.*\\.рф$",
+            "regexp:.*\\.su$",
+            "domain:yandex.ru",
+            "domain:yandex.net",
+            "domain:ya.ru",
+            "domain:vk.com",
+            "domain:mail.ru",
+            "domain:sberbank.ru",
+            "domain:gosuslugi.ru"
+          ]
+        },
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "ip": [
+            "geoip:ru",
+            "geoip:private"
+          ]
+        },
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        }
+      ]
+    }
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🇷🇺 Россия #5",
+    "inbounds": [
+      {
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "udp": true
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      },
+      {
+        "port": 10809,
+        "protocol": "http",
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      }
+    ],
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "vless",
+        "fragment": {
+          "packets": "tlshello",
+          "length": "10-30",
+          "interval": "10-20"
+        },
+        "settings": {
+          "vnext": [
+            {
+              "address": "176.124.216.182",
+              "port": 443,
+              "users": [
+                {
+                  "id": "86d1f8d3-d552-4518-8756-33f90eba86f4",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
+                }
+              ]
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "tcp",
+          "security": "reality",
+          "realitySettings": {
+            "serverName": "goodcardboard.shop",
+            "fingerprint": "randomized",
+            "publicKey": "rDPZZOBMmBb_mNKPEewzp9Uu6zkGrP7XOVpnRzetXDc",
+            "shortId": ""
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "domain": [
+            "regexp:.*\\.ru$",
+            "regexp:.*\\.рф$",
+            "regexp:.*\\.su$",
+            "domain:yandex.ru",
+            "domain:yandex.net",
+            "domain:ya.ru",
+            "domain:vk.com",
+            "domain:mail.ru",
+            "domain:sberbank.ru",
+            "domain:gosuslugi.ru"
+          ]
+        },
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "ip": [
+            "geoip:ru",
+            "geoip:private"
+          ]
+        },
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        }
+      ]
+    }
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🇫🇷 Франция #6",
+    "inbounds": [
+      {
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "udp": true
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      },
+      {
+        "port": 10809,
+        "protocol": "http",
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      }
+    ],
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "vless",
+        "settings": {
+          "vnext": [
+            {
+              "address": "89.208.97.210",
+              "port": 443,
+              "users": [
+                {
+                  "id": "d2b2c45d-50e7-4df6-887a-e4b3eb707740",
+                  "encryption": "none"
+                }
+              ]
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "grpc",
+          "grpcSettings": {},
+          "security": "reality",
+          "realitySettings": {
+            "serverName": "yimg.com",
+            "fingerprint": "chrome",
+            "publicKey": "SsFNPkgyzbRjz6SwfWxuAWOadCOatx_2-nQCBB9EhTA",
+            "shortId": "b6349c7a"
           }
         }
       },
