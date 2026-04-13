@@ -1,367 +1,862 @@
-{
-  "remarks": "Auto-generated Pro Config: AutoPilot Best",
-  "burstObservatory": {
-    "pingConfig": {
-      "destination": "http:\/\/www.gstatic.com\/generate_204",
-      "interval": "5m",
-      "sampling": 20,
-      "timeout": "5s"
+[
+  {
+    "log": {
+      "loglevel": "warning"
     },
-    "subjectSelector": [
-      "proxy"
-    ]
-  },
-  "dns": {
-    "queryStrategy": "UseIPv4",
-    "servers": [
+    "remarks": "🇱🇻 Латвия #1",
+    "dns": {
+      "queryStrategy": "UseIPv4",
+      "servers": [
+        {
+          "address": "77.88.8.8",
+          "detour": "direct",
+          "domains": [
+            "geosite:category-ru"
+          ],
+          "tag": "dns-ru"
+        },
+        {
+          "address": "https:\/\/dns.google\/dns-query",
+          "detour": "proxy",
+          "domains": [
+            "geosite:youtube",
+            "domain:youtube.com",
+            "domain:youtu.be",
+            "domain:googlevideo.com",
+            "domain:ytimg.com",
+            "domain:ggpht.com",
+            "geosite:instagram",
+            "domain:instagram.com",
+            "domain:cdninstagram.com",
+            "domain:fbcdn.net",
+            "geosite:tiktok",
+            "domain:tiktok.com",
+            "domain:tiktokcdn.com",
+            "domain:netflix.com",
+            "domain:nflxvideo.net",
+            "domain:disneyplus.com",
+            "domain:t.me",
+            "domain:telegram-cdn.org"
+          ],
+          "tag": "dns-stream"
+        },
+        {
+          "address": "https:\/\/cloudflare-dns.com\/dns-query",
+          "detour": "proxy",
+          "tag": "dns-default"
+        },
+        {
+          "address": "1.1.1.1",
+          "detour": "direct",
+          "skipFallback": false
+        }
+      ]
+    },
+    "inbounds": [
       {
-        "address": "77.88.8.8",
-        "detour": "direct",
-        "domains": [
-          "geosite:category-ru"
-        ],
-        "tag": "dns-ru"
+        "listen": "127.0.0.1",
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "auth": "noauth",
+          "udp": true
+        },
+        "sniffing": {
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ],
+          "enabled": true
+        },
+        "tag": "socks"
       },
       {
-        "address": "https:\/\/dns.google\/dns-query",
-        "detour": "loop-stream-direct",
-        "domains": [
-          "geosite:youtube",
-          "domain:youtube.com",
-          "domain:youtu.be",
-          "domain:googlevideo.com",
-          "geosite:instagram",
-          "domain:instagram.com",
-          "domain:cdninstagram.com",
-          "domain:fbcdn.net",
-          "geosite:tiktok",
-          "domain:tiktok.com",
-          "domain:tiktokcdn.com",
-          "domain:netflix.com",
-          "domain:nflxvideo.net",
-          "domain:disneyplus.com",
-          "domain:t.me",
-          "domain:telegram-cdn.org"
-        ],
-        "tag": "dns-stream"
-      },
-      {
-        "address": "https:\/\/cloudflare-dns.com\/dns-query",
-        "detour": "proxy-0",
-        "tag": "dns-default"
-      },
-      {
-        "address": "1.1.1.1",
-        "detour": "direct",
-        "skipFallback": false
-      }
-    ]
-  },
-  "inbounds": [
-    {
-      "listen": "127.0.0.1",
-      "port": 10808,
-      "protocol": "socks",
-      "settings": {
-        "auth": "noauth",
-        "udp": true
-      },
-      "sniffing": {
-        "destOverride": [
-          "http",
-          "tls",
-          "quic"
-        ],
-        "enabled": true
-      },
-      "tag": "socks"
-    },
-    {
-      "listen": "127.0.0.1",
-      "port": 10809,
-      "protocol": "http",
-      "settings": {
-        "allowTransparent": false
-      },
-      "sniffing": {
-        "destOverride": [
-          "http",
-          "tls",
-          "quic"
-        ],
-        "enabled": true
-      },
-      "tag": "http"
-    }
-  ],
-  "outbounds": [
-    {
-      "tag": "proxy-0",
-      "protocol": "vless",
-      "mux": {
-        "concurrency": -1,
-        "enabled": true,
-        "xudpConcurrency": 16,
-        "xudpProxyUDP443": "reject"
-      },
-      "settings": {
-        "vnext": [
-          {
-            "address": "yt1-s1.ladaracing.club",
-            "port": 443,
-            "users": [
-              {
-                "id": "691c7b19-d124-47dd-8893-88cf02c31322",
-                "encryption": "none",
-                "flow": "xtls-rprx-vision"
-              }
-            ]
-          }
-        ]
-      },
-      "streamSettings": {
-        "network": "tcp",
-        "security": "reality",
-        "realitySettings": {
-          "serverName": "yt1-s1.ladaracing.club",
-          "fingerprint": "chrome",
-          "publicKey": "ICPA9Yrhc26eIxVE096MXHp5Ww4pE_z4lqxQ3NpSynQ",
-          "shortId": "7f7fa27a3ab45d3b"
-        }
-      }
-    },
-    {
-      "tag": "proxy-1",
-      "protocol": "vless",
-      "mux": {
-        "concurrency": -1,
-        "enabled": true,
-        "xudpConcurrency": 16,
-        "xudpProxyUDP443": "reject"
-      },
-      "settings": {
-        "vnext": [
-          {
-            "address": "nl2.notyoursdog.biz",
-            "port": 443,
-            "users": [
-              {
-                "id": "691c7b19-d124-47dd-8893-88cf02c31322",
-                "encryption": "none",
-                "flow": "xtls-rprx-vision"
-              }
-            ]
-          }
-        ]
-      },
-      "streamSettings": {
-        "network": "tcp",
-        "security": "reality",
-        "realitySettings": {
-          "serverName": "nl.notyoursdog.biz",
-          "fingerprint": "chrome",
-          "publicKey": "7BByUOpKLyudAr2WQL-gm6bqwvpAGMStVvmhbu4LBAU",
-          "shortId": "eb3716b964f878b0"
-        }
-      }
-    },
-    {
-      "tag": "proxy-2",
-      "protocol": "vless",
-      "mux": {
-        "concurrency": -1,
-        "enabled": true,
-        "xudpConcurrency": 16,
-        "xudpProxyUDP443": "reject"
-      },
-      "settings": {
-        "vnext": [
-          {
-            "address": "yt1-s1.ladaracing.club",
-            "port": 443,
-            "users": [
-              {
-                "id": "691c7b19-d124-47dd-8893-88cf02c31322",
-                "encryption": "none",
-                "flow": "xtls-rprx-vision"
-              }
-            ]
-          }
-        ]
-      },
-      "streamSettings": {
-        "network": "tcp",
-        "security": "reality",
-        "realitySettings": {
-          "serverName": "yt1-s1.ladaracing.club",
-          "fingerprint": "chrome",
-          "publicKey": "ICPA9Yrhc26eIxVE096MXHp5Ww4pE_z4lqxQ3NpSynQ",
-          "shortId": "7f7fa27a3ab45d3b"
-        }
-      }
-    },
-    {
-      "tag": "proxy-3",
-      "protocol": "vless",
-      "mux": {
-        "concurrency": -1,
-        "enabled": true,
-        "xudpConcurrency": 16,
-        "xudpProxyUDP443": "reject"
-      },
-      "settings": {
-        "vnext": [
-          {
-            "address": "yt1-s1.ladaracing.club",
-            "port": 443,
-            "users": [
-              {
-                "id": "691c7b19-d124-47dd-8893-88cf02c31322",
-                "encryption": "none",
-                "flow": "xtls-rprx-vision"
-              }
-            ]
-          }
-        ]
-      },
-      "streamSettings": {
-        "network": "tcp",
-        "security": "reality",
-        "realitySettings": {
-          "serverName": "yt1-s1.ladaracing.club",
-          "fingerprint": "chrome",
-          "publicKey": "ICPA9Yrhc26eIxVE096MXHp5Ww4pE_z4lqxQ3NpSynQ",
-          "shortId": "7f7fa27a3ab45d3b"
-        }
-      }
-    },
-    {
-      "tag": "direct",
-      "protocol": "freedom",
-      "streamSettings": {
-        "sockopt": {
-          "domainStrategy": "ForceIPv4"
-        }
-      }
-    },
-    {
-      "tag": "block",
-      "protocol": "blackhole",
-      "settings": {
-        "response": {
-          "type": "http"
-        }
-      }
-    },
-    {
-      "tag": "loop-stream-direct",
-      "protocol": "loopback",
-      "settings": {
-        "inboundTag": "REROUTE-STREAM-DIRECT"
-      }
-    }
-  ],
-  "routing": {
-    "domainMatcher": "hybrid",
-    "domainStrategy": "IPIfNonMatch",
-    "balancers": [
-      {
-        "tag": "balancer-stream",
-        "fallbackTag": "proxy-0",
-        "selector": [
-          "proxy-"
-        ],
-        "strategy": {
-          "type": "leastLoad",
-          "settings": {
-            "expected": 1,
-            "maxRTT": "5s",
-            "tolerance": 0.5,
-            "baselines": [
-              "800ms",
-              "2000ms"
-            ]
-          }
-        }
+        "listen": "127.0.0.1",
+        "port": 10809,
+        "protocol": "http",
+        "settings": {
+          "allowTransparent": false
+        },
+        "sniffing": {
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ],
+          "enabled": true
+        },
+        "tag": "http"
       }
     ],
-    "rules": [
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "network": "udp",
+          "port": "443",
+          "outboundTag": "block",
+          "type": "field"
+        },
+        {
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct",
+          "type": "field"
+        },
+        {
+          "domain": [
+            "geosite:category-ads-all"
+          ],
+          "outboundTag": "block",
+          "type": "field"
+        },
+        {
+          "ip": [
+            "geoip:private",
+            "geoip:ru"
+          ],
+          "outboundTag": "direct",
+          "type": "field"
+        },
+        {
+          "domain": [
+            "regexp:.*\\.ru$",
+            "regexp:.*\\.рф$",
+            "regexp:.*\\.su$",
+            "geosite:category-ru",
+            "geosite:epicgames",
+            "geosite:riot",
+            "geosite:steam",
+            "domain:yandex.ru",
+            "domain:vk.com",
+            "domain:mail.ru",
+            "domain:gosuslugi.ru",
+            "domain:sberbank.ru"
+          ],
+          "outboundTag": "direct",
+          "type": "field"
+        },
+        {
+          "domain": [
+            "geosite:youtube",
+            "geosite:instagram",
+            "geosite:tiktok",
+            "domain:t.me",
+            "domain:youtube.com",
+            "domain:instagram.com",
+            "domain:netflix.com"
+          ],
+          "outboundTag": "proxy",
+          "type": "field"
+        },
+        {
+          "network": "tcp,udp",
+          "outboundTag": "proxy",
+          "type": "field"
+        }
+      ]
+    },
+    "outbounds": [
       {
-        "network": "udp",
-        "port": "443",
-        "outboundTag": "block",
-        "type": "field"
+        "tag": "proxy",
+        "protocol": "vless",
+        "mux": {
+          "concurrency": -1,
+          "enabled": true,
+          "xudpConcurrency": 16,
+          "xudpProxyUDP443": "reject"
+        },
+        "settings": {
+          "vnext": [
+            {
+              "address": "yt1-s1.ladaracing.club",
+              "port": 443,
+              "users": [
+                {
+                  "id": "691c7b19-d124-47dd-8893-88cf02c31322",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
+                }
+              ]
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "tcp",
+          "security": "reality",
+          "realitySettings": {
+            "serverName": "yt1-s1.ladaracing.club",
+            "fingerprint": "chrome",
+            "publicKey": "ICPA9Yrhc26eIxVE096MXHp5Ww4pE_z4lqxQ3NpSynQ",
+            "shortId": "7f7fa27a3ab45d3b"
+          }
+        }
       },
       {
-        "protocol": [
-          "bittorrent"
-        ],
-        "outboundTag": "direct",
-        "type": "field"
+        "tag": "direct",
+        "protocol": "freedom",
+        "streamSettings": {
+          "sockopt": {
+            "domainStrategy": "ForceIPv4"
+          }
+        }
       },
       {
-        "domain": [
-          "geosite:category-ads-all"
-        ],
-        "outboundTag": "block",
-        "type": "field"
+        "tag": "block",
+        "protocol": "blackhole",
+        "settings": {
+          "response": {
+            "type": "http"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🇳🇱 Нидерланды #2",
+    "dns": {
+      "queryStrategy": "UseIPv4",
+      "servers": [
+        {
+          "address": "77.88.8.8",
+          "detour": "direct",
+          "domains": [
+            "geosite:category-ru"
+          ],
+          "tag": "dns-ru"
+        },
+        {
+          "address": "https:\/\/dns.google\/dns-query",
+          "detour": "proxy",
+          "domains": [
+            "geosite:youtube",
+            "domain:youtube.com",
+            "domain:youtu.be",
+            "domain:googlevideo.com",
+            "domain:ytimg.com",
+            "domain:ggpht.com",
+            "geosite:instagram",
+            "domain:instagram.com",
+            "domain:cdninstagram.com",
+            "domain:fbcdn.net",
+            "geosite:tiktok",
+            "domain:tiktok.com",
+            "domain:tiktokcdn.com",
+            "domain:netflix.com",
+            "domain:nflxvideo.net",
+            "domain:disneyplus.com",
+            "domain:t.me",
+            "domain:telegram-cdn.org"
+          ],
+          "tag": "dns-stream"
+        },
+        {
+          "address": "https:\/\/cloudflare-dns.com\/dns-query",
+          "detour": "proxy",
+          "tag": "dns-default"
+        },
+        {
+          "address": "1.1.1.1",
+          "detour": "direct",
+          "skipFallback": false
+        }
+      ]
+    },
+    "inbounds": [
+      {
+        "listen": "127.0.0.1",
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "auth": "noauth",
+          "udp": true
+        },
+        "sniffing": {
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ],
+          "enabled": true
+        },
+        "tag": "socks"
       },
       {
-        "ip": [
-          "geoip:private",
-          "geoip:ru"
-        ],
-        "outboundTag": "direct",
-        "type": "field"
+        "listen": "127.0.0.1",
+        "port": 10809,
+        "protocol": "http",
+        "settings": {
+          "allowTransparent": false
+        },
+        "sniffing": {
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ],
+          "enabled": true
+        },
+        "tag": "http"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "network": "udp",
+          "port": "443",
+          "outboundTag": "block",
+          "type": "field"
+        },
+        {
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct",
+          "type": "field"
+        },
+        {
+          "domain": [
+            "geosite:category-ads-all"
+          ],
+          "outboundTag": "block",
+          "type": "field"
+        },
+        {
+          "ip": [
+            "geoip:private",
+            "geoip:ru"
+          ],
+          "outboundTag": "direct",
+          "type": "field"
+        },
+        {
+          "domain": [
+            "regexp:.*\\.ru$",
+            "regexp:.*\\.рф$",
+            "regexp:.*\\.su$",
+            "geosite:category-ru",
+            "geosite:epicgames",
+            "geosite:riot",
+            "geosite:steam",
+            "domain:yandex.ru",
+            "domain:vk.com",
+            "domain:mail.ru",
+            "domain:gosuslugi.ru",
+            "domain:sberbank.ru"
+          ],
+          "outboundTag": "direct",
+          "type": "field"
+        },
+        {
+          "domain": [
+            "geosite:youtube",
+            "geosite:instagram",
+            "geosite:tiktok",
+            "domain:t.me",
+            "domain:youtube.com",
+            "domain:instagram.com",
+            "domain:netflix.com"
+          ],
+          "outboundTag": "proxy",
+          "type": "field"
+        },
+        {
+          "network": "tcp,udp",
+          "outboundTag": "proxy",
+          "type": "field"
+        }
+      ]
+    },
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "vless",
+        "mux": {
+          "concurrency": -1,
+          "enabled": true,
+          "xudpConcurrency": 16,
+          "xudpProxyUDP443": "reject"
+        },
+        "settings": {
+          "vnext": [
+            {
+              "address": "nl2.notyoursdog.biz",
+              "port": 443,
+              "users": [
+                {
+                  "id": "691c7b19-d124-47dd-8893-88cf02c31322",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
+                }
+              ]
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "tcp",
+          "security": "reality",
+          "realitySettings": {
+            "serverName": "nl.notyoursdog.biz",
+            "fingerprint": "chrome",
+            "publicKey": "7BByUOpKLyudAr2WQL-gm6bqwvpAGMStVvmhbu4LBAU",
+            "shortId": "eb3716b964f878b0"
+          }
+        }
       },
       {
-        "inboundTag": [
-          "REROUTE-STREAM-DIRECT"
-        ],
-        "balancerTag": "balancer-stream",
-        "type": "field"
+        "tag": "direct",
+        "protocol": "freedom",
+        "streamSettings": {
+          "sockopt": {
+            "domainStrategy": "ForceIPv4"
+          }
+        }
       },
       {
-        "domain": [
-          "geosite:youtube",
-          "domain:youtube.com",
-          "domain:youtu.be",
-          "domain:googlevideo.com",
-          "domain:ytimg.com",
-          "domain:ggpht.com",
-          "geosite:instagram",
-          "domain:instagram.com",
-          "domain:cdninstagram.com",
-          "domain:fbcdn.net",
-          "geosite:tiktok",
-          "domain:tiktok.com",
-          "domain:tiktokcdn.com",
-          "domain:byteoversea.com",
-          "domain:netflix.com",
-          "domain:nflxvideo.net",
-          "domain:disneyplus.com",
-          "domain:t.me",
-          "domain:telegram-cdn.org",
-          "domain:cdn-telegram.org"
-        ],
-        "outboundTag": "loop-stream-direct",
-        "type": "field"
+        "tag": "block",
+        "protocol": "blackhole",
+        "settings": {
+          "response": {
+            "type": "http"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🇱🇻 Латвия #3",
+    "dns": {
+      "queryStrategy": "UseIPv4",
+      "servers": [
+        {
+          "address": "77.88.8.8",
+          "detour": "direct",
+          "domains": [
+            "geosite:category-ru"
+          ],
+          "tag": "dns-ru"
+        },
+        {
+          "address": "https:\/\/dns.google\/dns-query",
+          "detour": "proxy",
+          "domains": [
+            "geosite:youtube",
+            "domain:youtube.com",
+            "domain:youtu.be",
+            "domain:googlevideo.com",
+            "domain:ytimg.com",
+            "domain:ggpht.com",
+            "geosite:instagram",
+            "domain:instagram.com",
+            "domain:cdninstagram.com",
+            "domain:fbcdn.net",
+            "geosite:tiktok",
+            "domain:tiktok.com",
+            "domain:tiktokcdn.com",
+            "domain:netflix.com",
+            "domain:nflxvideo.net",
+            "domain:disneyplus.com",
+            "domain:t.me",
+            "domain:telegram-cdn.org"
+          ],
+          "tag": "dns-stream"
+        },
+        {
+          "address": "https:\/\/cloudflare-dns.com\/dns-query",
+          "detour": "proxy",
+          "tag": "dns-default"
+        },
+        {
+          "address": "1.1.1.1",
+          "detour": "direct",
+          "skipFallback": false
+        }
+      ]
+    },
+    "inbounds": [
+      {
+        "listen": "127.0.0.1",
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "auth": "noauth",
+          "udp": true
+        },
+        "sniffing": {
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ],
+          "enabled": true
+        },
+        "tag": "socks"
       },
       {
-        "domain": [
-          "geosite:epicgames",
-          "geosite:riot",
-          "geosite:steam",
-          "geosite:category-ru"
-        ],
-        "outboundTag": "direct",
-        "type": "field"
+        "listen": "127.0.0.1",
+        "port": 10809,
+        "protocol": "http",
+        "settings": {
+          "allowTransparent": false
+        },
+        "sniffing": {
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ],
+          "enabled": true
+        },
+        "tag": "http"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "network": "udp",
+          "port": "443",
+          "outboundTag": "block",
+          "type": "field"
+        },
+        {
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct",
+          "type": "field"
+        },
+        {
+          "domain": [
+            "geosite:category-ads-all"
+          ],
+          "outboundTag": "block",
+          "type": "field"
+        },
+        {
+          "ip": [
+            "geoip:private",
+            "geoip:ru"
+          ],
+          "outboundTag": "direct",
+          "type": "field"
+        },
+        {
+          "domain": [
+            "regexp:.*\\.ru$",
+            "regexp:.*\\.рф$",
+            "regexp:.*\\.su$",
+            "geosite:category-ru",
+            "geosite:epicgames",
+            "geosite:riot",
+            "geosite:steam",
+            "domain:yandex.ru",
+            "domain:vk.com",
+            "domain:mail.ru",
+            "domain:gosuslugi.ru",
+            "domain:sberbank.ru"
+          ],
+          "outboundTag": "direct",
+          "type": "field"
+        },
+        {
+          "domain": [
+            "geosite:youtube",
+            "geosite:instagram",
+            "geosite:tiktok",
+            "domain:t.me",
+            "domain:youtube.com",
+            "domain:instagram.com",
+            "domain:netflix.com"
+          ],
+          "outboundTag": "proxy",
+          "type": "field"
+        },
+        {
+          "network": "tcp,udp",
+          "outboundTag": "proxy",
+          "type": "field"
+        }
+      ]
+    },
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "vless",
+        "mux": {
+          "concurrency": -1,
+          "enabled": true,
+          "xudpConcurrency": 16,
+          "xudpProxyUDP443": "reject"
+        },
+        "settings": {
+          "vnext": [
+            {
+              "address": "yt1-s1.ladaracing.club",
+              "port": 443,
+              "users": [
+                {
+                  "id": "691c7b19-d124-47dd-8893-88cf02c31322",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
+                }
+              ]
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "tcp",
+          "security": "reality",
+          "realitySettings": {
+            "serverName": "yt1-s1.ladaracing.club",
+            "fingerprint": "chrome",
+            "publicKey": "ICPA9Yrhc26eIxVE096MXHp5Ww4pE_z4lqxQ3NpSynQ",
+            "shortId": "7f7fa27a3ab45d3b"
+          }
+        }
       },
       {
-        "network": "tcp,udp",
-        "balancerTag": "balancer-stream",
-        "type": "field"
+        "tag": "direct",
+        "protocol": "freedom",
+        "streamSettings": {
+          "sockopt": {
+            "domainStrategy": "ForceIPv4"
+          }
+        }
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole",
+        "settings": {
+          "response": {
+            "type": "http"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🇱🇻 Латвия | LTE #4",
+    "dns": {
+      "queryStrategy": "UseIPv4",
+      "servers": [
+        {
+          "address": "77.88.8.8",
+          "detour": "direct",
+          "domains": [
+            "geosite:category-ru"
+          ],
+          "tag": "dns-ru"
+        },
+        {
+          "address": "https:\/\/dns.google\/dns-query",
+          "detour": "proxy",
+          "domains": [
+            "geosite:youtube",
+            "domain:youtube.com",
+            "domain:youtu.be",
+            "domain:googlevideo.com",
+            "domain:ytimg.com",
+            "domain:ggpht.com",
+            "geosite:instagram",
+            "domain:instagram.com",
+            "domain:cdninstagram.com",
+            "domain:fbcdn.net",
+            "geosite:tiktok",
+            "domain:tiktok.com",
+            "domain:tiktokcdn.com",
+            "domain:netflix.com",
+            "domain:nflxvideo.net",
+            "domain:disneyplus.com",
+            "domain:t.me",
+            "domain:telegram-cdn.org"
+          ],
+          "tag": "dns-stream"
+        },
+        {
+          "address": "https:\/\/cloudflare-dns.com\/dns-query",
+          "detour": "proxy",
+          "tag": "dns-default"
+        },
+        {
+          "address": "1.1.1.1",
+          "detour": "direct",
+          "skipFallback": false
+        }
+      ]
+    },
+    "inbounds": [
+      {
+        "listen": "127.0.0.1",
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "auth": "noauth",
+          "udp": true
+        },
+        "sniffing": {
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ],
+          "enabled": true
+        },
+        "tag": "socks"
+      },
+      {
+        "listen": "127.0.0.1",
+        "port": 10809,
+        "protocol": "http",
+        "settings": {
+          "allowTransparent": false
+        },
+        "sniffing": {
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ],
+          "enabled": true
+        },
+        "tag": "http"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "network": "udp",
+          "port": "443",
+          "outboundTag": "block",
+          "type": "field"
+        },
+        {
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct",
+          "type": "field"
+        },
+        {
+          "domain": [
+            "geosite:category-ads-all"
+          ],
+          "outboundTag": "block",
+          "type": "field"
+        },
+        {
+          "ip": [
+            "geoip:private",
+            "geoip:ru"
+          ],
+          "outboundTag": "direct",
+          "type": "field"
+        },
+        {
+          "domain": [
+            "regexp:.*\\.ru$",
+            "regexp:.*\\.рф$",
+            "regexp:.*\\.su$",
+            "geosite:category-ru",
+            "geosite:epicgames",
+            "geosite:riot",
+            "geosite:steam",
+            "domain:yandex.ru",
+            "domain:vk.com",
+            "domain:mail.ru",
+            "domain:gosuslugi.ru",
+            "domain:sberbank.ru"
+          ],
+          "outboundTag": "direct",
+          "type": "field"
+        },
+        {
+          "domain": [
+            "geosite:youtube",
+            "geosite:instagram",
+            "geosite:tiktok",
+            "domain:t.me",
+            "domain:youtube.com",
+            "domain:instagram.com",
+            "domain:netflix.com"
+          ],
+          "outboundTag": "proxy",
+          "type": "field"
+        },
+        {
+          "network": "tcp,udp",
+          "outboundTag": "proxy",
+          "type": "field"
+        }
+      ]
+    },
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "vless",
+        "mux": {
+          "concurrency": -1,
+          "enabled": true,
+          "xudpConcurrency": 16,
+          "xudpProxyUDP443": "reject"
+        },
+        "settings": {
+          "vnext": [
+            {
+              "address": "yt1-s1.ladaracing.club",
+              "port": 443,
+              "users": [
+                {
+                  "id": "691c7b19-d124-47dd-8893-88cf02c31322",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
+                }
+              ]
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "tcp",
+          "security": "reality",
+          "realitySettings": {
+            "serverName": "yt1-s1.ladaracing.club",
+            "fingerprint": "chrome",
+            "publicKey": "ICPA9Yrhc26eIxVE096MXHp5Ww4pE_z4lqxQ3NpSynQ",
+            "shortId": "7f7fa27a3ab45d3b"
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom",
+        "streamSettings": {
+          "sockopt": {
+            "domainStrategy": "ForceIPv4"
+          }
+        }
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole",
+        "settings": {
+          "response": {
+            "type": "http"
+          }
+        }
       }
     ]
   }
-}
+]
