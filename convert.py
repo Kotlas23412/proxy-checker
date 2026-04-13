@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import json
-import base64
 import urllib.parse
+import re
 
 def json_to_vless(config_data):
     """Конвертирует JSON конфигурацию V2Ray в VLESS ссылку"""
@@ -58,9 +58,10 @@ def json_to_vless(config_data):
                 # TLS настройки
                 elif security == 'tls':
                     params['security'] = 'tls'
-                    params['sni'] = stream_settings.get('tlsSettings', {}).get('serverName', '')
-                    params['fp'] = stream_settings.get('tlsSettings', {}).get('fingerprint', 'chrome')
-                    alpn = stream_settings.get('tlsSettings', {}).get('alpn', [])
+                    tls_settings = stream_settings.get('tlsSettings', {})
+                    params['sni'] = tls_settings.get('serverName', '')
+                    params['fp'] = tls_settings.get('fingerprint', 'chrome')
+                    alpn = tls_settings.get('alpn', [])
                     if alpn:
                         params['alpn'] = ','.join(alpn)
                 
@@ -69,10 +70,6 @@ def json_to_vless(config_data):
                     ws_settings = stream_settings.get('wsSettings', {})
                     params['host'] = ws_settings.get('headers', {}).get('Host', '')
                     params['path'] = ws_settings.get('path', '/')
-                
-                # TCP настройки
-                if network == 'tcp':
-                    tcp_settings = stream_settings.get('tcpSettings', {})
                 
                 # Удаляем пустые параметры
                 params = {k: v for k, v in params.items() if v}
@@ -101,23 +98,37 @@ def main():
     with open('configs.txt', 'r', encoding='utf-8') as f:
         content = f.read()
     
-    # Разделяем на отдельные JSON объекты
-    configs = []
-    current_config = ""
-    brace_count = 0
+    # Разделяем на отдельные JSON объекты используя regex
+    json_pattern = r'\{(?:[^{}]|(?:\{[^{}]*\}))*\}'
+    configs = re.findall(json_pattern, content, re.DOTALL)
     
-    for line in content.split('\n'):
-        if line.strip():
-            current_config += line + '\n'
-            brace_count += line.count('{') - line.count('}')
-            
-            if brace_count == 0 and current_config.strip():
-                configs.append(current_config.strip())
-                current_config = ""
+    # Альтернативный метод - ручной парсинг
+    if not configs:
+        configs = []
+        current_config = ""
+        brace_count = 0
+        
+        for char in content:
+            if char == '{':
+                if brace_count == 0:
+                    current_config = ""
+                brace_count += 1
+                current_config += char
+            elif char == '}':
+                current_config += char
+                brace_count -= 1
+                if brace_count == 0 and current_config.strip():
+                    configs.append(current_config.strip())
+                    current_config = ""
+            elif brace_count > 0:
+                current_config += char
+    
+    print(f"Найдено {len(configs)} JSON конфигураций")
     
     # Конвертируем все конфигурации
     all_links = []
-    for config in configs:
+    for i, config in enumerate(configs, 1):
+        print(f"\nОбработка конфигурации {i}...")
         links = json_to_vless(config)
         all_links.extend(links)
     
@@ -126,9 +137,9 @@ def main():
         for link in all_links:
             f.write(link + '\n')
     
-    print(f"Сгенерировано {len(all_links)} VLESS ссылок")
+    print(f"\n✅ Сгенерировано {len(all_links)} VLESS ссылок")
     print("\nПример ссылок:")
-    for link in all_links[:3]:
+    for link in all_links[:5]:
         print(link)
 
 if __name__ == '__main__':
