@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import json
 import urllib.parse
+import os
 
 def create_v2ray_config(outbound_data, remark):
     """Создает полную V2Ray конфигурацию из данных outbound"""
@@ -93,7 +94,7 @@ def process_outbound(outbound, remark, idx):
     
     protocol = outbound.get('protocol', '')
     
-    # Пропускаем не-VLESS протоколы
+    # Пропускаем не-VLESS протоколы (только VLESS)
     if protocol != 'vless':
         return None, None
         
@@ -189,6 +190,12 @@ def process_outbound(outbound, remark, idx):
             params['sid'] = sid
         reality_settings['shortId'] = sid
         
+        # Добавляем spiderX если есть
+        spiderX = reality.get('spiderX', '')
+        if spiderX:
+            params['spx'] = spiderX
+            reality_settings['spiderX'] = spiderX
+        
         new_outbound["streamSettings"]["realitySettings"] = reality_settings
     
     # TLS настройки
@@ -251,6 +258,12 @@ def process_outbound(outbound, remark, idx):
         
         new_outbound["streamSettings"]["xhttpSettings"] = xhttp_config
     
+    # TCP настройки (пустые, но нужны для структуры)
+    elif network == 'tcp':
+        tcp_settings = stream_settings.get('tcpSettings', {})
+        if tcp_settings:
+            new_outbound["streamSettings"]["tcpSettings"] = tcp_settings
+    
     # Формируем query string для ссылки
     query = '&'.join([f"{k}={urllib.parse.quote(str(v))}" for k, v in params.items()])
     
@@ -267,7 +280,7 @@ def process_outbound(outbound, remark, idx):
     
     return vless_link, full_config
 
-def json_to_vless(config_data):
+def json_to_vless(config_data, source_name="Proxy"):
     """Конвертирует JSON конфигурацию V2Ray в VLESS ссылки и конфиги"""
     
     vless_links = []
@@ -277,7 +290,7 @@ def json_to_vless(config_data):
         config = json.loads(config_data)
         
         # Получаем remarks для имени конфигурации
-        remark = config.get('remarks', 'Proxy')
+        remark = config.get('remarks', source_name)
         
         # Обрабатываем все outbounds
         outbounds = config.get('outbounds', [])
@@ -349,18 +362,19 @@ def split_json_configs(content):
     
     return configs
 
-def main():
-    print("=" * 60)
-    print("V2Ray Config Converter")
-    print("=" * 60)
+def process_config_file(filename, output_filename, source_name):
+    """Обрабатывает один файл конфигурации"""
+    print(f"\n{'='*60}")
+    print(f"Обработка файла: {filename}")
+    print(f"{'='*60}")
     
     # Читаем файл с конфигурациями
     try:
-        with open('configs.txt', 'r', encoding='utf-8') as f:
+        with open(filename, 'r', encoding='utf-8') as f:
             content = f.read()
     except FileNotFoundError:
-        print("❌ Файл configs.txt не найден!")
-        return
+        print(f"⚠️  Файл {filename} не найден, пропускаем...")
+        return 0
     
     print(f"\n📄 Размер файла: {len(content)} символов")
     
@@ -371,41 +385,70 @@ def main():
     
     # Конвертируем все конфигурации
     all_links = []
-    all_json_configs = []
     
     for i, config in enumerate(configs, 1):
         print(f"Обработка конфигурации {i}/{len(configs)}...")
-        links, json_configs = json_to_vless(config)
+        links, _ = json_to_vless(config, source_name)
         all_links.extend(links)
-        all_json_configs.extend(json_configs)
     
     # Записываем результаты
     if all_links:
-        # Сохраняем ссылки
-        with open('output.txt', 'w', encoding='utf-8') as f:
+        with open(output_filename, 'w', encoding='utf-8') as f:
             for link in all_links:
                 f.write(link + '\n')
         
-        # Сохраняем JSON конфигурации
-        with open('output.json', 'w', encoding='utf-8') as f:
-            json.dump(all_json_configs, f, ensure_ascii=False, indent=2)
-        
-        print(f"\n{'=' * 60}")
+        print(f"\n{'='*60}")
         print(f"✅ Успешно создано:")
-        print(f"   📝 {len(all_links)} VLESS ссылок → output.txt")
-        print(f"   📋 {len(all_json_configs)} JSON конфигураций → output.json")
-        print(f"{'=' * 60}")
+        print(f"   📝 {len(all_links)} VLESS ссылок → {output_filename}")
+        print(f"{'='*60}")
         
-        print("\n🔗 Первые 3 ссылки:")
+        print(f"\n🔗 Первые 3 ссылки из {output_filename}:")
         for i, link in enumerate(all_links[:3], 1):
             print(f"{i}. {link[:80]}...")
-            
-        print("\n📋 Первая JSON конфигурация:")
-        if all_json_configs:
-            print(json.dumps(all_json_configs[0], ensure_ascii=False, indent=2)[:500] + "...")
     else:
-        print("\n❌ Не удалось сгенерировать ни одной ссылки!")
-        print("Проверьте формат конфигураций в configs.txt")
+        print(f"\n❌ Не удалось сгенерировать ни одной ссылки из {filename}!")
+        print("Проверьте формат конфигураций в файле")
+    
+    return len(all_links)
+
+def main():
+    print("=" * 60)
+    print("V2Ray Multi-Config Converter")
+    print("=" * 60)
+    
+    total_links = 0
+    all_json_configs = []
+    
+    # Обработка configs.txt → output.txt
+    count1 = process_config_file('configs.txt', 'output.txt', 'Config1')
+    total_links += count1
+    
+    # Обработка configs2.txt → output2.txt
+    count2 = process_config_file('configs2.txt', 'output2.txt', 'Config2')
+    total_links += count2
+    
+    # Создаем объединенный JSON с обеими конфигурациями
+    for filename, source_name in [('configs.txt', 'Config1'), ('configs2.txt', 'Config2')]:
+        if os.path.exists(filename):
+            try:
+                with open(filename, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                configs = split_json_configs(content)
+                for config in configs:
+                    _, json_configs = json_to_vless(config, source_name)
+                    all_json_configs.extend(json_configs)
+            except:
+                pass
+    
+    # Сохраняем объединенный JSON
+    if all_json_configs:
+        with open('output.json', 'w', encoding='utf-8') as f:
+            json.dump(all_json_configs, f, ensure_ascii=False, indent=2)
+        print(f"\n📋 Сохранено {len(all_json_configs)} JSON конфигураций → output.json")
+    
+    print(f"\n{'='*60}")
+    print(f"🎉 Всего обработано: {total_links} VLESS конфигураций")
+    print(f"{'='*60}")
 
 if __name__ == '__main__':
     main()
