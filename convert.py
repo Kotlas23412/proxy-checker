@@ -89,12 +89,216 @@ def create_v2ray_config(outbound_data, remark):
     
     return config
 
+def process_simple_vless_config(config_obj, idx):
+    """Обрабатывает упрощенный формат конфигурации VLESS"""
+    
+    address = config_obj.get('serverAddress', '')
+    port = config_obj.get('serverPort', 443)
+    user_id = config_obj.get('uuid', '')
+    name = config_obj.get('name', f'proxy-{idx+1}')
+    
+    # Определяем flow из поля encryption (неправильное название в исходном JSON)
+    flow = config_obj.get('encryption', '')
+    if flow and 'xtls' not in flow.lower() and 'vision' not in flow.lower():
+        flow = ''  # Если это не flow, игнорируем
+    
+    network = config_obj.get('type', 'tcp')
+    
+    # Проверяем наличие Reality параметров
+    pbk = config_obj.get('realityPubKey', '')
+    sid = config_obj.get('realityShortId', '')
+    
+    # Если есть pbk или sid, значит используется Reality
+    if pbk or sid:
+        security = 'reality'
+    else:
+        security = config_obj.get('security', 'none')
+    
+    sni = config_obj.get('sni', '')
+    if not sni and security == 'reality':
+        sni = address  # Используем адрес сервера как SNI
+    
+    fp = config_obj.get('utlsFingerprint', 'chrome')
+    if not fp or fp == '':
+        fp = 'chrome'
+    
+    # Создаем outbound
+    new_outbound = {
+        "tag": "proxy",
+        "protocol": "vless",
+        "settings": {
+            "vnext": [
+                {
+                    "address": address,
+                    "port": port,
+                    "users": [
+                        {
+                            "id": user_id,
+                            "encryption": "none"  # VLESS всегда использует "none"
+                        }
+                    ]
+                }
+            ]
+        },
+        "streamSettings": {
+            "network": network
+        }
+    }
+    
+    # Добавляем flow если есть
+    if flow:
+        new_outbound["settings"]["vnext"][0]["users"][0]["flow"] = flow
+        # Добавляем fragment для xtls-rprx-vision
+        if "vision" in flow.lower():
+            new_outbound["streamSettings"]["sockopt"] = {
+                "tcpNoDelay": True,
+                "tcpKeepAliveIdle": 100,
+                "mark": 255
+            }
+    
+    # Базовые параметры для ссылки
+    params = {
+        'type': network,
+        'encryption': 'none',  # VLESS encryption всегда none
+    }
+    
+    if flow:
+        params['flow'] = flow
+    
+    # Reality настройки
+    if security == 'reality':
+        new_outbound["streamSettings"]["security"] = "reality"
+        
+        reality_settings = {
+            "show": False
+        }
+        
+        if sni:
+            params['sni'] = sni
+            reality_settings['serverName'] = sni
+            
+        params['fp'] = fp
+        reality_settings['fingerprint'] = fp
+        
+        if pbk:
+            params['pbk'] = pbk
+            reality_settings['publicKey'] = pbk
+            
+        if sid:
+            params['sid'] = sid
+            reality_settings['shortId'] = sid
+        
+        new_outbound["streamSettings"]["realitySettings"] = reality_settings
+    
+    # TLS настройки
+    elif security == 'tls':
+        params['security'] = 'tls'
+        new_outbound["streamSettings"]["security"] = "tls"
+        
+        tls_config = {
+            "allowInsecure": config_obj.get('allowInsecure', False),
+            "show": False
+        }
+        
+        if sni:
+            params['sni'] = sni
+            tls_config['serverName'] = sni
+            
+        params['fp'] = fp
+        tls_config['fingerprint'] = fp
+        
+        alpn = config_obj.get('alpn', '')
+        if alpn:
+            alpn_list = [a.strip() for a in alpn.split(',') if a.strip()]
+            if alpn_list:
+                params['alpn'] = ','.join(alpn_list)
+                tls_config['alpn'] = alpn_list
+        
+        new_outbound["streamSettings"]["tlsSettings"] = tls_config
+    
+    # WebSocket настройки
+    if network == 'ws':
+        ws_config = {}
+        
+        host = config_obj.get('host', '')
+        if host:
+            params['host'] = host
+            ws_config['headers'] = {"Host": host}
+            
+        path = config_obj.get('path', '/')
+        if path:
+            params['path'] = path
+            ws_config['path'] = path
+        
+        max_early_data = config_obj.get('wsMaxEarlyData', 0)
+        if max_early_data > 0:
+            ws_config['maxEarlyData'] = max_early_data
+        
+        early_data_header = config_obj.get('earlyDataHeaderName', '')
+        if early_data_header:
+            ws_config['earlyDataHeaderName'] = early_data_header
+        
+        new_outbound["streamSettings"]["wsSettings"] = ws_config
+    
+    # gRPC настройки
+    elif network == 'grpc':
+        grpc_config = {}
+        
+        service_name = config_obj.get('path', '')
+        if service_name:
+            params['serviceName'] = service_name
+            grpc_config['serviceName'] = service_name
+        
+        new_outbound["streamSettings"]["grpcSettings"] = grpc_config
+    
+    # HTTP/2 настройки
+    elif network == 'h2' or network == 'http':
+        h2_config = {}
+        
+        host = config_obj.get('host', '')
+        if host:
+            host_list = [h.strip() for h in host.split(',') if h.strip()]
+            if host_list:
+                params['host'] = ','.join(host_list)
+                h2_config['host'] = host_list
+            
+        path = config_obj.get('path', '/')
+        if path:
+            params['path'] = path
+            h2_config['path'] = path
+        
+        new_outbound["streamSettings"]["httpSettings"] = h2_config
+    
+    # TCP настройки
+    elif network == 'tcp':
+        tcp_config = {
+            "header": {
+                "type": "none"
+            }
+        }
+        new_outbound["streamSettings"]["tcpSettings"] = tcp_config
+    
+    # Формируем query string для ссылки
+    query = '&'.join([f"{k}={urllib.parse.quote(str(v))}" for k, v in params.items()])
+    
+    # Формируем имя (убираем эмодзи если нужно)
+    name_clean = name.strip()
+    name_encoded = urllib.parse.quote(name_clean)
+    
+    # Собираем ссылку
+    vless_link = f"vless://{user_id}@{address}:{port}?{query}#{name_encoded}"
+    
+    # Создаем полную конфигурацию
+    full_config = create_v2ray_config(new_outbound, name_clean)
+    
+    return vless_link, full_config
+
 def process_outbound(outbound, remark, idx):
-    """Обрабатывает один outbound и возвращает ссылку и конфиг"""
+    """Обрабатывает один outbound из полного формата V2Ray конфига"""
     
     protocol = outbound.get('protocol', '')
     
-    # Пропускаем не-VLESS протоколы (только VLESS)
+    # Пропускаем не-VLESS протоколы
     if protocol != 'vless':
         return None, None
         
@@ -147,12 +351,12 @@ def process_outbound(outbound, remark, idx):
     # Добавляем flow если есть
     if flow:
         new_outbound["settings"]["vnext"][0]["users"][0]["flow"] = flow
-        # Добавляем fragment для xtls-rprx-vision
+        # Добавляем sockopt для xtls-rprx-vision
         if "vision" in flow.lower():
-            new_outbound["fragment"] = {
-                "packets": "tlshello",
-                "length": "10-30",
-                "interval": "10-20"
+            new_outbound["streamSettings"]["sockopt"] = {
+                "tcpNoDelay": True,
+                "tcpKeepAliveIdle": 100,
+                "mark": 255
             }
     
     # Базовые параметры для ссылки
@@ -169,7 +373,7 @@ def process_outbound(outbound, remark, idx):
         reality = stream_settings.get('realitySettings', {})
         new_outbound["streamSettings"]["security"] = "reality"
         
-        reality_settings = {}
+        reality_settings = {"show": False}
         
         sni = reality.get('serverName', '')
         if sni:
@@ -204,7 +408,7 @@ def process_outbound(outbound, remark, idx):
         tls_settings = stream_settings.get('tlsSettings', {})
         
         new_outbound["streamSettings"]["security"] = "tls"
-        tls_config = {}
+        tls_config = {"show": False}
         
         sni = tls_settings.get('serverName', '')
         if sni:
@@ -219,6 +423,9 @@ def process_outbound(outbound, remark, idx):
         if alpn:
             params['alpn'] = ','.join(alpn)
             tls_config['alpn'] = alpn
+        
+        allow_insecure = tls_settings.get('allowInsecure', False)
+        tls_config['allowInsecure'] = allow_insecure
         
         new_outbound["streamSettings"]["tlsSettings"] = tls_config
     
@@ -258,11 +465,15 @@ def process_outbound(outbound, remark, idx):
         
         new_outbound["streamSettings"]["xhttpSettings"] = xhttp_config
     
-    # TCP настройки (пустые, но нужны для структуры)
+    # TCP настройки
     elif network == 'tcp':
         tcp_settings = stream_settings.get('tcpSettings', {})
         if tcp_settings:
             new_outbound["streamSettings"]["tcpSettings"] = tcp_settings
+        else:
+            new_outbound["streamSettings"]["tcpSettings"] = {
+                "header": {"type": "none"}
+            }
     
     # Формируем query string для ссылки
     query = '&'.join([f"{k}={urllib.parse.quote(str(v))}" for k, v in params.items()])
@@ -273,12 +484,29 @@ def process_outbound(outbound, remark, idx):
     name_encoded = urllib.parse.quote(name)
     
     # Собираем ссылку
-    vless_link = f"vless://{user_id}@{address}:{port}/?{query}#{name_encoded}"
+    vless_link = f"vless://{user_id}@{address}:{port}?{query}#{name_encoded}"
     
     # Создаем полную конфигурацию
     full_config = create_v2ray_config(new_outbound, name)
     
     return vless_link, full_config
+
+def detect_config_format(config_data):
+    """Определяет формат конфигурации"""
+    try:
+        config = json.loads(config_data)
+        
+        # Проверяем наличие ключевых полей для упрощенного формата
+        if 'serverAddress' in config and 'serverPort' in config and 'uuid' in config:
+            return 'simple'
+        
+        # Проверяем наличие outbounds для полного формата
+        if 'outbounds' in config:
+            return 'full'
+        
+        return 'unknown'
+    except:
+        return 'unknown'
 
 def json_to_vless(config_data, source_name="Proxy"):
     """Конвертирует JSON конфигурацию V2Ray в VLESS ссылки и конфиги"""
@@ -288,24 +516,39 @@ def json_to_vless(config_data, source_name="Proxy"):
     
     try:
         config = json.loads(config_data)
+        format_type = detect_config_format(config_data)
         
-        # Получаем remarks для имени конфигурации
-        remark = config.get('remarks', source_name)
-        
-        # Обрабатываем все outbounds
-        outbounds = config.get('outbounds', [])
-        
-        for idx, outbound in enumerate(outbounds):
-            link, json_config = process_outbound(outbound, remark, idx)
+        if format_type == 'simple':
+            # Обрабатываем упрощенный формат
+            name = config.get('name', source_name)
+            link, json_config = process_simple_vless_config(config, 0)
             
             if link and json_config:
                 vless_links.append(link)
                 json_configs.append(json_config)
                 
-                address = outbound.get('settings', {}).get('vnext', [{}])[0].get('address', 'unknown')
-                port = outbound.get('settings', {}).get('vnext', [{}])[0].get('port', '?')
-                tag = outbound.get('tag', f'proxy-{idx+1}')
-                print(f"  ✓ Создана конфигурация для {tag}: {address}:{port}")
+                address = config.get('serverAddress', 'unknown')
+                port = config.get('serverPort', '?')
+                print(f"  ✓ Создана конфигурация: {name} ({address}:{port})")
+        
+        elif format_type == 'full':
+            # Обрабатываем полный формат с outbounds
+            remark = config.get('remarks', source_name)
+            outbounds = config.get('outbounds', [])
+            
+            for idx, outbound in enumerate(outbounds):
+                link, json_config = process_outbound(outbound, remark, idx)
+                
+                if link and json_config:
+                    vless_links.append(link)
+                    json_configs.append(json_config)
+                    
+                    address = outbound.get('settings', {}).get('vnext', [{}])[0].get('address', 'unknown')
+                    port = outbound.get('settings', {}).get('vnext', [{}])[0].get('port', '?')
+                    tag = outbound.get('tag', f'proxy-{idx+1}')
+                    print(f"  ✓ Создана конфигурация для {tag}: {address}:{port}")
+        else:
+            print(f"  ⚠️  Неизвестный формат конфигурации")
     
     except json.JSONDecodeError as e:
         print(f"  ✗ Ошибка парсинга JSON: {e}")
@@ -374,7 +617,7 @@ def process_config_file(filename, output_filename, source_name):
             content = f.read()
     except FileNotFoundError:
         print(f"⚠️  Файл {filename} не найден, пропускаем...")
-        return 0
+        return 0, []
     
     print(f"\n📄 Размер файла: {len(content)} символов")
     
@@ -385,11 +628,13 @@ def process_config_file(filename, output_filename, source_name):
     
     # Конвертируем все конфигурации
     all_links = []
+    all_json_configs = []
     
     for i, config in enumerate(configs, 1):
         print(f"Обработка конфигурации {i}/{len(configs)}...")
-        links, _ = json_to_vless(config, source_name)
+        links, json_configs = json_to_vless(config, source_name)
         all_links.extend(links)
+        all_json_configs.extend(json_configs)
     
     # Записываем результаты
     if all_links:
@@ -404,41 +649,30 @@ def process_config_file(filename, output_filename, source_name):
         
         print(f"\n🔗 Первые 3 ссылки из {output_filename}:")
         for i, link in enumerate(all_links[:3], 1):
-            print(f"{i}. {link[:80]}...")
+            print(f"{i}. {link[:100]}...")
     else:
         print(f"\n❌ Не удалось сгенерировать ни одной ссылки из {filename}!")
         print("Проверьте формат конфигураций в файле")
     
-    return len(all_links)
+    return len(all_links), all_json_configs
 
 def main():
     print("=" * 60)
-    print("V2Ray Multi-Config Converter")
+    print("V2Ray Multi-Config Converter v2.0")
     print("=" * 60)
     
     total_links = 0
     all_json_configs = []
     
     # Обработка configs.txt → output.txt
-    count1 = process_config_file('configs.txt', 'output.txt', 'Config1')
+    count1, configs1 = process_config_file('configs.txt', 'output.txt', 'Config1')
     total_links += count1
+    all_json_configs.extend(configs1)
     
     # Обработка configs2.txt → output2.txt
-    count2 = process_config_file('configs2.txt', 'output2.txt', 'Config2')
+    count2, configs2 = process_config_file('configs2.txt', 'output2.txt', 'Config2')
     total_links += count2
-    
-    # Создаем объединенный JSON с обеими конфигурациями
-    for filename, source_name in [('configs.txt', 'Config1'), ('configs2.txt', 'Config2')]:
-        if os.path.exists(filename):
-            try:
-                with open(filename, 'r', encoding='utf-8') as f:
-                    content = f.read()
-                configs = split_json_configs(content)
-                for config in configs:
-                    _, json_configs = json_to_vless(config, source_name)
-                    all_json_configs.extend(json_configs)
-            except:
-                pass
+    all_json_configs.extend(configs2)
     
     # Сохраняем объединенный JSON
     if all_json_configs:
