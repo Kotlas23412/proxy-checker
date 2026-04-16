@@ -132,26 +132,24 @@
         "settings": {
           "vnext": [
             {
-              "address": "yt1-s1.ladaracing.club",
-              "port": 443,
+              "address": "news.zoom.us",
+              "port": 8443,
               "users": [
                 {
-                  "id": "691c7b19-d124-47dd-8893-88cf02c31322",
+                  "id": "39eb8c33-ee7f-4980-b3e5-684aaf390f56",
                   "encryption": "none",
-                  "flow": "xtls-rprx-vision"
+                  "flow": ""
                 }
               ]
             }
           ]
         },
         "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "yt1-s1.ladaracing.club",
-            "fingerprint": "chrome",
-            "publicKey": "ICPA9Yrhc26eIxVE096MXHp5Ww4pE_z4lqxQ3NpSynQ",
-            "shortId": "7f7fa27a3ab45d3b"
+          "network": "ws",
+          "security": "tls",
+          "tlsSettings": {
+            "serverName": "darknet-free.alexid.org",
+            "fingerprint": "chrome"
           }
         }
       },
@@ -166,7 +164,7 @@
     ]
   },
   {
-    "remarks": "🇺🇳 Организация Объединенных Наций | LTE #2",
+    "remarks": "🇺🇳 Организация Объединенных Наций #2",
     "dns": {
       "queryStrategy": "UseIPv4",
       "servers": [
@@ -298,26 +296,24 @@
         "settings": {
           "vnext": [
             {
-              "address": "yt1-s1.ladaracing.club",
-              "port": 443,
+              "address": "8.6.112.0",
+              "port": 2096,
               "users": [
                 {
-                  "id": "691c7b19-d124-47dd-8893-88cf02c31322",
+                  "id": "fc625795-792d-4d9d-9d38-bffe59467d2d",
                   "encryption": "none",
-                  "flow": "xtls-rprx-vision"
+                  "flow": ""
                 }
               ]
             }
           ]
         },
         "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "yt1-s1.ladaracing.club",
-            "fingerprint": "chrome",
-            "publicKey": "ICPA9Yrhc26eIxVE096MXHp5Ww4pE_z4lqxQ3NpSynQ",
-            "shortId": "7f7fa27a3ab45d3b"
+          "network": "ws",
+          "security": "tls",
+          "tlsSettings": {
+            "serverName": "daluan.eu.org",
+            "fingerprint": "chrome"
           }
         }
       },
@@ -456,28 +452,526 @@
     "outbounds": [
       {
         "tag": "proxy",
-        "protocol": "trojan",
+        "protocol": "vless",
         "mux": {
           "enabled": true,
           "concurrency": -1
         },
         "settings": {
-          "servers": [
+          "vnext": [
             {
-              "address": "154.3.37.35",
-              "port": 41916,
-              "password": "hmR46dYjqH"
+              "address": "8.6.112.6",
+              "port": 443,
+              "users": [
+                {
+                  "id": "06ef598c-1555-4887-b3f9-08214a2f6792",
+                  "encryption": "none",
+                  "flow": ""
+                }
+              ]
             }
           ]
         },
         "streamSettings": {
-          "network": "grpc",
+          "network": "ws",
+          "security": "tls",
+          "tlsSettings": {
+            "serverName": "2026.hhhhh.eu.org",
+            "fingerprint": "chrome"
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ]
+  },
+  {
+    "remarks": "🇺🇳 Организация Объединенных Наций #4",
+    "dns": {
+      "queryStrategy": "UseIPv4",
+      "servers": [
+        {
+          "address": "77.88.8.8",
+          "detour": "direct",
+          "domains": [
+            "geosite:category-ru"
+          ],
+          "tag": "dns-ru"
+        },
+        {
+          "address": "https:\/\/dns.google\/dns-query",
+          "detour": "proxy",
+          "domains": [
+            "geosite:youtube",
+            "geosite:instagram",
+            "geosite:tiktok"
+          ],
+          "tag": "dns-stream"
+        },
+        {
+          "address": "https:\/\/cloudflare-dns.com\/dns-query",
+          "detour": "proxy",
+          "tag": "dns-default"
+        },
+        {
+          "address": "1.1.1.1",
+          "detour": "direct",
+          "skipFallback": false
+        }
+      ]
+    },
+    "inbounds": [
+      {
+        "listen": "127.0.0.1",
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "auth": "noauth",
+          "udp": true
+        },
+        "sniffing": {
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ],
+          "enabled": true
+        },
+        "tag": "socks"
+      },
+      {
+        "listen": "127.0.0.1",
+        "port": 10809,
+        "protocol": "http",
+        "settings": {
+          "allowTransparent": false
+        },
+        "sniffing": {
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ],
+          "enabled": true
+        },
+        "tag": "http"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "network": "udp",
+          "port": "443",
+          "outboundTag": "block",
+          "type": "field"
+        },
+        {
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct",
+          "type": "field"
+        },
+        {
+          "ip": [
+            "geoip:private",
+            "geoip:ru"
+          ],
+          "outboundTag": "direct",
+          "type": "field"
+        },
+        {
+          "domain": [
+            "geosite:category-ru",
+            "domain:yandex.ru",
+            "domain:vk.com"
+          ],
+          "outboundTag": "direct",
+          "type": "field"
+        },
+        {
+          "domain": [
+            "geosite:youtube",
+            "geosite:instagram",
+            "geosite:tiktok",
+            "domain:t.me"
+          ],
+          "outboundTag": "proxy",
+          "type": "field"
+        },
+        {
+          "network": "tcp,udp",
+          "outboundTag": "proxy",
+          "type": "field"
+        }
+      ]
+    },
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "vless",
+        "mux": {
+          "enabled": true,
+          "concurrency": -1
+        },
+        "settings": {
+          "vnext": [
+            {
+              "address": "8.6.112.0",
+              "port": 443,
+              "users": [
+                {
+                  "id": "06ef598c-1555-4887-b3f9-08214a2f6792",
+                  "encryption": "none",
+                  "flow": ""
+                }
+              ]
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "ws",
+          "security": "tls",
+          "tlsSettings": {
+            "serverName": "2026.hhhhh.eu.org",
+            "fingerprint": "chrome"
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ]
+  },
+  {
+    "remarks": "🇺🇳 Организация Объединенных Наций #5",
+    "dns": {
+      "queryStrategy": "UseIPv4",
+      "servers": [
+        {
+          "address": "77.88.8.8",
+          "detour": "direct",
+          "domains": [
+            "geosite:category-ru"
+          ],
+          "tag": "dns-ru"
+        },
+        {
+          "address": "https:\/\/dns.google\/dns-query",
+          "detour": "proxy",
+          "domains": [
+            "geosite:youtube",
+            "geosite:instagram",
+            "geosite:tiktok"
+          ],
+          "tag": "dns-stream"
+        },
+        {
+          "address": "https:\/\/cloudflare-dns.com\/dns-query",
+          "detour": "proxy",
+          "tag": "dns-default"
+        },
+        {
+          "address": "1.1.1.1",
+          "detour": "direct",
+          "skipFallback": false
+        }
+      ]
+    },
+    "inbounds": [
+      {
+        "listen": "127.0.0.1",
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "auth": "noauth",
+          "udp": true
+        },
+        "sniffing": {
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ],
+          "enabled": true
+        },
+        "tag": "socks"
+      },
+      {
+        "listen": "127.0.0.1",
+        "port": 10809,
+        "protocol": "http",
+        "settings": {
+          "allowTransparent": false
+        },
+        "sniffing": {
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ],
+          "enabled": true
+        },
+        "tag": "http"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "network": "udp",
+          "port": "443",
+          "outboundTag": "block",
+          "type": "field"
+        },
+        {
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct",
+          "type": "field"
+        },
+        {
+          "ip": [
+            "geoip:private",
+            "geoip:ru"
+          ],
+          "outboundTag": "direct",
+          "type": "field"
+        },
+        {
+          "domain": [
+            "geosite:category-ru",
+            "domain:yandex.ru",
+            "domain:vk.com"
+          ],
+          "outboundTag": "direct",
+          "type": "field"
+        },
+        {
+          "domain": [
+            "geosite:youtube",
+            "geosite:instagram",
+            "geosite:tiktok",
+            "domain:t.me"
+          ],
+          "outboundTag": "proxy",
+          "type": "field"
+        },
+        {
+          "network": "tcp,udp",
+          "outboundTag": "proxy",
+          "type": "field"
+        }
+      ]
+    },
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "vless",
+        "mux": {
+          "enabled": true,
+          "concurrency": -1
+        },
+        "settings": {
+          "vnext": [
+            {
+              "address": "45.194.66.206",
+              "port": 443,
+              "users": [
+                {
+                  "id": "f00984ef-f57e-41db-9182-b25f7bc3a1e2",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
+                }
+              ]
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "tcp",
           "security": "reality",
           "realitySettings": {
-            "serverName": "www.icloud.com",
+            "serverName": "polands.stardevs.top",
             "fingerprint": "chrome",
-            "publicKey": "NkBoOON_wUnunfFPyxfUj9Fy-4ytuGn82d6Kp-1LNk0",
-            "shortId": "5db27b"
+            "publicKey": "_t05V9DbgwyxSJOgRBhWYHt8d4Xt-qFfUXONotbUnCE",
+            "shortId": "f37fb7531c60780d"
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ]
+  },
+  {
+    "remarks": "🇺🇳 Организация Объединенных Наций #6",
+    "dns": {
+      "queryStrategy": "UseIPv4",
+      "servers": [
+        {
+          "address": "77.88.8.8",
+          "detour": "direct",
+          "domains": [
+            "geosite:category-ru"
+          ],
+          "tag": "dns-ru"
+        },
+        {
+          "address": "https:\/\/dns.google\/dns-query",
+          "detour": "proxy",
+          "domains": [
+            "geosite:youtube",
+            "geosite:instagram",
+            "geosite:tiktok"
+          ],
+          "tag": "dns-stream"
+        },
+        {
+          "address": "https:\/\/cloudflare-dns.com\/dns-query",
+          "detour": "proxy",
+          "tag": "dns-default"
+        },
+        {
+          "address": "1.1.1.1",
+          "detour": "direct",
+          "skipFallback": false
+        }
+      ]
+    },
+    "inbounds": [
+      {
+        "listen": "127.0.0.1",
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "auth": "noauth",
+          "udp": true
+        },
+        "sniffing": {
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ],
+          "enabled": true
+        },
+        "tag": "socks"
+      },
+      {
+        "listen": "127.0.0.1",
+        "port": 10809,
+        "protocol": "http",
+        "settings": {
+          "allowTransparent": false
+        },
+        "sniffing": {
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ],
+          "enabled": true
+        },
+        "tag": "http"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "network": "udp",
+          "port": "443",
+          "outboundTag": "block",
+          "type": "field"
+        },
+        {
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct",
+          "type": "field"
+        },
+        {
+          "ip": [
+            "geoip:private",
+            "geoip:ru"
+          ],
+          "outboundTag": "direct",
+          "type": "field"
+        },
+        {
+          "domain": [
+            "geosite:category-ru",
+            "domain:yandex.ru",
+            "domain:vk.com"
+          ],
+          "outboundTag": "direct",
+          "type": "field"
+        },
+        {
+          "domain": [
+            "geosite:youtube",
+            "geosite:instagram",
+            "geosite:tiktok",
+            "domain:t.me"
+          ],
+          "outboundTag": "proxy",
+          "type": "field"
+        },
+        {
+          "network": "tcp,udp",
+          "outboundTag": "proxy",
+          "type": "field"
+        }
+      ]
+    },
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "vless",
+        "mux": {
+          "enabled": true,
+          "concurrency": -1
+        },
+        "settings": {
+          "vnext": [
+            {
+              "address": "8.6.112.0",
+              "port": 443,
+              "users": [
+                {
+                  "id": "06ef598c-1555-4887-b3f9-08214a2f6792",
+                  "encryption": "none",
+                  "flow": ""
+                }
+              ]
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "ws",
+          "security": "tls",
+          "tlsSettings": {
+            "serverName": "2026.hhhhh.eu.org",
+            "fingerprint": "chrome"
           }
         }
       },
