@@ -10,6 +10,7 @@ import subprocess
 SNI_URL = "https://raw.githubusercontent.com/Kotlas23412/proxy-checker/refs/heads/main/sni.txt"
 SOURCES_FILE = "checkproxis.txt"
 LIMIT = 500
+OUTPUT_DIR = "proxies" # <--- ПАПКА ДЛЯ СОХРАНЕНИЯ РЕЗУЛЬТАТОВ
 
 def get_sni_list():
     try:
@@ -86,6 +87,9 @@ def main():
     print("1. ЗАГРУЗКА И ПАРСИНГ")
     print("="*50)
     
+    # Создаем папку для результатов, если её нет
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    
     sni_list = get_sni_list()
     sni_set = set(sni_list)
     print(f"Загружено {len(sni_list)} SNI для проверки из РФ.")
@@ -158,12 +162,14 @@ def main():
             ya_passed = []
             print("   -> [Этап 2: Yandex.ru] Пропущено, никто не прошел первый этап.")
         
-        # Обрезка до 500 и сохранение
+        # Обрезка до 500 и сохранение в папку OUTPUT_DIR
         final_list = ya_passed[:LIMIT]
-        with open(filename, "w", encoding="utf-8") as f:
+        filepath = os.path.join(OUTPUT_DIR, filename)
+        
+        with open(filepath, "w", encoding="utf-8") as f:
             f.write("\n".join(final_list))
         
-        print(f"   === ИТОГ: Сохранено {len(final_list)} рабочих нод в {filename} ===")
+        print(f"   === ИТОГ: Сохранено {len(final_list)} рабочих нод в {filepath} ===")
 
 if __name__ == "__main__":
     main()
