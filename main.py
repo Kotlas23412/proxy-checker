@@ -9,8 +9,8 @@ import subprocess
 # --- Настройки ---
 SNI_URL = "https://raw.githubusercontent.com/Kotlas23412/proxy-checker/refs/heads/main/sni.txt"
 SOURCES_FILE = "checkproxis.txt"
-LIMIT_OUT = 500  # Сколько сохранить в файл
-LIMIT_TEST = 2500 # Сколько максимум прокси тестировать за один раз (чтобы не упал чекер)
+LIMIT_OUT = 500   # Сколько сохранить рабочих в итоговый файл
+LIMIT_TEST = 1000 # Сколько берем на проверку за один запуск (чтобы не было перегрузки)
 OUTPUT_DIR = "proxies"
 
 def get_sni_list():
@@ -61,10 +61,9 @@ def test_proxies(proxies, phase_name, test_url):
     if not proxies: 
         return []
     
-    # Если прокси слишком много, берем случайные, чтобы чекер не вылетел
     if len(proxies) > LIMIT_TEST:
         proxies = random.sample(proxies, LIMIT_TEST)
-        print(f"   [!] Слишком много прокси. Выбрано случайных {LIMIT_TEST} для теста.")
+        print(f"   [INFO] Выбрано случайных {LIMIT_TEST} нод для теста.")
 
     with open("temp_nodes.txt", "w", encoding="utf-8") as f:
         f.write("\n".join(proxies))
@@ -72,15 +71,19 @@ def test_proxies(proxies, phase_name, test_url):
     if os.path.exists("out.json"):
         os.remove("out.json")
 
-    # В версии 0.15.0 ключ -out задает имя файла
-    cmd = f"./lite -config temp_nodes.txt -test {test_url} -out json -tl 3000"
+    # ИСПОЛЬЗУЕМ ПРАВИЛЬНЫЕ АРГУМЕНТЫ (с двойным тире)
+    cmd = f"./lite --config temp_nodes.txt --test {test_url} --output out.json"
     
     try:
-        # Увеличиваем таймаут выполнения самого процесса
-        subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=600)
+        # Теперь мы перехватываем вывод (capture_output=True), чтобы видеть ошибки
+        result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=600)
         
         if not os.path.exists("out.json"):
-            print(f"   [!] Результаты {phase_name} не созданы.")
+            print(f"   [КРИТИЧЕСКАЯ ОШИБКА] Чекер не смог создать файл с результатами!")
+            print(f"   --- ЛОГ ПРОГРАММЫ LITE ---")
+            print(result.stdout)
+            print(result.stderr)
+            print(f"   --------------------------")
             return []
 
         working = []
@@ -93,8 +96,11 @@ def test_proxies(proxies, phase_name, test_url):
             
         print(f"   -> [{phase_name}] Успешно: {len(working)} из {len(proxies)}")
         return working
+    except subprocess.TimeoutExpired:
+        print(f"   [!] Чекер завис и был остановлен по таймауту (10 минут).")
+        return []
     except Exception as e:
-        print(f"   [!] Ошибка чекера: {e}")
+        print(f"   [!] Ошибка Python: {e}")
         return []
 
 def main():
@@ -151,9 +157,9 @@ def main():
 
     for filename, proxies in categories.items():
         if not proxies: continue
-        print(f"\n[*] КАТЕГОРИЯ: {filename} ({len(proxies)} шт.)")
+        print(f"\n[*] КАТЕГОРИЯ: {filename} ({len(proxies)} шт. в базе)")
         
-        # Перемешиваем, чтобы каждый раз проверять разные прокси из базы
+        # Берем случайные, чтобы не тестировать одни и те же
         random.shuffle(proxies)
         
         cf_passed = test_proxies(proxies, "CF-Check", "http://cp.cloudflare.com/generate_204")
@@ -166,9 +172,9 @@ def main():
         filepath = os.path.join(OUTPUT_DIR, filename)
         with open(filepath, "w", encoding="utf-8") as f:
             f.write("\n".join(final_list))
-        print(f"   [OK] Сохранено: {len(final_list)}")
+        print(f"   [OK] Сохранено в файл: {len(final_list)}")
 
-    print("\nГотово!")
+    print("\nГотово! Файлы успешно обновлены.")
 
 if __name__ == "__main__":
     main()
