@@ -9,7 +9,8 @@ import subprocess
 # --- Настройки ---
 SNI_URL = "https://raw.githubusercontent.com/Kotlas23412/proxy-checker/refs/heads/main/sni.txt"
 SOURCES_FILE = "checkproxis.txt"
-LIMIT = 500
+LIMIT_OUT = 500  # Сколько сохранить в файл
+LIMIT_TEST = 2500 # Сколько максимум прокси тестировать за один раз (чтобы не упал чекер)
 OUTPUT_DIR = "proxies"
 
 def get_sni_list():
@@ -27,7 +28,7 @@ def clean_remark(proxy_link):
     
     country_match = re.search(r'([A-Z]{2}|[\U0001F1E6-\U0001F1FF]{2})', remark)
     country = country_match.group(1) if country_match else ""
-
+    
     company = ""
     if " - " in remark:
         parts = remark.split(" - ", 1)
@@ -38,7 +39,7 @@ def clean_remark(proxy_link):
     company = re.sub(r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', '', company)
     company = re.sub(r't\.me[^\s]+', '', company)
     company = re.sub(r'[\[\]]', '', company).strip()
-
+    
     new_remark = f"{country}-{company}" if country and company else (country if country else "Proxy")
     return f"{base}#{new_remark}"
 
@@ -60,32 +61,33 @@ def test_proxies(proxies, phase_name, test_url):
     if not proxies: 
         return []
     
+    # Если прокси слишком много, берем случайные, чтобы чекер не вылетел
+    if len(proxies) > LIMIT_TEST:
+        proxies = random.sample(proxies, LIMIT_TEST)
+        print(f"   [!] Слишком много прокси. Выбрано случайных {LIMIT_TEST} для теста.")
+
     with open("temp_nodes.txt", "w", encoding="utf-8") as f:
         f.write("\n".join(proxies))
     
     if os.path.exists("out.json"):
         os.remove("out.json")
 
-    # Команда для LiteSpeedTest v0.15.0
-    # -config (файл), -test (урл), -out (формат), -tl (тайм-аут мс)
+    # В версии 0.15.0 ключ -out задает имя файла
     cmd = f"./lite -config temp_nodes.txt -test {test_url} -out json -tl 3000"
     
     try:
-        subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        # Увеличиваем таймаут выполнения самого процесса
+        subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=600)
         
         if not os.path.exists("out.json"):
-            print(f"   [!] Результаты {phase_name} не найдены (out.json отсутствует).")
+            print(f"   [!] Результаты {phase_name} не созданы.")
             return []
 
         working = []
         with open("out.json", "r", encoding="utf-8") as f:
             data = json.load(f)
-            # В версии 0.15.0 корень это объект с полем "nodes"
             nodes = data.get("nodes", [])
-            
-            # Фильтруем только те, где пинг > 0
             valid_nodes = [n for n in nodes if n.get("ping", 0) > 0]
-            # Сортировка по пингу
             valid_nodes.sort(key=lambda x: x.get("ping", 9999))
             working = [n.get("link") for n in valid_nodes if n.get("link")]
             
@@ -97,19 +99,14 @@ def test_proxies(proxies, phase_name, test_url):
 
 def main():
     print("="*60)
-    print("1. ЗАГРУЗКА ДАННЫХ И ПАРСИНГ")
+    print("1. ЗАГРУЗКА ДАННЫХ")
     print("="*60)
     
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     sni_list = get_sni_list()
     sni_set = set(sni_list)
-    print(f"Загружено {len(sni_list)} SNI из вашего списка.")
 
     raw_proxies = set()
-    if not os.path.exists(SOURCES_FILE):
-        print(f"[КРИТИЧЕСКАЯ ОШИБКА] Файл {SOURCES_FILE} не найден!")
-        return
-
     with open(SOURCES_FILE, "r") as f:
         urls = [line.strip() for line in f if line.strip() and not line.startswith("#")]
         
@@ -125,9 +122,9 @@ def main():
                     count += 1
             print(f"Скачано {count} прокси из: {url.split('/')[-1]}")
         except Exception as e:
-            print(f"[ОШИБКА] Не удалось прочитать {url}: {e}")
+            print(f"[ОШИБКА] {url}: {e}")
 
-    print(f"\nИТОГО уникальных ссылок собрано: {len(raw_proxies)}\n")
+    print(f"\nИТОГО уникальных ссылок: {len(raw_proxies)}\n")
 
     categories = {
         "vless_xray.txt": [],
@@ -141,8 +138,7 @@ def main():
             categories["hysteria2.txt"].append(p)
         elif p.startswith("vless://"):
             if "security=reality" in p:
-                current_sni = extract_sni(p)
-                if current_sni in sni_set:
+                if extract_sni(p) in sni_set:
                     categories["vless_reality_native_sni.txt"].append(p)
                 else:
                     categories["vless_reality_injected_sni.txt"].append(inject_random_sni(p, sni_list))
@@ -150,40 +146,29 @@ def main():
                 categories["vless_xray.txt"].append(p)
 
     print("="*60)
-    print("2. РАСПРЕДЕЛЕНИЕ ПО ТИПАМ")
-    print("="*60)
-    for cat, items in categories.items():
-        print(f" - {cat}: {len(items)} шт.")
-
-    print("\n" + "="*60)
-    print("3. ПРОВЕРКА (CLOUDFLARE -> YANDEX)")
+    print("2. ТЕСТИРОВАНИЕ (CLOUDFLARE -> YANDEX)")
     print("="*60)
 
     for filename, proxies in categories.items():
-        if not proxies:
-            continue
-            
-        print(f"\n[*] КАТЕГОРИЯ: {filename}")
+        if not proxies: continue
+        print(f"\n[*] КАТЕГОРИЯ: {filename} ({len(proxies)} шт.)")
         
-        # Шаг 1: Проверка на общую работоспособность
-        cf_passed = test_proxies(proxies, "Pass 1: Cloudflare", "http://cp.cloudflare.com/generate_204")
+        # Перемешиваем, чтобы каждый раз проверять разные прокси из базы
+        random.shuffle(proxies)
         
-        # Шаг 2: Проверка доступа к РФ-ресурсам (Яндекс)
+        cf_passed = test_proxies(proxies, "CF-Check", "http://cp.cloudflare.com/generate_204")
         if cf_passed:
-            ya_passed = test_proxies(cf_passed, "Pass 2: Yandex.ru", "http://ya.ru")
+            ya_passed = test_proxies(cf_passed, "YA-Check", "http://ya.ru")
         else:
             ya_passed = []
-            print("   -> [!] Пропуск Pass 2: нет выживших после Pass 1.")
         
-        final_list = ya_passed[:LIMIT]
+        final_list = ya_passed[:LIMIT_OUT]
         filepath = os.path.join(OUTPUT_DIR, filename)
         with open(filepath, "w", encoding="utf-8") as f:
             f.write("\n".join(final_list))
-        print(f"   [OK] Результат: {len(final_list)} лучших нод сохранены в {filepath}")
+        print(f"   [OK] Сохранено: {len(final_list)}")
 
-    print("\n" + "="*60)
-    print("ВСЕ ОПЕРАЦИИ ЗАВЕРШЕНЫ!")
-    print("="*60)
+    print("\nГотово!")
 
 if __name__ == "__main__":
     main()
