@@ -32,6 +32,9 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add vless_xray.txt vless_reality_native_sni.txt vless_reality_injected_sni.txt hysteria2.txt
+          
+          # Добавляем папку proxies со всеми файлами внутри
+          git add proxies/
+          
           git commit -m "Auto-update: Proxies checked via CF & Yandex" || echo "No changes"
           git push
