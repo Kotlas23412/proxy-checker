@@ -18,11 +18,11 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Download Lite-Speedtest
+      - name: Download LiteSpeedTest (Fixed Link)
         run: |
-          wget https://github.com/Miaoko/lite-speedtest/releases/download/v0.0.1/lite-linux-amd64-v0.0.1.gz
-          gzip -d lite-linux-amd64-v0.0.1.gz
-          mv lite-linux-amd64-v0.0.1 lite
+          wget https://github.com/xxf098/LiteSpeedTest/releases/download/v0.15.0/lite-linux-amd64-v0.15.0.gz
+          gunzip lite-linux-amd64-v0.15.0.gz
+          mv lite-linux-amd64-v0.15.0 lite
           chmod +x lite
 
       - name: Run Script (Parse & Dual Check)
@@ -32,9 +32,6 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # Добавляем папку proxies со всеми файлами внутри
           git add proxies/
-          
           git commit -m "Auto-update: Proxies checked via CF & Yandex" || echo "No changes"
           git push
