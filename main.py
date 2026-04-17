@@ -10,7 +10,7 @@ import subprocess
 SNI_URL = "https://raw.githubusercontent.com/Kotlas23412/proxy-checker/refs/heads/main/sni.txt"
 SOURCES_FILE = "checkproxis.txt"
 LIMIT = 500
-OUTPUT_DIR = "proxies" # <--- ПАПКА ДЛЯ СОХРАНЕНИЯ РЕЗУЛЬТАТОВ
+OUTPUT_DIR = "proxies"
 
 def get_sni_list():
     try:
@@ -45,13 +45,11 @@ def clean_remark(proxy_link):
 def inject_random_sni(proxy_link, sni_list):
     base, remark = proxy_link.split("#", 1) if "#" in proxy_link else (proxy_link, "Injected-SNI")
     random_sni = random.choice(sni_list)
-    
     if re.search(r'([?&])sni=[^&#]+', base):
         base = re.sub(r'([?&])sni=[^&#]+', rf'\g<1>sni={random_sni}', base)
     else:
         sep = "&" if "?" in base else "?"
         base += f"{sep}sni={random_sni}"
-        
     return f"{base}#{remark}"
 
 def extract_sni(proxy_link):
@@ -65,36 +63,53 @@ def test_proxies(proxies, phase_name, test_url):
     with open("temp_nodes.txt", "w", encoding="utf-8") as f:
         f.write("\n".join(proxies))
     
-    # Запускаем чекер
-    cmd = f"./lite --config temp_nodes.txt --test {test_url} --timeout 3000 --output result.json"
-    subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    if os.path.exists("out.json"):
+        os.remove("out.json")
+
+    # Команда для LiteSpeedTest v0.15.0
+    # -config (файл), -test (урл), -out (формат), -tl (тайм-аут мс)
+    cmd = f"./lite -config temp_nodes.txt -test {test_url} -out json -tl 3000"
     
-    working = []
     try:
-        with open("result.json", "r", encoding="utf-8") as f:
+        subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        
+        if not os.path.exists("out.json"):
+            print(f"   [!] Результаты {phase_name} не найдены (out.json отсутствует).")
+            return []
+
+        working = []
+        with open("out.json", "r", encoding="utf-8") as f:
             data = json.load(f)
-            valid_nodes = [n for n in data.get("nodes", []) if n.get("ping", 0) > 0]
+            # В версии 0.15.0 корень это объект с полем "nodes"
+            nodes = data.get("nodes", [])
+            
+            # Фильтруем только те, где пинг > 0
+            valid_nodes = [n for n in nodes if n.get("ping", 0) > 0]
+            # Сортировка по пингу
             valid_nodes.sort(key=lambda x: x.get("ping", 9999))
-            working = [n.get("link") for n in valid_nodes]
+            working = [n.get("link") for n in valid_nodes if n.get("link")]
+            
+        print(f"   -> [{phase_name}] Успешно: {len(working)} из {len(proxies)}")
+        return working
     except Exception as e:
-        print(f"   [!] Ошибка чтения результатов: {e}")
-    
-    print(f"   -> [{phase_name}] Успешно ответили: {len(working)} из {len(proxies)}")
-    return working
+        print(f"   [!] Ошибка чекера: {e}")
+        return []
 
 def main():
-    print("="*50)
-    print("1. ЗАГРУЗКА И ПАРСИНГ")
-    print("="*50)
+    print("="*60)
+    print("1. ЗАГРУЗКА ДАННЫХ И ПАРСИНГ")
+    print("="*60)
     
-    # Создаем папку для результатов, если её нет
     os.makedirs(OUTPUT_DIR, exist_ok=True)
-    
     sni_list = get_sni_list()
     sni_set = set(sni_list)
-    print(f"Загружено {len(sni_list)} SNI для проверки из РФ.")
+    print(f"Загружено {len(sni_list)} SNI из вашего списка.")
 
     raw_proxies = set()
+    if not os.path.exists(SOURCES_FILE):
+        print(f"[КРИТИЧЕСКАЯ ОШИБКА] Файл {SOURCES_FILE} не найден!")
+        return
+
     with open(SOURCES_FILE, "r") as f:
         urls = [line.strip() for line in f if line.strip() and not line.startswith("#")]
         
@@ -112,9 +127,8 @@ def main():
         except Exception as e:
             print(f"[ОШИБКА] Не удалось прочитать {url}: {e}")
 
-    print(f"\nВСЕГО уникальных ссылок собрано: {len(raw_proxies)}\n")
+    print(f"\nИТОГО уникальных ссылок собрано: {len(raw_proxies)}\n")
 
-    # Списки
     categories = {
         "vless_xray.txt": [],
         "vless_reality_native_sni.txt": [],
@@ -135,41 +149,41 @@ def main():
             else:
                 categories["vless_xray.txt"].append(p)
 
-    print("="*50)
-    print("2. РАСПРЕДЕЛЕНИЕ ПО КАТЕГОРИЯМ")
-    print("="*50)
+    print("="*60)
+    print("2. РАСПРЕДЕЛЕНИЕ ПО ТИПАМ")
+    print("="*60)
     for cat, items in categories.items():
         print(f" - {cat}: {len(items)} шт.")
 
-    print("\n" + "="*50)
-    print("3. ДВОЙНАЯ ПРОВЕРКА ПРОКСИ (Cloudflare -> Yandex)")
-    print("="*50)
+    print("\n" + "="*60)
+    print("3. ПРОВЕРКА (CLOUDFLARE -> YANDEX)")
+    print("="*60)
 
     for filename, proxies in categories.items():
         if not proxies:
-            print(f"\nПропуск {filename} (список пуст).")
             continue
             
-        print(f"\n--- Тестируем категорию: {filename} ---")
+        print(f"\n[*] КАТЕГОРИЯ: {filename}")
         
-        # ЭТАП 1: Cloudflare
-        cf_passed = test_proxies(proxies, "Этап 1: Cloudflare", "http://cp.cloudflare.com/generate_204")
+        # Шаг 1: Проверка на общую работоспособность
+        cf_passed = test_proxies(proxies, "Pass 1: Cloudflare", "http://cp.cloudflare.com/generate_204")
         
-        # ЭТАП 2: Yandex
+        # Шаг 2: Проверка доступа к РФ-ресурсам (Яндекс)
         if cf_passed:
-            ya_passed = test_proxies(cf_passed, "Этап 2: Yandex.ru", "http://ya.ru")
+            ya_passed = test_proxies(cf_passed, "Pass 2: Yandex.ru", "http://ya.ru")
         else:
             ya_passed = []
-            print("   -> [Этап 2: Yandex.ru] Пропущено, никто не прошел первый этап.")
+            print("   -> [!] Пропуск Pass 2: нет выживших после Pass 1.")
         
-        # Обрезка до 500 и сохранение в папку OUTPUT_DIR
         final_list = ya_passed[:LIMIT]
         filepath = os.path.join(OUTPUT_DIR, filename)
-        
         with open(filepath, "w", encoding="utf-8") as f:
             f.write("\n".join(final_list))
-        
-        print(f"   === ИТОГ: Сохранено {len(final_list)} рабочих нод в {filepath} ===")
+        print(f"   [OK] Результат: {len(final_list)} лучших нод сохранены в {filepath}")
+
+    print("\n" + "="*60)
+    print("ВСЕ ОПЕРАЦИИ ЗАВЕРШЕНЫ!")
+    print("="*60)
 
 if __name__ == "__main__":
     main()
