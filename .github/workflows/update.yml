@@ -1,0 +1,37 @@
+name: Proxy Checker (Deep Scan for RU)
+
+on:
+  schedule:
+    - cron: '0 */6 * * *' 
+  workflow_dispatch: 
+
+jobs:
+  run-checker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Download Lite-Speedtest
+        run: |
+          wget https://github.com/Miaoko/lite-speedtest/releases/download/v0.0.1/lite-linux-amd64-v0.0.1.gz
+          gzip -d lite-linux-amd64-v0.0.1.gz
+          mv lite-linux-amd64-v0.0.1 lite
+          chmod +x lite
+
+      - name: Run Script (Parse & Dual Check)
+        run: python main.py
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add vless_xray.txt vless_reality_native_sni.txt vless_reality_injected_sni.txt hysteria2.txt
+          git commit -m "Auto-update: Proxies checked via CF & Yandex" || echo "No changes"
+          git push
