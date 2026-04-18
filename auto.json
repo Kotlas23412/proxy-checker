@@ -1,41 +1,41 @@
 [
   {
-    "remarks": "🧪 TEST: FAILOVER (Broken RU -> DE)",
+    "remarks": "🇷🇺 [TEST] RUSSIA (Broken -> NL Backup)",
     "burstObservatory": {
       "pingConfig": {
         "destination": "http://www.gstatic.com/generate_204",
         "interval": "10s",
         "sampling": 2,
-        "timeout": "2s"
+        "timeout": "3s"
       },
-      "subjectSelector": ["proxy-broken"]
+      "subjectSelector": ["proxy-ru", "backup-nl"]
     },
     "outbounds": [
       {
-        "tag": "proxy-broken-1",
+        "tag": "proxy-ru-broken",
         "protocol": "vless",
         "settings": {
           "vnext": [
             {
-              "address": "1.1.1.2", 
+              "address": "127.0.0.1",
               "port": 12345,
-              "users": [{"id": "00000000-0000-0000-0000-000000000000", "encryption": "none"}]
+              "users": [{"id": "82ae5746-137c-4e94-9338-07b63087699a", "encryption": "none"}]
             }
           ]
         },
-        "remarks": "Этот сервер не работает"
+        "remarks": "Сломанный сервер России"
       },
       {
-        "tag": "emergency-backup",
+        "tag": "backup-nl",
         "protocol": "vless",
         "settings": {
           "vnext": [
             {
-              "address": "dex1.braidx.tech",
-              "port": 443,
+              "address": "72.56.33.44",
+              "port": 4332,
               "users": [
                 {
-                  "id": "2fdd6b51-4fe2-4e2f-803a-3eb284bf038e",
+                  "id": "82ae5746-137c-4e94-9338-07b63087699a",
                   "encryption": "none",
                   "flow": "xtls-rprx-vision"
                 }
@@ -47,24 +47,21 @@
           "network": "tcp",
           "security": "reality",
           "realitySettings": {
-            "serverName": "dex1.braidx.tech",
+            "serverName": "files.moscownews24.ru",
             "fingerprint": "chrome",
-            "publicKey": "2s97j3ehJylQb7OJnl-5aESG5L50_5RzDTRlBzFtwkE",
-            "shortId": "02b5e6bf16f08d2c"
+            "publicKey": "SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc",
+            "shortId": ""
           }
         }
       },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      }
+      { "tag": "direct", "protocol": "freedom" }
     ],
     "routing": {
       "balancers": [
         {
           "tag": "balancer-main",
-          "selector": ["proxy-broken"],
-          "fallbackTag": "emergency-backup",
+          "selector": ["proxy-ru"],
+          "fallbackTag": "backup-nl",
           "strategy": { "type": "leastLoad" }
         }
       ],
@@ -78,17 +75,59 @@
     }
   },
   {
-    "remarks": "🧪 TEST: NORMAL (Working DE)",
+    "remarks": "🇩🇪 [TEST] GERMANY (Working)",
+    "burstObservatory": {
+      "pingConfig": {
+        "destination": "http://www.gstatic.com/generate_204",
+        "interval": "15s",
+        "sampling": 2,
+        "timeout": "3s"
+      },
+      "subjectSelector": ["proxy-de"]
+    },
     "outbounds": [
       {
-        "tag": "proxy-working",
+        "tag": "proxy-de-1",
         "protocol": "vless",
         "settings": {
           "vnext": [
             {
-              "address": "dex1.braidx.tech",
-              "port": 443,
-              "users": [{"id": "2fdd6b51-4fe2-4e2f-803a-3eb284bf038e", "encryption": "none", "flow": "xtls-rprx-vision"}]
+              "address": "cluster-de-1.firstvideocdn.ru",
+              "port": 52006,
+              "users": [
+                {
+                  "id": "75807638-6f19-01f4-ae08-38492ee85c88",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
+                }
+              ]
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "tcp",
+          "security": "tls",
+          "tlsSettings": {
+            "serverName": "cluster-de-1.firstvideocdn.ru",
+            "fingerprint": "chrome"
+          }
+        }
+      },
+      {
+        "tag": "proxy-de-2",
+        "protocol": "vless",
+        "settings": {
+          "vnext": [
+            {
+              "address": "152.53.139.33",
+              "port": 4356,
+              "users": [
+                {
+                  "id": "82ae5746-137c-4e94-9338-07b63087699a",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
+                }
+              ]
             }
           ]
         },
@@ -96,14 +135,30 @@
           "network": "tcp",
           "security": "reality",
           "realitySettings": {
-            "serverName": "dex1.braidx.tech",
+            "serverName": "files.moscownews24.ru",
             "fingerprint": "chrome",
-            "publicKey": "2s97j3ehJylQb7OJnl-5aESG5L50_5RzDTRlBzFtwkE",
-            "shortId": "02b5e6bf16f08d2c"
+            "publicKey": "SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc",
+            "shortId": ""
           }
         }
       },
       { "tag": "direct", "protocol": "freedom" }
-    ]
+    ],
+    "routing": {
+      "balancers": [
+        {
+          "tag": "balancer-main",
+          "selector": ["proxy-de"],
+          "strategy": { "type": "leastLoad" }
+        }
+      ],
+      "rules": [
+        {
+          "network": "tcp,udp",
+          "balancerTag": "balancer-main",
+          "type": "field"
+        }
+      ]
+    }
   }
 ]
