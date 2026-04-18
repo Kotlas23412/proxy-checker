@@ -4,8 +4,8 @@ from datetime import datetime, timezone, timedelta
 import base64
 
 # Ссылка на JSON с вашими прокси
-URL = "https://raw.githubusercontent.com/tiagorrg/vless-checker/refs/heads/main/docs/keys.json"
-
+"""URL = "https://raw.githubusercontent.com/tiagorrg/vless-checker/refs/heads/main/docs/keys.json""""
+URL = "https://raw.githubusercontent.com/Kotlas23412/vless-checker/refs/heads/main/docs/keys.json"
 def extract_vless(data):
     """Рекурсивно ищет все строки, начинающиеся с vless:// в JSON"""
     links = set()
