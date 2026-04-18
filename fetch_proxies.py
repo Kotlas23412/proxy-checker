@@ -9,18 +9,24 @@ URLS = [
     "https://raw.githubusercontent.com/Kotlas23412/vless-checker/refs/heads/main/docs/keys.json"
 ]
 
-def extract_vless(data):
-    """Рекурсивно ищет все строки, начинающиеся с vless:// в JSON"""
+def extract_proxies(data):
+    """Рекурсивно ищет все строки, начинающиеся с vless://, hysteria2:// или hy2:// в JSON"""
     links = set()
+    # Список поддерживаемых протоколов
+    protocols = ('vless://', 'hysteria2://', 'hy2://')
+    
     if isinstance(data, dict):
-        for k, v in data.items():
-            if isinstance(v, str) and v.startswith('vless://'):
+        for v in data.values():
+            if isinstance(v, str) and v.startswith(protocols):
                 links.add(v)
             else:
-                links.update(extract_vless(v))
+                links.update(extract_proxies(v))
     elif isinstance(data, list):
         for item in data:
-            links.update(extract_vless(item))
+            if isinstance(item, str) and item.startswith(protocols):
+                links.add(item)
+            else:
+                links.update(extract_proxies(item))
     return links
 
 def main():
@@ -31,8 +37,9 @@ def main():
         req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
         try:
             with urllib.request.urlopen(req) as response:
-                data = json.loads(response.read().decode('utf-8'))
-                found = extract_vless(data)
+                content = response.read().decode('utf-8')
+                data = json.loads(content)
+                found = extract_proxies(data)
                 all_proxies.update(found)
                 print(f"Найдено прокси в этом источнике: {len(found)}")
         except Exception as e:
@@ -48,7 +55,7 @@ def main():
     dt_str = now.strftime("%d.%m.%Y %H:%M")
 
     # Формируем заголовок в формате Base64
-    raw_title = f"Все рабочие (Тест) 🔧 {dt_str}".encode('utf-8')
+    raw_title = f"Все рабочие (VLESS+HY2) 🔧 {dt_str}".encode('utf-8')
     b64_title = base64.b64encode(raw_title).decode('utf-8')
 
     # Формируем итоговый текстовый файл
