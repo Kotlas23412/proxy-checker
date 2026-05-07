@@ -3,7 +3,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "⬇️ Обход глушилок ⬇️ - proxy",
+    "remarks": "🇩🇪  Германия  - proxy",
     "inbounds": [
       {
         "port": 10808,
@@ -38,255 +38,38 @@
         "settings": {
           "vnext": [
             {
-              "address": "s35222.cdn.ngenix.net",
+              "address": "185.191.118.71",
               "port": 443,
               "users": [
                 {
-                  "id": "caeb60db-0a74-40eb-a493-e95541a6c0cf",
-                  "encryption": "none"
+                  "id": "5f5114c6-ad1f-4e4a-baad-aacb4634f275",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
                 }
               ]
             }
           ]
         },
         "streamSettings": {
-          "network": "ws",
-          "security": "tls",
-          "tlsSettings": {
-            "show": false,
-            "serverName": "s35222.cdn.ngenix.net",
-            "fingerprint": "qq",
-            "allowInsecure": false
+          "network": "tcp",
+          "sockopt": {
+            "tcpNoDelay": true,
+            "tcpKeepAliveIdle": 100,
+            "mark": 255
           },
-          "wsSettings": {
-            "headers": {
-              "Host": "s35222.cdn.ngenix.net"
-            },
-            "path": "/stream/live"
-          }
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      },
-      {
-        "tag": "block",
-        "protocol": "blackhole"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": [
-        {
-          "type": "field",
-          "outboundTag": "direct",
-          "domain": [
-            "regexp:.*\\.ru$",
-            "regexp:.*\\.рф$",
-            "regexp:.*\\.su$",
-            "domain:yandex.ru",
-            "domain:yandex.net",
-            "domain:ya.ru",
-            "domain:vk.com",
-            "domain:mail.ru",
-            "domain:sberbank.ru",
-            "domain:gosuslugi.ru"
-          ]
-        },
-        {
-          "type": "field",
-          "outboundTag": "direct",
-          "ip": [
-            "geoip:ru",
-            "geoip:private"
-          ]
-        },
-        {
-          "type": "field",
-          "protocol": [
-            "bittorrent"
-          ],
-          "outboundTag": "direct"
-        }
-      ]
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "⬇️ Обход глушилок ⬇️ - proxy-2",
-    "inbounds": [
-      {
-        "port": 10808,
-        "protocol": "socks",
-        "settings": {
-          "udp": true
-        },
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      },
-      {
-        "port": 10809,
-        "protocol": "http",
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      }
-    ],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "vless",
-        "settings": {
-          "vnext": [
-            {
-              "address": "one.ethervds.com",
-              "port": 8443,
-              "users": [
-                {
-                  "id": "caeb60db-0a74-40eb-a493-e95541a6c0cf",
-                  "encryption": "none"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "xhttp",
           "security": "reality",
           "realitySettings": {
             "show": false,
-            "serverName": "api-maps.yandex.ru",
+            "serverName": "google.com",
             "fingerprint": "qq",
-            "publicKey": "f1RWqWYFHjUxAVBxFNlLtBbVs7THYjuAJvhG7nK4IEE",
-            "shortId": "0123456789abcdef"
+            "publicKey": "FhYXVO-0BlCdga4MFczEVVC_clTA2UaIhWUiaWvYlR0",
+            "shortId": "fb2a682d44bdc70c",
+            "spiderX": "/"
           },
-          "xhttpSettings": {
-            "path": "/api/v1/data",
-            "mode": "auto"
-          }
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      },
-      {
-        "tag": "block",
-        "protocol": "blackhole"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": [
-        {
-          "type": "field",
-          "outboundTag": "direct",
-          "domain": [
-            "regexp:.*\\.ru$",
-            "regexp:.*\\.рф$",
-            "regexp:.*\\.su$",
-            "domain:yandex.ru",
-            "domain:yandex.net",
-            "domain:ya.ru",
-            "domain:vk.com",
-            "domain:mail.ru",
-            "domain:sberbank.ru",
-            "domain:gosuslugi.ru"
-          ]
-        },
-        {
-          "type": "field",
-          "outboundTag": "direct",
-          "ip": [
-            "geoip:ru",
-            "geoip:private"
-          ]
-        },
-        {
-          "type": "field",
-          "protocol": [
-            "bittorrent"
-          ],
-          "outboundTag": "direct"
-        }
-      ]
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "⬇️ Обход глушилок ⬇️ - proxy-3",
-    "inbounds": [
-      {
-        "port": 10808,
-        "protocol": "socks",
-        "settings": {
-          "udp": true
-        },
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      },
-      {
-        "port": 10809,
-        "protocol": "http",
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      }
-    ],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "vless",
-        "settings": {
-          "vnext": [
-            {
-              "address": "one.ethervds.com",
-              "port": 7443,
-              "users": [
-                {
-                  "id": "caeb60db-0a74-40eb-a493-e95541a6c0cf",
-                  "encryption": "none"
-                }
-              ]
+          "tcpSettings": {
+            "header": {
+              "type": "none"
             }
-          ]
-        },
-        "streamSettings": {
-          "network": "xhttp",
-          "security": "reality",
-          "realitySettings": {
-            "show": false,
-            "serverName": "ads.x5.ru",
-            "fingerprint": "qq",
-            "publicKey": "f1RWqWYFHjUxAVBxFNlLtBbVs7THYjuAJvhG7nK4IEE",
-            "shortId": "0123456789abcdef"
-          },
-          "xhttpSettings": {
-            "path": "/api/v1/data",
-            "mode": "auto"
           }
         }
       },
@@ -340,7 +123,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "⬇️ Обход глушилок ⬇️ - proxy-4",
+    "remarks": "🇱🇹 Литва - proxy",
     "inbounds": [
       {
         "port": 10808,
@@ -375,479 +158,38 @@
         "settings": {
           "vnext": [
             {
-              "address": "one.ethervds.com",
-              "port": 8414,
-              "users": [
-                {
-                  "id": "caeb60db-0a74-40eb-a493-e95541a6c0cf",
-                  "encryption": "none"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "xhttp",
-          "security": "reality",
-          "realitySettings": {
-            "show": false,
-            "serverName": "max.ru",
-            "fingerprint": "qq",
-            "publicKey": "f1RWqWYFHjUxAVBxFNlLtBbVs7THYjuAJvhG7nK4IEE",
-            "shortId": "0123456789abcdef"
-          },
-          "xhttpSettings": {
-            "path": "/api/v1/data",
-            "mode": "auto"
-          }
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      },
-      {
-        "tag": "block",
-        "protocol": "blackhole"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": [
-        {
-          "type": "field",
-          "outboundTag": "direct",
-          "domain": [
-            "regexp:.*\\.ru$",
-            "regexp:.*\\.рф$",
-            "regexp:.*\\.su$",
-            "domain:yandex.ru",
-            "domain:yandex.net",
-            "domain:ya.ru",
-            "domain:vk.com",
-            "domain:mail.ru",
-            "domain:sberbank.ru",
-            "domain:gosuslugi.ru"
-          ]
-        },
-        {
-          "type": "field",
-          "outboundTag": "direct",
-          "ip": [
-            "geoip:ru",
-            "geoip:private"
-          ]
-        },
-        {
-          "type": "field",
-          "protocol": [
-            "bittorrent"
-          ],
-          "outboundTag": "direct"
-        }
-      ]
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "⬇️ Обход глушилок ⬇️ - proxy-5",
-    "inbounds": [
-      {
-        "port": 10808,
-        "protocol": "socks",
-        "settings": {
-          "udp": true
-        },
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      },
-      {
-        "port": 10809,
-        "protocol": "http",
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      }
-    ],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "vless",
-        "settings": {
-          "vnext": [
-            {
-              "address": "two.ethervds.com",
-              "port": 8414,
-              "users": [
-                {
-                  "id": "caeb60db-0a74-40eb-a493-e95541a6c0cf",
-                  "encryption": "none"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "xhttp",
-          "security": "reality",
-          "realitySettings": {
-            "show": false,
-            "serverName": "max.ru",
-            "fingerprint": "chrome",
-            "publicKey": "f1RWqWYFHjUxAVBxFNlLtBbVs7THYjuAJvhG7nK4IEE",
-            "shortId": "0123456789abcdef"
-          },
-          "xhttpSettings": {
-            "path": "/api/v1/data",
-            "mode": "auto"
-          }
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      },
-      {
-        "tag": "block",
-        "protocol": "blackhole"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": [
-        {
-          "type": "field",
-          "outboundTag": "direct",
-          "domain": [
-            "regexp:.*\\.ru$",
-            "regexp:.*\\.рф$",
-            "regexp:.*\\.su$",
-            "domain:yandex.ru",
-            "domain:yandex.net",
-            "domain:ya.ru",
-            "domain:vk.com",
-            "domain:mail.ru",
-            "domain:sberbank.ru",
-            "domain:gosuslugi.ru"
-          ]
-        },
-        {
-          "type": "field",
-          "outboundTag": "direct",
-          "ip": [
-            "geoip:ru",
-            "geoip:private"
-          ]
-        },
-        {
-          "type": "field",
-          "protocol": [
-            "bittorrent"
-          ],
-          "outboundTag": "direct"
-        }
-      ]
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "⬇️ Обход глушилок ⬇️ - proxy-6",
-    "inbounds": [
-      {
-        "port": 10808,
-        "protocol": "socks",
-        "settings": {
-          "udp": true
-        },
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      },
-      {
-        "port": 10809,
-        "protocol": "http",
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      }
-    ],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "vless",
-        "settings": {
-          "vnext": [
-            {
-              "address": "two.ethervds.com",
-              "port": 8443,
-              "users": [
-                {
-                  "id": "caeb60db-0a74-40eb-a493-e95541a6c0cf",
-                  "encryption": "none"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "xhttp",
-          "security": "reality",
-          "realitySettings": {
-            "show": false,
-            "serverName": "api-maps.yandex.ru",
-            "fingerprint": "qq",
-            "publicKey": "f1RWqWYFHjUxAVBxFNlLtBbVs7THYjuAJvhG7nK4IEE",
-            "shortId": "0123456789abcdef"
-          },
-          "xhttpSettings": {
-            "path": "/api/v1/data",
-            "mode": "auto"
-          }
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      },
-      {
-        "tag": "block",
-        "protocol": "blackhole"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": [
-        {
-          "type": "field",
-          "outboundTag": "direct",
-          "domain": [
-            "regexp:.*\\.ru$",
-            "regexp:.*\\.рф$",
-            "regexp:.*\\.su$",
-            "domain:yandex.ru",
-            "domain:yandex.net",
-            "domain:ya.ru",
-            "domain:vk.com",
-            "domain:mail.ru",
-            "domain:sberbank.ru",
-            "domain:gosuslugi.ru"
-          ]
-        },
-        {
-          "type": "field",
-          "outboundTag": "direct",
-          "ip": [
-            "geoip:ru",
-            "geoip:private"
-          ]
-        },
-        {
-          "type": "field",
-          "protocol": [
-            "bittorrent"
-          ],
-          "outboundTag": "direct"
-        }
-      ]
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "⬇️ Обход глушилок ⬇️ - proxy-7",
-    "inbounds": [
-      {
-        "port": 10808,
-        "protocol": "socks",
-        "settings": {
-          "udp": true
-        },
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      },
-      {
-        "port": 10809,
-        "protocol": "http",
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      }
-    ],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "vless",
-        "settings": {
-          "vnext": [
-            {
-              "address": "two.ethervds.com",
-              "port": 7443,
-              "users": [
-                {
-                  "id": "caeb60db-0a74-40eb-a493-e95541a6c0cf",
-                  "encryption": "none"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "xhttp",
-          "security": "reality",
-          "realitySettings": {
-            "show": false,
-            "serverName": "ads.x5.ru",
-            "fingerprint": "qq",
-            "publicKey": "f1RWqWYFHjUxAVBxFNlLtBbVs7THYjuAJvhG7nK4IEE",
-            "shortId": "0123456789abcdef"
-          },
-          "xhttpSettings": {
-            "path": "/api/v1/data",
-            "mode": "auto"
-          }
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      },
-      {
-        "tag": "block",
-        "protocol": "blackhole"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": [
-        {
-          "type": "field",
-          "outboundTag": "direct",
-          "domain": [
-            "regexp:.*\\.ru$",
-            "regexp:.*\\.рф$",
-            "regexp:.*\\.su$",
-            "domain:yandex.ru",
-            "domain:yandex.net",
-            "domain:ya.ru",
-            "domain:vk.com",
-            "domain:mail.ru",
-            "domain:sberbank.ru",
-            "domain:gosuslugi.ru"
-          ]
-        },
-        {
-          "type": "field",
-          "outboundTag": "direct",
-          "ip": [
-            "geoip:ru",
-            "geoip:private"
-          ]
-        },
-        {
-          "type": "field",
-          "protocol": [
-            "bittorrent"
-          ],
-          "outboundTag": "direct"
-        }
-      ]
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "🇳🇱⚡️ #1 LTE — Все операторы - proxy",
-    "inbounds": [
-      {
-        "port": 10808,
-        "protocol": "socks",
-        "settings": {
-          "udp": true
-        },
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      },
-      {
-        "port": 10809,
-        "protocol": "http",
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      }
-    ],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "vless",
-        "settings": {
-          "vnext": [
-            {
-              "address": "s35222.cdn.ngenix.net",
+              "address": "93.115.25.153",
               "port": 443,
               "users": [
                 {
-                  "id": "caeb60db-0a74-40eb-a493-e95541a6c0cf",
-                  "encryption": "none"
+                  "id": "5f5114c6-ad1f-4e4a-baad-aacb4634f275",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
                 }
               ]
             }
           ]
         },
         "streamSettings": {
-          "network": "ws",
-          "security": "tls",
-          "tlsSettings": {
-            "show": false,
-            "serverName": "s35222.cdn.ngenix.net",
-            "fingerprint": "qq",
-            "allowInsecure": false
+          "network": "tcp",
+          "sockopt": {
+            "tcpNoDelay": true,
+            "tcpKeepAliveIdle": 100,
+            "mark": 255
           },
-          "wsSettings": {
-            "headers": {
-              "Host": "s35222.cdn.ngenix.net"
-            },
-            "path": "/stream/live"
+          "security": "reality",
+          "realitySettings": {
+            "show": false,
+            "serverName": "google.com",
+            "fingerprint": "qq",
+            "publicKey": "xwUK0ffpbKZ5_o_vXhZ8ErRDqvw2iVnRVSlZ-Vonkxo",
+            "shortId": "132c271e21324e36",
+            "spiderX": "/"
+          },
+          "tcpSettings": {
+            "header": {
+              "type": "none"
+            }
           }
         }
       },
@@ -901,7 +243,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇫🇮⚡️ #2 LTE — Все операторы - proxy",
+    "remarks": "🇲🇩 Молдова - proxy",
     "inbounds": [
       {
         "port": 10808,
@@ -936,31 +278,38 @@
         "settings": {
           "vnext": [
             {
-              "address": "s91247.cdn.ngenix.net",
+              "address": "moldova.scroogethebest.com",
               "port": 443,
               "users": [
                 {
-                  "id": "caeb60db-0a74-40eb-a493-e95541a6c0cf",
-                  "encryption": "none"
+                  "id": "5f5114c6-ad1f-4e4a-baad-aacb4634f275",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
                 }
               ]
             }
           ]
         },
         "streamSettings": {
-          "network": "ws",
-          "security": "tls",
-          "tlsSettings": {
-            "show": false,
-            "serverName": "s91247.cdn.ngenix.net",
-            "fingerprint": "qq",
-            "allowInsecure": false
+          "network": "tcp",
+          "sockopt": {
+            "tcpNoDelay": true,
+            "tcpKeepAliveIdle": 100,
+            "mark": 255
           },
-          "wsSettings": {
-            "headers": {
-              "Host": "s91247.cdn.ngenix.net"
-            },
-            "path": "/stream/live"
+          "security": "reality",
+          "realitySettings": {
+            "show": false,
+            "serverName": "deepl.com",
+            "fingerprint": "qq",
+            "publicKey": "I1jWe7nJUp964tu-U41mY6hgu5Jfzz5yuZqPs6g6zVI",
+            "shortId": "8ac278112fadebd1",
+            "spiderX": "/"
+          },
+          "tcpSettings": {
+            "header": {
+              "type": "none"
+            }
           }
         }
       },
@@ -1014,7 +363,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇷🇺⚡️ #3 LTE — Универсальный - proxy",
+    "remarks": "🇸🇪 Швеция - proxy",
     "inbounds": [
       {
         "port": 10808,
@@ -1049,30 +398,278 @@
         "settings": {
           "vnext": [
             {
-              "address": "one.ethervds.com",
-              "port": 8443,
+              "address": "185.189.44.141",
+              "port": 443,
               "users": [
                 {
-                  "id": "caeb60db-0a74-40eb-a493-e95541a6c0cf",
-                  "encryption": "none"
+                  "id": "5f5114c6-ad1f-4e4a-baad-aacb4634f275",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
                 }
               ]
             }
           ]
         },
         "streamSettings": {
-          "network": "xhttp",
+          "network": "tcp",
+          "sockopt": {
+            "tcpNoDelay": true,
+            "tcpKeepAliveIdle": 100,
+            "mark": 255
+          },
+          "security": "reality",
+          "realitySettings": {
+            "show": false,
+            "serverName": "google.com",
+            "fingerprint": "qq",
+            "publicKey": "RsBqGW2U3MOBeCEP8SBjZhUs-zcNfVIc1a9CpZxD2n8",
+            "shortId": "5df70547a165b2cd",
+            "spiderX": "/"
+          },
+          "tcpSettings": {
+            "header": {
+              "type": "none"
+            }
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "domain": [
+            "regexp:.*\\.ru$",
+            "regexp:.*\\.рф$",
+            "regexp:.*\\.su$",
+            "domain:yandex.ru",
+            "domain:yandex.net",
+            "domain:ya.ru",
+            "domain:vk.com",
+            "domain:mail.ru",
+            "domain:sberbank.ru",
+            "domain:gosuslugi.ru"
+          ]
+        },
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "ip": [
+            "geoip:ru",
+            "geoip:private"
+          ]
+        },
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        }
+      ]
+    }
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🇪🇺 1-1. LTE | Все операторы - proxy",
+    "inbounds": [
+      {
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "udp": true
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      },
+      {
+        "port": 10809,
+        "protocol": "http",
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      }
+    ],
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "vless",
+        "settings": {
+          "vnext": [
+            {
+              "address": "158.160.215.56",
+              "port": 443,
+              "users": [
+                {
+                  "id": "5f5114c6-ad1f-4e4a-baad-aacb4634f275",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
+                }
+              ]
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "tcp",
+          "sockopt": {
+            "tcpNoDelay": true,
+            "tcpKeepAliveIdle": 100,
+            "mark": 255
+          },
+          "security": "reality",
+          "realitySettings": {
+            "show": false,
+            "serverName": "smartcaptcha.yandexcloud.net",
+            "fingerprint": "qq",
+            "publicKey": "r_aARuLLU1bq_FjzsLi8d2cP9e2ran6e2_fOTPtpjT8",
+            "shortId": "a5baba950dccc3df",
+            "spiderX": "/"
+          },
+          "tcpSettings": {
+            "header": {
+              "type": "none"
+            }
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "domain": [
+            "regexp:.*\\.ru$",
+            "regexp:.*\\.рф$",
+            "regexp:.*\\.su$",
+            "domain:yandex.ru",
+            "domain:yandex.net",
+            "domain:ya.ru",
+            "domain:vk.com",
+            "domain:mail.ru",
+            "domain:sberbank.ru",
+            "domain:gosuslugi.ru"
+          ]
+        },
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "ip": [
+            "geoip:ru",
+            "geoip:private"
+          ]
+        },
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        }
+      ]
+    }
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": "🇪🇺 1-2. LTE | Все операторы - proxy",
+    "inbounds": [
+      {
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "udp": true
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      },
+      {
+        "port": 10809,
+        "protocol": "http",
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      }
+    ],
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "vless",
+        "settings": {
+          "vnext": [
+            {
+              "address": "158.160.215.56",
+              "port": 443,
+              "users": [
+                {
+                  "id": "5f5114c6-ad1f-4e4a-baad-aacb4634f275",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
+                }
+              ]
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "tcp",
+          "sockopt": {
+            "tcpNoDelay": true,
+            "tcpKeepAliveIdle": 100,
+            "mark": 255
+          },
           "security": "reality",
           "realitySettings": {
             "show": false,
             "serverName": "api-maps.yandex.ru",
             "fingerprint": "qq",
-            "publicKey": "f1RWqWYFHjUxAVBxFNlLtBbVs7THYjuAJvhG7nK4IEE",
-            "shortId": "0123456789abcdef"
+            "publicKey": "su8tIyeRdTZZHPvZn1AjBZPCv0_FsI7msHP_s8x4Oj0",
+            "shortId": "c3be66103c6cba50",
+            "spiderX": "/"
           },
-          "xhttpSettings": {
-            "path": "/api/v1/data",
-            "mode": "auto"
+          "tcpSettings": {
+            "header": {
+              "type": "none"
+            }
           }
         }
       },
@@ -1126,7 +723,7 @@
     "log": {
       "loglevel": "warning"
     },
-    "remarks": "🇷🇺⚡️ #4 LTE — Универсальный - proxy",
+    "remarks": "🇪🇺 2-1. LTE | Все операторы - proxy",
     "inbounds": [
       {
         "port": 10808,
@@ -1161,590 +758,278 @@
         "settings": {
           "vnext": [
             {
-              "address": "one.ethervds.com",
-              "port": 7443,
+              "address": "178.154.208.143",
+              "port": 443,
               "users": [
                 {
-                  "id": "caeb60db-0a74-40eb-a493-e95541a6c0cf",
-                  "encryption": "none"
+                  "id": "5f5114c6-ad1f-4e4a-baad-aacb4634f275",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
                 }
               ]
             }
           ]
         },
         "streamSettings": {
-          "network": "xhttp",
+          "network": "tcp",
+          "sockopt": {
+            "tcpNoDelay": true,
+            "tcpKeepAliveIdle": 100,
+            "mark": 255
+          },
+          "security": "reality",
+          "realitySettings": {
+            "show": false,
+            "serverName": "smartcaptcha.yandexcloud.net",
+            "fingerprint": "qq",
+            "publicKey": "r_aARuLLU1bq_FjzsLi8d2cP9e2ran6e2_fOTPtpjT8",
+            "shortId": "a5baba950dccc3df",
+            "spiderX": "/"
+          },
+          "tcpSettings": {
+            "header": {
+              "type": "none"
+            }
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "domain": [
+            "regexp:.*\\.ru$",
+            "regexp:.*\\.рф$",
+            "regexp:.*\\.su$",
+            "domain:yandex.ru",
+            "domain:yandex.net",
+            "domain:ya.ru",
+            "domain:vk.com",
+            "domain:mail.ru",
+            "domain:sberbank.ru",
+            "domain:gosuslugi.ru"
+          ]
+        },
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "ip": [
+            "geoip:ru",
+            "geoip:private"
+          ]
+        },
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        }
+      ]
+    }
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": " 🇪🇺 2-2. LTE | Все операторы - proxy",
+    "inbounds": [
+      {
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "udp": true
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      },
+      {
+        "port": 10809,
+        "protocol": "http",
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      }
+    ],
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "vless",
+        "settings": {
+          "vnext": [
+            {
+              "address": "178.154.208.143",
+              "port": 443,
+              "users": [
+                {
+                  "id": "5f5114c6-ad1f-4e4a-baad-aacb4634f275",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
+                }
+              ]
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "tcp",
+          "sockopt": {
+            "tcpNoDelay": true,
+            "tcpKeepAliveIdle": 100,
+            "mark": 255
+          },
+          "security": "reality",
+          "realitySettings": {
+            "show": false,
+            "serverName": "api-maps.yandex.ru",
+            "fingerprint": "qq",
+            "publicKey": "su8tIyeRdTZZHPvZn1AjBZPCv0_FsI7msHP_s8x4Oj0",
+            "shortId": "c3be66103c6cba50",
+            "spiderX": "/"
+          },
+          "tcpSettings": {
+            "header": {
+              "type": "none"
+            }
+          }
+        }
+      },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "domain": [
+            "regexp:.*\\.ru$",
+            "regexp:.*\\.рф$",
+            "regexp:.*\\.su$",
+            "domain:yandex.ru",
+            "domain:yandex.net",
+            "domain:ya.ru",
+            "domain:vk.com",
+            "domain:mail.ru",
+            "domain:sberbank.ru",
+            "domain:gosuslugi.ru"
+          ]
+        },
+        {
+          "type": "field",
+          "outboundTag": "direct",
+          "ip": [
+            "geoip:ru",
+            "geoip:private"
+          ]
+        },
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        }
+      ]
+    }
+  },
+  {
+    "log": {
+      "loglevel": "warning"
+    },
+    "remarks": " 🇪🇺 2-3. LTE | Все операторы - proxy",
+    "inbounds": [
+      {
+        "port": 10808,
+        "protocol": "socks",
+        "settings": {
+          "udp": true
+        },
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      },
+      {
+        "port": 10809,
+        "protocol": "http",
+        "sniffing": {
+          "enabled": true,
+          "destOverride": [
+            "http",
+            "tls"
+          ]
+        }
+      }
+    ],
+    "outbounds": [
+      {
+        "tag": "proxy",
+        "protocol": "vless",
+        "settings": {
+          "vnext": [
+            {
+              "address": "178.154.208.143",
+              "port": 443,
+              "users": [
+                {
+                  "id": "5f5114c6-ad1f-4e4a-baad-aacb4634f275",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
+                }
+              ]
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "tcp",
+          "sockopt": {
+            "tcpNoDelay": true,
+            "tcpKeepAliveIdle": 100,
+            "mark": 255
+          },
           "security": "reality",
           "realitySettings": {
             "show": false,
             "serverName": "ads.x5.ru",
             "fingerprint": "qq",
-            "publicKey": "f1RWqWYFHjUxAVBxFNlLtBbVs7THYjuAJvhG7nK4IEE",
-            "shortId": "0123456789abcdef"
+            "publicKey": "_IQWmaU9lcBkuzTNPN3Mvdwu1FkvJy6tSavzVnd7N0o",
+            "shortId": "832d0444ad39bedf",
+            "spiderX": "/"
           },
-          "xhttpSettings": {
-            "path": "/api/v1/data",
-            "mode": "auto"
-          }
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      },
-      {
-        "tag": "block",
-        "protocol": "blackhole"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": [
-        {
-          "type": "field",
-          "outboundTag": "direct",
-          "domain": [
-            "regexp:.*\\.ru$",
-            "regexp:.*\\.рф$",
-            "regexp:.*\\.su$",
-            "domain:yandex.ru",
-            "domain:yandex.net",
-            "domain:ya.ru",
-            "domain:vk.com",
-            "domain:mail.ru",
-            "domain:sberbank.ru",
-            "domain:gosuslugi.ru"
-          ]
-        },
-        {
-          "type": "field",
-          "outboundTag": "direct",
-          "ip": [
-            "geoip:ru",
-            "geoip:private"
-          ]
-        },
-        {
-          "type": "field",
-          "protocol": [
-            "bittorrent"
-          ],
-          "outboundTag": "direct"
-        }
-      ]
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "🇷🇺⚡️ #5 LTE — Универсальный - proxy",
-    "inbounds": [
-      {
-        "port": 10808,
-        "protocol": "socks",
-        "settings": {
-          "udp": true
-        },
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      },
-      {
-        "port": 10809,
-        "protocol": "http",
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      }
-    ],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "vless",
-        "settings": {
-          "vnext": [
-            {
-              "address": "two.ethervds.com",
-              "port": 8443,
-              "users": [
-                {
-                  "id": "caeb60db-0a74-40eb-a493-e95541a6c0cf",
-                  "encryption": "none"
-                }
-              ]
+          "tcpSettings": {
+            "header": {
+              "type": "none"
             }
-          ]
-        },
-        "streamSettings": {
-          "network": "xhttp",
-          "security": "reality",
-          "realitySettings": {
-            "show": false,
-            "serverName": "api-maps.yandex.ru",
-            "fingerprint": "qq",
-            "publicKey": "f1RWqWYFHjUxAVBxFNlLtBbVs7THYjuAJvhG7nK4IEE",
-            "shortId": "0123456789abcdef"
-          },
-          "xhttpSettings": {
-            "path": "/api/v1/data",
-            "mode": "auto"
-          }
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      },
-      {
-        "tag": "block",
-        "protocol": "blackhole"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": [
-        {
-          "type": "field",
-          "outboundTag": "direct",
-          "domain": [
-            "regexp:.*\\.ru$",
-            "regexp:.*\\.рф$",
-            "regexp:.*\\.su$",
-            "domain:yandex.ru",
-            "domain:yandex.net",
-            "domain:ya.ru",
-            "domain:vk.com",
-            "domain:mail.ru",
-            "domain:sberbank.ru",
-            "domain:gosuslugi.ru"
-          ]
-        },
-        {
-          "type": "field",
-          "outboundTag": "direct",
-          "ip": [
-            "geoip:ru",
-            "geoip:private"
-          ]
-        },
-        {
-          "type": "field",
-          "protocol": [
-            "bittorrent"
-          ],
-          "outboundTag": "direct"
-        }
-      ]
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "🇷🇺⚡️ #5 LTE — Универсальный - proxy",
-    "inbounds": [
-      {
-        "port": 10808,
-        "protocol": "socks",
-        "settings": {
-          "udp": true
-        },
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      },
-      {
-        "port": 10809,
-        "protocol": "http",
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      }
-    ],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "vless",
-        "settings": {
-          "vnext": [
-            {
-              "address": "two.ethervds.com",
-              "port": 8443,
-              "users": [
-                {
-                  "id": "caeb60db-0a74-40eb-a493-e95541a6c0cf",
-                  "encryption": "none"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "xhttp",
-          "security": "reality",
-          "realitySettings": {
-            "show": false,
-            "serverName": "api-maps.yandex.ru",
-            "fingerprint": "qq",
-            "publicKey": "f1RWqWYFHjUxAVBxFNlLtBbVs7THYjuAJvhG7nK4IEE",
-            "shortId": "0123456789abcdef"
-          },
-          "xhttpSettings": {
-            "path": "/api/v1/data",
-            "mode": "auto"
-          }
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      },
-      {
-        "tag": "block",
-        "protocol": "blackhole"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": [
-        {
-          "type": "field",
-          "outboundTag": "direct",
-          "domain": [
-            "regexp:.*\\.ru$",
-            "regexp:.*\\.рф$",
-            "regexp:.*\\.su$",
-            "domain:yandex.ru",
-            "domain:yandex.net",
-            "domain:ya.ru",
-            "domain:vk.com",
-            "domain:mail.ru",
-            "domain:sberbank.ru",
-            "domain:gosuslugi.ru"
-          ]
-        },
-        {
-          "type": "field",
-          "outboundTag": "direct",
-          "ip": [
-            "geoip:ru",
-            "geoip:private"
-          ]
-        },
-        {
-          "type": "field",
-          "protocol": [
-            "bittorrent"
-          ],
-          "outboundTag": "direct"
-        }
-      ]
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "🇷🇺⚡️ #6 LTE — Универсальный - proxy",
-    "inbounds": [
-      {
-        "port": 10808,
-        "protocol": "socks",
-        "settings": {
-          "udp": true
-        },
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      },
-      {
-        "port": 10809,
-        "protocol": "http",
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      }
-    ],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "vless",
-        "settings": {
-          "vnext": [
-            {
-              "address": "two.ethervds.com",
-              "port": 7443,
-              "users": [
-                {
-                  "id": "caeb60db-0a74-40eb-a493-e95541a6c0cf",
-                  "encryption": "none"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "xhttp",
-          "security": "reality",
-          "realitySettings": {
-            "show": false,
-            "serverName": "ads.x5.ru",
-            "fingerprint": "qq",
-            "publicKey": "f1RWqWYFHjUxAVBxFNlLtBbVs7THYjuAJvhG7nK4IEE",
-            "shortId": "0123456789abcdef"
-          },
-          "xhttpSettings": {
-            "path": "/api/v1/data",
-            "mode": "auto"
-          }
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      },
-      {
-        "tag": "block",
-        "protocol": "blackhole"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": [
-        {
-          "type": "field",
-          "outboundTag": "direct",
-          "domain": [
-            "regexp:.*\\.ru$",
-            "regexp:.*\\.рф$",
-            "regexp:.*\\.su$",
-            "domain:yandex.ru",
-            "domain:yandex.net",
-            "domain:ya.ru",
-            "domain:vk.com",
-            "domain:mail.ru",
-            "domain:sberbank.ru",
-            "domain:gosuslugi.ru"
-          ]
-        },
-        {
-          "type": "field",
-          "outboundTag": "direct",
-          "ip": [
-            "geoip:ru",
-            "geoip:private"
-          ]
-        },
-        {
-          "type": "field",
-          "protocol": [
-            "bittorrent"
-          ],
-          "outboundTag": "direct"
-        }
-      ]
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "🇩🇪⚡️ #7 LTE — Универсальный - proxy",
-    "inbounds": [
-      {
-        "port": 10808,
-        "protocol": "socks",
-        "settings": {
-          "udp": true
-        },
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      },
-      {
-        "port": 10809,
-        "protocol": "http",
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      }
-    ],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "vless",
-        "settings": {
-          "vnext": [
-            {
-              "address": "one.ethervds.com",
-              "port": 8414,
-              "users": [
-                {
-                  "id": "caeb60db-0a74-40eb-a493-e95541a6c0cf",
-                  "encryption": "none"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "xhttp",
-          "security": "reality",
-          "realitySettings": {
-            "show": false,
-            "serverName": "max.ru",
-            "fingerprint": "qq",
-            "publicKey": "f1RWqWYFHjUxAVBxFNlLtBbVs7THYjuAJvhG7nK4IEE",
-            "shortId": "0123456789abcdef"
-          },
-          "xhttpSettings": {
-            "path": "/api/v1/data",
-            "mode": "auto"
-          }
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      },
-      {
-        "tag": "block",
-        "protocol": "blackhole"
-      }
-    ],
-    "routing": {
-      "domainStrategy": "IPIfNonMatch",
-      "rules": [
-        {
-          "type": "field",
-          "outboundTag": "direct",
-          "domain": [
-            "regexp:.*\\.ru$",
-            "regexp:.*\\.рф$",
-            "regexp:.*\\.su$",
-            "domain:yandex.ru",
-            "domain:yandex.net",
-            "domain:ya.ru",
-            "domain:vk.com",
-            "domain:mail.ru",
-            "domain:sberbank.ru",
-            "domain:gosuslugi.ru"
-          ]
-        },
-        {
-          "type": "field",
-          "outboundTag": "direct",
-          "ip": [
-            "geoip:ru",
-            "geoip:private"
-          ]
-        },
-        {
-          "type": "field",
-          "protocol": [
-            "bittorrent"
-          ],
-          "outboundTag": "direct"
-        }
-      ]
-    }
-  },
-  {
-    "log": {
-      "loglevel": "warning"
-    },
-    "remarks": "🇩🇪⚡️ #8 LTE — Универсальный - proxy",
-    "inbounds": [
-      {
-        "port": 10808,
-        "protocol": "socks",
-        "settings": {
-          "udp": true
-        },
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      },
-      {
-        "port": 10809,
-        "protocol": "http",
-        "sniffing": {
-          "enabled": true,
-          "destOverride": [
-            "http",
-            "tls"
-          ]
-        }
-      }
-    ],
-    "outbounds": [
-      {
-        "tag": "proxy",
-        "protocol": "vless",
-        "settings": {
-          "vnext": [
-            {
-              "address": "two.ethervds.com",
-              "port": 8414,
-              "users": [
-                {
-                  "id": "caeb60db-0a74-40eb-a493-e95541a6c0cf",
-                  "encryption": "none"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "xhttp",
-          "security": "reality",
-          "realitySettings": {
-            "show": false,
-            "serverName": "max.ru",
-            "fingerprint": "chrome",
-            "publicKey": "f1RWqWYFHjUxAVBxFNlLtBbVs7THYjuAJvhG7nK4IEE",
-            "shortId": "0123456789abcdef"
-          },
-          "xhttpSettings": {
-            "path": "/api/v1/data",
-            "mode": "auto"
           }
         }
       },
