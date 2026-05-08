@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 import ipaddress
 import json
+import logging
 import socket
 import urllib.parse
 import urllib.request
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable, List, Set, Tuple
 
@@ -13,10 +15,24 @@ SNI_JSON_URL = "https://raw.githubusercontent.com/openlibrecommunity/twl/refs/he
 IPS_JSON_URL = "https://raw.githubusercontent.com/openlibrecommunity/twl/refs/heads/main/code/sort/out/sorted.c.json"
 
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+
+
+def log_step(message: str) -> None:
+    logging.info(message)
+
+
 def download_text(url: str) -> str:
+    log_step(f"Скачивание: {url}")
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=30) as response:
-        return response.read().decode("utf-8", errors="ignore")
+        payload = response.read().decode("utf-8", errors="ignore")
+    log_step(f"Скачано байт: {len(payload)} из {url}")
+    return payload
 
 
 def extract_string_values(data) -> List[str]:
@@ -119,9 +135,14 @@ def matches_ip_rules(host_ips: Iterable[ipaddress._BaseAddress], ip_set: Set[ipa
 
 
 def main() -> None:
+    started = datetime.now(timezone.utc)
+    log_step("Старт фильтрации VLESS")
     source_urls = load_source_urls()
+    log_step(f"Найдено источников: {len(source_urls)}")
     exact_ips, cidr_rules = parse_ip_rules()
+    log_step(f"Загружено IP: {len(exact_ips)}, CIDR: {len(cidr_rules)}")
     sni_domains = load_domains()
+    log_step(f"Загружено доменов SNI: {len(sni_domains)}")
 
     all_links: Set[str] = set()
     for url in source_urls:
@@ -129,12 +150,14 @@ def main() -> None:
             content = download_text(url)
             links = parse_vless_links(content)
             all_links.update(links)
-            print(f"Источник: {url} | VLESS: {len(links)}")
+            log_step(f"Источник обработан: {url} | VLESS: {len(links)}")
         except Exception as e:
-            print(f"Ошибка при загрузке {url}: {e}")
+            logging.exception(f"Ошибка при загрузке {url}: {e}")
 
     filtered: List[str] = []
-    for link in sorted(all_links):
+    total = len(all_links)
+    log_step(f"Начата проверка ссылок: {total}")
+    for idx, link in enumerate(sorted(all_links), start=1):
         host = host_from_vless(link)
         if not host:
             continue
@@ -147,10 +170,15 @@ def main() -> None:
         if ips and matches_ip_rules(ips, exact_ips, cidr_rules):
             filtered.append(link)
 
+        if idx % 50 == 0 or idx == total:
+            log_step(f"Прогресс проверки: {idx}/{total} | совпадений: {len(filtered)}")
+
     OUTPUT_FILE.write_text("\n".join(filtered) + ("\n" if filtered else ""), encoding="utf-8")
-    print(f"Всего VLESS: {len(all_links)}")
-    print(f"Отфильтровано: {len(filtered)}")
-    print(f"Результат сохранён: {OUTPUT_FILE}")
+    elapsed = (datetime.now(timezone.utc) - started).total_seconds()
+    log_step(f"Всего VLESS: {len(all_links)}")
+    log_step(f"Отфильтровано: {len(filtered)}")
+    log_step(f"Результат сохранён: {OUTPUT_FILE}")
+    log_step(f"Готово за {elapsed:.2f} сек")
 
 
 if __name__ == "__main__":
