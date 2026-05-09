@@ -26,7 +26,13 @@ jobs:
 
       - name: Install Xray
         run: |
-          bash <(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh) install
+          # Скачиваем бинарник Xray напрямую
+          curl -LO https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip
+          unzip Xray-linux-64.zip -d xray-core
+          # Перемещаем с правами sudo в /usr/local/bin, чтобы скрипт мог найти его через shutil.which("xray")
+          sudo mv xray-core/xray /usr/local/bin/
+          sudo chmod +x /usr/local/bin/xray
+          # Проверяем успешность установки
           xray version
 
       - name: Run Xray working check
