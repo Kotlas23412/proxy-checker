@@ -97,8 +97,45 @@ def parse_vless_links(text: str) -> List[str]:
 
 
 def host_from_vless(link: str) -> str:
-    parsed = urllib.parse.urlsplit(link)
-    return (parsed.hostname or "").strip().lower()
+    """Extract host from VLESS link with fallback for malformed URLs."""
+    try:
+        parsed = urllib.parse.urlsplit(link)
+        return (parsed.hostname or "").strip().lower()
+    except ValueError:
+        # Fallback: manual parsing for malformed URLs
+        # vless://[uuid]@[host]:[port]?[params]#[fragment]
+        try:
+            if not link.startswith("vless://"):
+                return ""
+            
+            # Remove scheme
+            rest = link[8:]  # Remove "vless://"
+            
+            # Split by @ to get host part
+            if "@" not in rest:
+                return ""
+            
+            _, host_part = rest.split("@", 1)
+            
+            # Extract host (before : or ? or #)
+            host = host_part.split("?")[0].split("#")[0]
+            
+            # Remove port if present
+            if ":" in host:
+                # Handle IPv6 addresses in brackets
+                if host.startswith("["):
+                    # IPv6 format: [::1]:port
+                    bracket_end = host.find("]")
+                    if bracket_end != -1:
+                        host = host[1:bracket_end]
+                else:
+                    # IPv4 or domain: host:port
+                    host = host.rsplit(":", 1)[0]
+            
+            return host.strip().lower()
+        except Exception as e:
+            logging.debug(f"Ошибка ручного парсинга '{link[:50]}...': {e}")
+            return ""
 
 
 def resolve_host_ips(host: str) -> Set[ipaddress._BaseAddress]:
