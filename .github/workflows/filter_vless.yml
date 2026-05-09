@@ -1,8 +1,10 @@
 name: Filter VLESS by IP/CIDR hourly
 
 on:
-  schedule:
-    - cron: '0 * * * *'
+  workflow_run:
+    workflows: ["Prepare IP/CIDR reference data hourly"]
+    types:
+      - completed
   workflow_dispatch:
 
 permissions:
@@ -10,6 +12,7 @@ permissions:
 
 jobs:
   filter-vless:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
