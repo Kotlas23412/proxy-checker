@@ -97,10 +97,7 @@ def parse_vless_links(text: str) -> List[str]:
 
 
 def host_from_vless(link: str) -> str:
-    try:
-        parsed = urllib.parse.urlsplit(link)
-    except ValueError:
-        return ""
+    parsed = urllib.parse.urlsplit(link)
     return (parsed.hostname or "").strip().lower()
 
 
@@ -137,8 +134,6 @@ def matches_ip_rules(host_ips: Iterable[ipaddress._BaseAddress], ip_set: Set[ipa
     return False
 
 
-PROGRESS_EVERY = 5000
-
 def main() -> None:
     started = datetime.now(timezone.utc)
     log_step("Старт фильтрации VLESS")
@@ -165,8 +160,6 @@ def main() -> None:
     for idx, link in enumerate(sorted(all_links), start=1):
         host = host_from_vless(link)
         if not host:
-            if idx % PROGRESS_EVERY == 0 or idx == total:
-                log_step(f"Прогресс проверки: {idx}/{total} | совпадений: {len(filtered)}")
             continue
 
         if host in sni_domains:
@@ -177,7 +170,7 @@ def main() -> None:
         if ips and matches_ip_rules(ips, exact_ips, cidr_rules):
             filtered.append(link)
 
-        if idx % PROGRESS_EVERY == 0 or idx == total:
+        if idx % 50 == 0 or idx == total:
             log_step(f"Прогресс проверки: {idx}/{total} | совпадений: {len(filtered)}")
 
     OUTPUT_FILE.write_text("\n".join(filtered) + ("\n" if filtered else ""), encoding="utf-8")
