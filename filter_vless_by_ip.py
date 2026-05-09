@@ -40,43 +40,57 @@ def download_text(url: str) -> str:
     return payload
 
 
-def extract_string_values(data) -> List[str]:
-    values: List[str] = []
-    if isinstance(data, dict):
-        for value in data.values():
-            values.extend(extract_string_values(value))
-    elif isinstance(data, list):
-        for item in data:
-            values.extend(extract_string_values(item))
-    elif isinstance(data, str):
-        values.append(data.strip())
-    return values
-
-
 def parse_ip_rules() -> Tuple[Set[ipaddress._BaseAddress], List[ipaddress._BaseNetwork]]:
+    """Парсит JSON со списком IP адресов"""
     content = download_text(IPS_JSON_URL)
     data = json.loads(content)
     ips: Set[ipaddress._BaseAddress] = set()
     cidrs: List[ipaddress._BaseNetwork] = []
 
-    for raw in extract_string_values(data):
-        if not raw:
-            continue
-        try:
-            if "/" in raw:
-                cidrs.append(ipaddress.ip_network(raw, strict=False))
-            else:
-                ips.add(ipaddress.ip_address(raw))
-        except ValueError:
-            continue
+    # JSON - это массив объектов с полем "ips"
+    if isinstance(data, list):
+        for item in data:
+            if isinstance(item, dict) and "ips" in item:
+                for ip_str in item["ips"]:
+                    try:
+                        if "/" in ip_str:
+                            cidrs.append(ipaddress.ip_network(ip_str, strict=False))
+                        else:
+                            ips.add(ipaddress.ip_address(ip_str))
+                    except ValueError:
+                        continue
 
+    log_step(f"Извлечено уникальных IP: {len(ips)}, CIDR: {len(cidrs)}")
     return ips, cidrs
 
 
 def load_domains() -> Set[str]:
+    """Парсит JSON с доменами из поля 'sans'"""
     content = download_text(SNI_JSON_URL)
     data = json.loads(content)
-    return {d.lower() for d in extract_string_values(data) if d and isinstance(d, str)}
+    domains: Set[str] = set()
+
+    # JSON - это массив объектов с полем "sans"
+    if isinstance(data, list):
+        for item in data:
+            if isinstance(item, dict):
+                # Извлекаем домены из поля "sans"
+                if "sans" in item and isinstance(item["sans"], list):
+                    for domain in item["sans"]:
+                        if domain and isinstance(domain, str):
+                            # Убираем wildcards и очищаем
+                            clean_domain = domain.replace("*.", "").strip().lower()
+                            if clean_domain and not clean_domain.startswith("."):
+                                domains.add(clean_domain)
+                
+                # Также берем из "cn" если есть
+                if "cn" in item and isinstance(item["cn"], str):
+                    clean_cn = item["cn"].replace("*.", "").strip().lower()
+                    if clean_cn and not clean_cn.startswith("."):
+                        domains.add(clean_cn)
+
+    log_step(f"Извлечено уникальных доменов: {len(domains)}")
+    return domains
 
 
 def load_source_urls() -> List[str]:
@@ -135,15 +149,27 @@ def host_from_vless(link: str) -> str:
         return ""
 
 
+def is_private_ip(ip: ipaddress._BaseAddress) -> bool:
+    """Проверяет, является ли IP приватным/локальным"""
+    if isinstance(ip, ipaddress.IPv4Address):
+        return ip.is_private or ip.is_loopback or ip.is_reserved or ip.is_link_local
+    elif isinstance(ip, ipaddress.IPv6Address):
+        return ip.is_private or ip.is_loopback or ip.is_reserved or ip.is_link_local
+    return False
+
+
 def resolve_host_ips(host: str, timeout: float = DNS_TIMEOUT) -> Set[ipaddress._BaseAddress]:
     result: Set[ipaddress._BaseAddress] = set()
 
+    # Если хост - это уже IP адрес
     try:
-        result.add(ipaddress.ip_address(host))
+        ip = ipaddress.ip_address(host)
+        result.add(ip)
         return result
     except ValueError:
         pass
 
+    # DNS резолвинг для доменов
     try:
         socket.setdefaulttimeout(timeout)
         infos = socket.getaddrinfo(host, None)
@@ -163,11 +189,36 @@ def resolve_host_ips(host: str, timeout: float = DNS_TIMEOUT) -> Set[ipaddress._
 
 def matches_ip_rules(host_ips: Iterable[ipaddress._BaseAddress], ip_set: Set[ipaddress._BaseAddress], cidrs: List[ipaddress._BaseNetwork]) -> bool:
     for ip in host_ips:
+        # Пропускаем приватные/локальные IP
+        if is_private_ip(ip):
+            continue
+            
+        # Проверка по точному совпадению
         if ip in ip_set:
             return True
+        
+        # Проверка по CIDR
         for net in cidrs:
             if ip.version == net.version and ip in net:
                 return True
+    return False
+
+
+def domain_matches_sni(host: str, sni_domains: Set[str]) -> bool:
+    """Проверяет, соответствует ли хост доменам SNI (с учетом поддоменов)"""
+    host = host.lower()
+    
+    # Точное совпадение
+    if host in sni_domains:
+        return True
+    
+    # Проверка поддоменов (например, sub.example.com должен совпадать с example.com)
+    parts = host.split(".")
+    for i in range(len(parts)):
+        parent_domain = ".".join(parts[i:])
+        if parent_domain in sni_domains:
+            return True
+    
     return False
 
 
@@ -179,8 +230,8 @@ def check_link(link: str, sni_domains: Set[str], exact_ips: Set[ipaddress._BaseA
         if not host:
             return (link, False)
 
-        # Проверка по доменам SNI
-        if host in sni_domains:
+        # Проверка по доменам SNI (с поддоменами)
+        if domain_matches_sni(host, sni_domains):
             return (link, True)
 
         # Проверка по IP с кешированием DNS
@@ -207,10 +258,7 @@ def main() -> None:
     log_step(f"Найдено источников: {len(source_urls)}")
     
     exact_ips, cidr_rules = parse_ip_rules()
-    log_step(f"Загружено IP: {len(exact_ips)}, CIDR: {len(cidr_rules)}")
-    
     sni_domains = load_domains()
-    log_step(f"Загружено доменов SNI: {len(sni_domains)}")
 
     all_links: Set[str] = set()
     total_raw = 0
@@ -231,7 +279,7 @@ def main() -> None:
     log_step(f"Уникальных ссылок для проверки: {total}")
     log_step(f"Начата проверка (параллельно в {MAX_WORKERS} потоков)")
     
-    filtered_set: Set[str] = set()  # Используем set для исключения дубликатов
+    filtered_set: Set[str] = set()
     dns_cache: Dict[str, Set[ipaddress._BaseAddress]] = {}
     processed = 0
 
@@ -246,7 +294,7 @@ def main() -> None:
             try:
                 link, matched = future.result()
                 if matched:
-                    filtered_set.add(link)  # Добавляем в set (автоматически исключает дубликаты)
+                    filtered_set.add(link)
                 
                 processed += 1
                 
