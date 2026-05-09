@@ -1,0 +1,48 @@
+name: Check working VLESS via Xray
+
+on:
+  workflow_run:
+    workflows: ["Filter VLESS by IP/CIDR hourly"]
+    types:
+      - completed
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  check-working:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Xray
+        run: |
+          bash <(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh) install
+          xray version
+
+      - name: Run Xray working check
+        run: python check_working_vless.py
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add working_vless.txt
+
+          if git diff --quiet && git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git commit -m "✅ Hourly working VLESS update"
+          git pull --rebase origin "${GITHUB_REF_NAME:-main}"
+          git push origin "${GITHUB_REF_NAME:-main}"
