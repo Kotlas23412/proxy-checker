@@ -24,12 +24,12 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Pull Xray Docker image
-        run: docker pull ghcr.io/xtls/xray-core:26.5.3
+      - name: Install Xray
+        run: |
+          bash <(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh) install
+          xray version
 
       - name: Run Xray working check
-        env:
-          XRAY_CMD: docker run --rm --network host -v /tmp:/tmp ghcr.io/xtls/xray-core:26.5.3
         run: python check_working_vless.py
 
       - name: Commit and push changes

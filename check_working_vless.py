@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 import json
-import os
-import shlex
 import logging
 import shutil
 import subprocess
@@ -13,13 +11,6 @@ from pathlib import Path
 
 FILTERED_FILE = Path("filtered_vless.txt")
 WORKING_FILE = Path("working_vless.txt")
-
-XRAY_CMD = os.environ.get("XRAY_CMD", "xray")
-
-
-def build_xray_command(config_path: str) -> list[str]:
-    base_cmd = shlex.split(XRAY_CMD)
-    return base_cmd + ["run", "-config", config_path]
 
 logging.basicConfig(
     level=logging.INFO,
@@ -117,7 +108,7 @@ def check_vless_with_xray(link: str, timeout: int = 12) -> bool:
 
     proc = None
     try:
-        proc = subprocess.Popen(build_xray_command(cfg_path), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        proc = subprocess.Popen(["xray", "run", "-config", cfg_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         time.sleep(1.5)
 
         req = urllib.request.Request("http://cp.cloudflare.com/generate_204", headers={"User-Agent": "Mozilla/5.0"})
@@ -143,7 +134,7 @@ def main() -> None:
         log_step(f"Файл не найден: {FILTERED_FILE}")
         return
 
-    if XRAY_CMD == "xray" and not shutil.which("xray"):
+    if not shutil.which("xray"):
         raise RuntimeError("xray не найден в PATH")
 
     links = [line.strip() for line in FILTERED_FILE.read_text(encoding="utf-8").splitlines() if line.strip().startswith("vless://")]
