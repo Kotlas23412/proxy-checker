@@ -5,15 +5,20 @@ import logging
 import socket
 import urllib.parse
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Iterable, List, Set, Tuple
+from typing import Iterable, List, Set, Tuple, Dict
 
 SOURCE_LIST_FILE = Path("vless_sources.txt")
 OUTPUT_FILE = Path("filtered_vless.txt")
 SNI_JSON_URL = "https://raw.githubusercontent.com/openlibrecommunity/twl/refs/heads/main/code/sni/out/domains.json"
 IPS_JSON_URL = "https://raw.githubusercontent.com/openlibrecommunity/twl/refs/heads/main/code/sort/out/sorted.c.json"
 
+# Настройки производительности
+MAX_WORKERS = 20  # Количество потоков для DNS резолвинга
+DNS_TIMEOUT = 2  # Таймаут DNS запросов в секундах
+BATCH_SIZE = 1000  # Размер батча для логирования
 
 logging.basicConfig(
     level=logging.INFO,
@@ -103,42 +108,34 @@ def host_from_vless(link: str) -> str:
         return (parsed.hostname or "").strip().lower()
     except ValueError:
         # Fallback: manual parsing for malformed URLs
-        # vless://[uuid]@[host]:[port]?[params]#[fragment]
         try:
             if not link.startswith("vless://"):
                 return ""
             
-            # Remove scheme
-            rest = link[8:]  # Remove "vless://"
+            rest = link[8:]
             
-            # Split by @ to get host part
             if "@" not in rest:
                 return ""
             
             _, host_part = rest.split("@", 1)
-            
-            # Extract host (before : or ? or #)
             host = host_part.split("?")[0].split("#")[0]
             
-            # Remove port if present
             if ":" in host:
-                # Handle IPv6 addresses in brackets
                 if host.startswith("["):
-                    # IPv6 format: [::1]:port
                     bracket_end = host.find("]")
                     if bracket_end != -1:
                         host = host[1:bracket_end]
                 else:
-                    # IPv4 or domain: host:port
                     host = host.rsplit(":", 1)[0]
             
             return host.strip().lower()
-        except Exception as e:
-            logging.debug(f"Ошибка ручного парсинга '{link[:50]}...': {e}")
+        except Exception:
             return ""
+    except Exception:
+        return ""
 
 
-def resolve_host_ips(host: str) -> Set[ipaddress._BaseAddress]:
+def resolve_host_ips(host: str, timeout: float = DNS_TIMEOUT) -> Set[ipaddress._BaseAddress]:
     result: Set[ipaddress._BaseAddress] = set()
 
     try:
@@ -148,6 +145,7 @@ def resolve_host_ips(host: str) -> Set[ipaddress._BaseAddress]:
         pass
 
     try:
+        socket.setdefaulttimeout(timeout)
         infos = socket.getaddrinfo(host, None)
         for info in infos:
             ip_raw = info[4][0]
@@ -155,8 +153,10 @@ def resolve_host_ips(host: str) -> Set[ipaddress._BaseAddress]:
                 result.add(ipaddress.ip_address(ip_raw))
             except ValueError:
                 continue
-    except socket.gaierror:
+    except (socket.gaierror, socket.timeout):
         pass
+    finally:
+        socket.setdefaulttimeout(None)
 
     return result
 
@@ -171,13 +171,44 @@ def matches_ip_rules(host_ips: Iterable[ipaddress._BaseAddress], ip_set: Set[ipa
     return False
 
 
+def check_link(link: str, sni_domains: Set[str], exact_ips: Set[ipaddress._BaseAddress], 
+               cidr_rules: List[ipaddress._BaseNetwork], dns_cache: Dict[str, Set[ipaddress._BaseAddress]]) -> Tuple[str, bool]:
+    """Проверяет одну ссылку и возвращает (link, matched)"""
+    try:
+        host = host_from_vless(link)
+        if not host:
+            return (link, False)
+
+        # Проверка по доменам SNI
+        if host in sni_domains:
+            return (link, True)
+
+        # Проверка по IP с кешированием DNS
+        if host in dns_cache:
+            ips = dns_cache[host]
+        else:
+            ips = resolve_host_ips(host)
+            dns_cache[host] = ips
+
+        if ips and matches_ip_rules(ips, exact_ips, cidr_rules):
+            return (link, True)
+
+        return (link, False)
+    except Exception as e:
+        logging.debug(f"Ошибка проверки ссылки: {e}")
+        return (link, False)
+
+
 def main() -> None:
     started = datetime.now(timezone.utc)
     log_step("Старт фильтрации VLESS")
+    
     source_urls = load_source_urls()
     log_step(f"Найдено источников: {len(source_urls)}")
+    
     exact_ips, cidr_rules = parse_ip_rules()
     log_step(f"Загружено IP: {len(exact_ips)}, CIDR: {len(cidr_rules)}")
+    
     sni_domains = load_domains()
     log_step(f"Загружено доменов SNI: {len(sni_domains)}")
 
@@ -191,31 +222,50 @@ def main() -> None:
         except Exception as e:
             logging.exception(f"Ошибка при загрузке {url}: {e}")
 
-    filtered: List[str] = []
     total = len(all_links)
-    log_step(f"Начата проверка ссылок: {total}")
-    for idx, link in enumerate(sorted(all_links), start=1):
-        host = host_from_vless(link)
-        if not host:
-            continue
+    log_step(f"Начата проверка ссылок: {total} (параллельно в {MAX_WORKERS} потоков)")
+    
+    filtered: List[str] = []
+    dns_cache: Dict[str, Set[ipaddress._BaseAddress]] = {}
+    processed = 0
 
-        if host in sni_domains:
-            filtered.append(link)
-            continue
+    # Параллельная обработка
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        futures = {
+            executor.submit(check_link, link, sni_domains, exact_ips, cidr_rules, dns_cache): link
+            for link in all_links
+        }
+        
+        for future in as_completed(futures):
+            try:
+                link, matched = future.result()
+                if matched:
+                    filtered.append(link)
+                
+                processed += 1
+                
+                if processed % BATCH_SIZE == 0 or processed == total:
+                    elapsed = (datetime.now(timezone.utc) - started).total_seconds()
+                    rate = processed / elapsed if elapsed > 0 else 0
+                    eta = (total - processed) / rate if rate > 0 else 0
+                    log_step(f"Прогресс: {processed}/{total} ({processed*100//total}%) | "
+                           f"Совпадений: {len(filtered)} | "
+                           f"Скорость: {rate:.1f} ссылок/сек | "
+                           f"ETA: {eta/60:.1f} мин")
+            except Exception as e:
+                logging.error(f"Ошибка обработки: {e}")
 
-        ips = resolve_host_ips(host)
-        if ips and matches_ip_rules(ips, exact_ips, cidr_rules):
-            filtered.append(link)
-
-        if idx % 50 == 0 or idx == total:
-            log_step(f"Прогресс проверки: {idx}/{total} | совпадений: {len(filtered)}")
-
+    # Сортировка результатов
+    filtered.sort()
+    
     OUTPUT_FILE.write_text("\n".join(filtered) + ("\n" if filtered else ""), encoding="utf-8")
     elapsed = (datetime.now(timezone.utc) - started).total_seconds()
-    log_step(f"Всего VLESS: {len(all_links)}")
+    
+    log_step(f"Всего VLESS: {total}")
     log_step(f"Отфильтровано: {len(filtered)}")
+    log_step(f"Уникальных хостов проверено: {len(dns_cache)}")
     log_step(f"Результат сохранён: {OUTPUT_FILE}")
-    log_step(f"Готово за {elapsed:.2f} сек")
+    log_step(f"Готово за {elapsed:.2f} сек ({elapsed/60:.2f} мин)")
 
 
 if __name__ == "__main__":
