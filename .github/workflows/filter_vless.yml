@@ -24,6 +24,9 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Prepare local reference data
+        run: python prepare_reference_data.py
+
       - name: Run filter script
         run: python filter_vless_by_ip.py
 

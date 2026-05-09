@@ -31,5 +31,4 @@ jobs:
           git add data/ip_list.txt data/cidr_list.txt data/sni_domains.txt
 
           git diff --quiet && git diff --staged --quiet || git commit -m "📦 Hourly reference data update"
-          git pull --rebase origin "${GITHUB_REF_NAME}"
           git push
