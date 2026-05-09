@@ -24,17 +24,10 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install Xray (non-root)
+      - name: Install Xray
         run: |
-          set -euxo pipefail
-          XRAY_VERSION="26.5.3"
-          ARCHIVE="Xray-linux-64.zip"
-          curl -fL "https://github.com/XTLS/Xray-core/releases/download/v${XRAY_VERSION}/${ARCHIVE}" -o /tmp/xray.zip
-          unzip -o /tmp/xray.zip -d /tmp/xray
-          mkdir -p "$HOME/.local/bin"
-          install -m 0755 /tmp/xray/xray "$HOME/.local/bin/xray"
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-          "$HOME/.local/bin/xray" version
+          bash <(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh) install
+          xray version
 
       - name: Run Xray working check
         run: python check_working_vless.py
