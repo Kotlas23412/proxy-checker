@@ -8,6 +8,8 @@ import time
 import urllib.parse
 import urllib.request
 from pathlib import Path
+import concurrent.futures
+import threading
 
 FILTERED_FILE = Path("filtered_vless.txt")
 WORKING_FILE = Path("working_vless.txt")
@@ -18,12 +20,24 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 
+# Глобальные переменные для счетчиков и портов в многопотоке
+port_lock = threading.Lock()
+current_port = 20000
+checked_count = 0
+working_count = 0
+total_links = 0
+count_lock = threading.Lock()
 
 def log_step(message: str) -> None:
     logging.info(message)
 
+def get_next_port() -> int:
+    global current_port
+    with port_lock:
+        current_port += 1
+        return current_port
 
-def parse_vless_for_xray(link: str) -> dict:
+def parse_vless_for_xray(link: str, local_port: int) -> dict:
     parsed = urllib.parse.urlsplit(link)
     if parsed.scheme != "vless" or not parsed.hostname or not parsed.username:
         raise ValueError("Некорректная VLESS ссылка")
@@ -47,7 +61,7 @@ def parse_vless_for_xray(link: str) -> dict:
         "settings": {
             "vnext": [{
                 "address": parsed.hostname,
-                "port": parsed.port or 443,
+                "port": int(parsed.port or 443),
                 "users": [user],
             }]
         },
@@ -81,10 +95,10 @@ def parse_vless_for_xray(link: str) -> dict:
         stream["grpcSettings"] = {"serviceName": get("serviceName") or get("path")}
 
     return {
-        "log": {"loglevel": "warning"},
+        "log": {"loglevel": "none"}, # Отключаем логи самого Xray для экономии ресурсов
         "inbounds": [{
             "tag": "socks-in",
-            "port": 2080,
+            "port": local_port,
             "listen": "127.0.0.1",
             "protocol": "socks",
             "settings": {"udp": False},
@@ -95,10 +109,10 @@ def parse_vless_for_xray(link: str) -> dict:
         },
     }
 
-
-def check_vless_with_xray(link: str, timeout: int = 12) -> bool:
+def check_vless_with_xray(link: str, timeout: int = 7) -> bool:
+    local_port = get_next_port()
     try:
-        config = parse_vless_for_xray(link)
+        config = parse_vless_for_xray(link, local_port)
     except Exception:
         return False
 
@@ -108,13 +122,18 @@ def check_vless_with_xray(link: str, timeout: int = 12) -> bool:
 
     proc = None
     try:
+        # Запускаем Xray
         proc = subprocess.Popen(["xray", "run", "-config", cfg_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        time.sleep(1.5)
+        time.sleep(0.3) # Ждем всего 300мс, Xray стартует очень быстро
+
+        if proc.poll() is not None:
+            return False # Xray упал сразу (кривой конфиг)
 
         req = urllib.request.Request("http://cp.cloudflare.com/generate_204", headers={"User-Agent": "Mozilla/5.0"})
         opener = urllib.request.build_opener(
-            urllib.request.ProxyHandler({"http": "socks5h://127.0.0.1:2080", "https": "socks5h://127.0.0.1:2080"})
+            urllib.request.ProxyHandler({"http": f"socks5h://127.0.0.1:{local_port}", "https": f"socks5h://127.0.0.1:{local_port}"})
         )
+        
         with opener.open(req, timeout=timeout) as resp:
             return resp.status in (200, 204)
     except Exception:
@@ -123,13 +142,30 @@ def check_vless_with_xray(link: str, timeout: int = 12) -> bool:
         if proc is not None:
             proc.terminate()
             try:
-                proc.wait(timeout=2)
+                proc.wait(timeout=1)
             except subprocess.TimeoutExpired:
                 proc.kill()
         Path(cfg_path).unlink(missing_ok=True)
 
+def process_link(link: str):
+    global checked_count, working_count
+    
+    is_working = check_vless_with_xray(link)
+    
+    with count_lock:
+        checked_count += 1
+        if is_working:
+            working_count += 1
+        
+        # Выводим лог каждые 100 проверок, чтобы не засорять консоль GitHub Actions
+        if checked_count % 100 == 0 or checked_count == total_links:
+            log_step(f"Прогресс: {checked_count}/{total_links} | Рабочих: {working_count}")
+            
+    return link if is_working else None
 
 def main() -> None:
+    global total_links
+    
     if not FILTERED_FILE.exists():
         log_step(f"Файл не найден: {FILTERED_FILE}")
         return
@@ -137,19 +173,24 @@ def main() -> None:
     if not shutil.which("xray"):
         raise RuntimeError("xray не найден в PATH")
 
-    links = [line.strip() for line in FILTERED_FILE.read_text(encoding="utf-8").splitlines() if line.strip().startswith("vless://")]
-    log_step(f"Старт Xray проверки: {len(links)} ссылок")
+    links = list(set([line.strip() for line in FILTERED_FILE.read_text(encoding="utf-8").splitlines() if line.strip().startswith("vless://")]))
+    total_links = len(links)
+    log_step(f"Старт многопоточной проверки: {total_links} уникальных ссылок")
 
     working = []
-    for idx, link in enumerate(links, 1):
-        if check_vless_with_xray(link):
-            working.append(link)
-        if idx % 50 == 0 or idx == len(links):
-            log_step(f"Xray прогресс: {idx}/{len(links)} | рабочих: {len(working)}")
+    
+    # max_workers=20 означает 20 одновременных проверок. 
+    # Не ставьте слишком много (>40), иначе GitHub Runner зависнет от нехватки RAM
+    with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
+        futures = [executor.submit(process_link, link) for link in links]
+        
+        for future in concurrent.futures.as_completed(futures):
+            result = future.result()
+            if result:
+                working.append(result)
 
     WORKING_FILE.write_text("\n".join(working) + ("\n" if working else ""), encoding="utf-8")
-    log_step(f"Рабочие прокси сохранены: {WORKING_FILE} | всего: {len(working)}")
-
+    log_step(f"Рабочие прокси сохранены: {WORKING_FILE} | Всего: {len(working)}")
 
 if __name__ == "__main__":
     main()
