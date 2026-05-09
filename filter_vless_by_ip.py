@@ -254,6 +254,12 @@ def main() -> None:
     started = datetime.now(timezone.utc)
     log_step("Старт фильтрации VLESS")
     
+    # Удаляем старый файл, если существует
+    if OUTPUT_FILE.exists():
+        old_count = len([l for l in OUTPUT_FILE.read_text(encoding="utf-8").splitlines() if l.strip().startswith("vless://")])
+        OUTPUT_FILE.unlink()
+        log_step(f"Удалён старый файл с {old_count} ссылками")
+    
     source_urls = load_source_urls()
     log_step(f"Найдено источников: {len(source_urls)}")
     
@@ -320,8 +326,9 @@ def main() -> None:
     log_step(f"  Всего ссылок собрано: {total_raw}")
     log_step(f"  Дубликатов удалено: {duplicates_removed}")
     log_step(f"  Уникальных проверено: {total}")
-    log_step(f"  Отфильтровано (уникальных): {len(filtered_list)}")
-    log_step(f"  Уникальных хостов: {len(dns_cache)}")
+    log_step(f"  Прошло фильтр: {len(filtered_list)}")
+    log_step(f"  Процент прохождения: {len(filtered_list)*100/total:.2f}%")
+    log_step(f"  Уникальных хостов проверено: {len(dns_cache)}")
     log_step(f"  Результат сохранён: {OUTPUT_FILE}")
     log_step(f"  Время выполнения: {elapsed:.2f} сек ({elapsed/60:.2f} мин)")
     log_step(f"━" * 60)
