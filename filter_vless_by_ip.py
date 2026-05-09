@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 import ipaddress
+import shutil
 import logging
 import socket
 import urllib.parse
 import urllib.request
+import json
+import subprocess
+import tempfile
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
@@ -11,6 +16,7 @@ from typing import Iterable, List, Set, Tuple, Dict
 
 SOURCE_LIST_FILE = Path("vless_sources.txt")
 OUTPUT_FILE = Path("filtered_vless.txt")
+WORKING_OUTPUT_FILE = Path("working_vless.txt")
 DATA_DIR = Path("data")
 SNI_DOMAINS_FILE = DATA_DIR / "sni_domains.txt"
 IP_LIST_FILE = DATA_DIR / "ip_list.txt"
@@ -252,6 +258,144 @@ def check_link(link: str, sni_domains: Set[str], exact_ips: Set[ipaddress._BaseA
         return (link, False)
 
 
+def parse_vless_for_xray(link: str) -> dict:
+    parsed = urllib.parse.urlsplit(link)
+    if parsed.scheme != "vless" or not parsed.hostname or not parsed.username:
+        raise ValueError("Некорректная VLESS ссылка")
+
+    query = urllib.parse.parse_qs(parsed.query)
+    get = lambda k, d="": (query.get(k, [d])[0] or d)
+
+    security = get("security", "none")
+    network = get("type", "tcp")
+
+    user = {"id": parsed.username, "encryption": "none"}
+    flow = get("flow")
+    if flow:
+        user["flow"] = flow
+
+    outbound = {
+        "tag": "proxy",
+        "protocol": "vless",
+        "settings": {
+            "vnext": [{
+                "address": parsed.hostname,
+                "port": parsed.port or 443,
+                "users": [user],
+            }]
+        },
+        "streamSettings": {"network": network},
+    }
+
+    stream = outbound["streamSettings"]
+    if security in {"tls", "reality"}:
+        stream["security"] = security
+        tls_obj = {}
+        sni = get("sni") or get("serverName")
+        if sni:
+            tls_obj["serverName"] = sni
+        fp = get("fp")
+        if fp:
+            tls_obj["fingerprint"] = fp
+        if security == "tls":
+            stream["tlsSettings"] = tls_obj
+        else:
+            tls_obj["publicKey"] = get("pbk")
+            tls_obj["shortId"] = get("sid")
+            tls_obj["spiderX"] = get("spx", "/")
+            stream["realitySettings"] = tls_obj
+
+    if network == "ws":
+        stream["wsSettings"] = {
+            "path": get("path", "/"),
+            "headers": {"Host": get("host") or parsed.hostname},
+        }
+    elif network == "grpc":
+        stream["grpcSettings"] = {"serviceName": get("serviceName") or get("path")}
+
+    return {
+        "log": {"loglevel": "warning"},
+        "inbounds": [{
+            "tag": "socks-in",
+            "port": 2080,
+            "listen": "127.0.0.1",
+            "protocol": "socks",
+            "settings": {"udp": False},
+        }],
+        "outbounds": [
+            outbound,
+            {"tag": "direct", "protocol": "freedom"},
+        ],
+        "routing": {
+            "rules": [{"type": "field", "inboundTag": ["socks-in"], "outboundTag": "proxy"}]
+        },
+    }
+
+
+def check_vless_with_xray(link: str, timeout: int = 12) -> bool:
+    try:
+        config = parse_vless_for_xray(link)
+    except Exception:
+        return False
+
+    with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8") as cfg:
+        json.dump(config, cfg, ensure_ascii=False)
+        cfg.flush()
+        cfg_path = cfg.name
+
+    proc = None
+    try:
+        proc = subprocess.Popen(
+            ["xray", "run", "-config", cfg_path],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        time.sleep(1.5)
+
+        req = urllib.request.Request("http://cp.cloudflare.com/generate_204", headers={"User-Agent": "Mozilla/5.0"})
+        opener = urllib.request.build_opener(
+            urllib.request.ProxyHandler({"http": "socks5h://127.0.0.1:2080", "https": "socks5h://127.0.0.1:2080"})
+        )
+        with opener.open(req, timeout=timeout) as resp:
+            return resp.status in (200, 204)
+    except Exception:
+        return False
+    finally:
+        if proc is not None:
+            proc.terminate()
+            try:
+                proc.wait(timeout=2)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+        Path(cfg_path).unlink(missing_ok=True)
+
+
+def extract_working_vless(filtered_file: Path = OUTPUT_FILE, output_file: Path = WORKING_OUTPUT_FILE) -> None:
+    if not filtered_file.exists():
+        log_step(f"Файл не найден для проверки Xray: {filtered_file}")
+        return
+
+    links = [line.strip() for line in filtered_file.read_text(encoding="utf-8").splitlines() if line.strip().startswith("vless://")]
+    if not links:
+        output_file.write_text("", encoding="utf-8")
+        log_step("Нет VLESS ссылок для Xray проверки")
+        return
+
+    if not shutil.which("xray"):
+        log_step("Xray не найден в PATH, пропускаем проверку рабочих прокси")
+        return
+
+    log_step(f"Старт Xray проверки: {len(links)} ссылок")
+    working = []
+    for idx, link in enumerate(links, 1):
+        if check_vless_with_xray(link):
+            working.append(link)
+        if idx % 50 == 0 or idx == len(links):
+            log_step(f"Xray прогресс: {idx}/{len(links)} | рабочих: {len(working)}")
+
+    output_file.write_text("\n".join(working) + ("\n" if working else ""), encoding="utf-8")
+    log_step(f"Рабочие прокси сохранены: {output_file} | всего: {len(working)}")
+
 
 def main() -> None:
     started = datetime.now(timezone.utc)
@@ -336,6 +480,10 @@ def main() -> None:
     log_step(f"  Результат сохранён: {OUTPUT_FILE}")
     log_step(f"  Время выполнения: {elapsed:.2f} сек ({elapsed/60:.2f} мин)")
     log_step(f"━" * 60)
+
+    # Дополнительная проверка: поднять Xray для каждого отфильтрованного VLESS
+    # и сохранить только рабочие прокси в отдельный файл.
+    extract_working_vless()
 
 
 if __name__ == "__main__":
