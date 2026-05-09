@@ -37,4 +37,5 @@ jobs:
           git add filtered_vless.txt
 
           git diff --quiet && git diff --staged --quiet || git commit -m "🔎 Hourly filtered VLESS update"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
           git push
