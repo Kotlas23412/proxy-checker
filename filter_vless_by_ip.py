@@ -213,19 +213,25 @@ def main() -> None:
     log_step(f"Загружено доменов SNI: {len(sni_domains)}")
 
     all_links: Set[str] = set()
+    total_raw = 0
     for url in source_urls:
         try:
             content = download_text(url)
             links = parse_vless_links(content)
+            total_raw += len(links)
             all_links.update(links)
             log_step(f"Источник обработан: {url} | VLESS: {len(links)}")
         except Exception as e:
             logging.exception(f"Ошибка при загрузке {url}: {e}")
 
     total = len(all_links)
-    log_step(f"Начата проверка ссылок: {total} (параллельно в {MAX_WORKERS} потоков)")
+    duplicates_removed = total_raw - total
+    log_step(f"Всего собрано ссылок: {total_raw}")
+    log_step(f"Удалено дубликатов: {duplicates_removed}")
+    log_step(f"Уникальных ссылок для проверки: {total}")
+    log_step(f"Начата проверка (параллельно в {MAX_WORKERS} потоков)")
     
-    filtered: List[str] = []
+    filtered_set: Set[str] = set()  # Используем set для исключения дубликатов
     dns_cache: Dict[str, Set[ipaddress._BaseAddress]] = {}
     processed = 0
 
@@ -240,7 +246,7 @@ def main() -> None:
             try:
                 link, matched = future.result()
                 if matched:
-                    filtered.append(link)
+                    filtered_set.add(link)  # Добавляем в set (автоматически исключает дубликаты)
                 
                 processed += 1
                 
@@ -249,23 +255,28 @@ def main() -> None:
                     rate = processed / elapsed if elapsed > 0 else 0
                     eta = (total - processed) / rate if rate > 0 else 0
                     log_step(f"Прогресс: {processed}/{total} ({processed*100//total}%) | "
-                           f"Совпадений: {len(filtered)} | "
+                           f"Совпадений: {len(filtered_set)} | "
                            f"Скорость: {rate:.1f} ссылок/сек | "
                            f"ETA: {eta/60:.1f} мин")
             except Exception as e:
                 logging.error(f"Ошибка обработки: {e}")
 
     # Сортировка результатов
-    filtered.sort()
+    filtered_list = sorted(filtered_set)
     
-    OUTPUT_FILE.write_text("\n".join(filtered) + ("\n" if filtered else ""), encoding="utf-8")
+    OUTPUT_FILE.write_text("\n".join(filtered_list) + ("\n" if filtered_list else ""), encoding="utf-8")
     elapsed = (datetime.now(timezone.utc) - started).total_seconds()
     
-    log_step(f"Всего VLESS: {total}")
-    log_step(f"Отфильтровано: {len(filtered)}")
-    log_step(f"Уникальных хостов проверено: {len(dns_cache)}")
-    log_step(f"Результат сохранён: {OUTPUT_FILE}")
-    log_step(f"Готово за {elapsed:.2f} сек ({elapsed/60:.2f} мин)")
+    log_step(f"━" * 60)
+    log_step(f"СТАТИСТИКА:")
+    log_step(f"  Всего ссылок собрано: {total_raw}")
+    log_step(f"  Дубликатов удалено: {duplicates_removed}")
+    log_step(f"  Уникальных проверено: {total}")
+    log_step(f"  Отфильтровано (уникальных): {len(filtered_list)}")
+    log_step(f"  Уникальных хостов: {len(dns_cache)}")
+    log_step(f"  Результат сохранён: {OUTPUT_FILE}")
+    log_step(f"  Время выполнения: {elapsed:.2f} сек ({elapsed/60:.2f} мин)")
+    log_step(f"━" * 60)
 
 
 if __name__ == "__main__":
