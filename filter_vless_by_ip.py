@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import ipaddress
-import json
 import logging
 import socket
 import urllib.parse
@@ -12,8 +11,10 @@ from typing import Iterable, List, Set, Tuple, Dict
 
 SOURCE_LIST_FILE = Path("vless_sources.txt")
 OUTPUT_FILE = Path("filtered_vless.txt")
-SNI_JSON_URL = "https://raw.githubusercontent.com/openlibrecommunity/twl/refs/heads/main/code/sni/out/domains.json"
-IPS_JSON_URL = "https://raw.githubusercontent.com/openlibrecommunity/twl/refs/heads/main/code/sort/out/sorted.c.json"
+DATA_DIR = Path("data")
+SNI_DOMAINS_FILE = DATA_DIR / "sni_domains.txt"
+IP_LIST_FILE = DATA_DIR / "ip_list.txt"
+CIDR_LIST_FILE = DATA_DIR / "cidr_list.txt"
 
 # Настройки производительности
 MAX_WORKERS = 20  # Количество потоков для DNS резолвинга
@@ -31,6 +32,8 @@ def log_step(message: str) -> None:
     logging.info(message)
 
 
+
+
 def download_text(url: str) -> str:
     log_step(f"Скачивание: {url}")
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
@@ -38,56 +41,47 @@ def download_text(url: str) -> str:
         payload = response.read().decode("utf-8", errors="ignore")
     log_step(f"Скачано байт: {len(payload)} из {url}")
     return payload
-
-
 def parse_ip_rules() -> Tuple[Set[ipaddress._BaseAddress], List[ipaddress._BaseNetwork]]:
-    """Парсит JSON со списком IP адресов"""
-    content = download_text(IPS_JSON_URL)
-    data = json.loads(content)
+    """Загружает IP/CIDR правила из локальных TXT файлов"""
+    missing = [str(p) for p in (IP_LIST_FILE, CIDR_LIST_FILE) if not p.exists()]
+    if missing:
+        raise FileNotFoundError(f"Не найдены файлы: {', '.join(missing)}. Сначала запустите prepare_reference_data.py")
+
     ips: Set[ipaddress._BaseAddress] = set()
     cidrs: List[ipaddress._BaseNetwork] = []
 
-    # JSON - это массив объектов с полем "ips"
-    if isinstance(data, list):
-        for item in data:
-            if isinstance(item, dict) and "ips" in item:
-                for ip_str in item["ips"]:
-                    try:
-                        if "/" in ip_str:
-                            cidrs.append(ipaddress.ip_network(ip_str, strict=False))
-                        else:
-                            ips.add(ipaddress.ip_address(ip_str))
-                    except ValueError:
-                        continue
+    for line in IP_LIST_FILE.read_text(encoding="utf-8").splitlines():
+        value = line.strip()
+        if not value:
+            continue
+        try:
+            ips.add(ipaddress.ip_address(value))
+        except ValueError:
+            continue
+
+    for line in CIDR_LIST_FILE.read_text(encoding="utf-8").splitlines():
+        value = line.strip()
+        if not value:
+            continue
+        try:
+            cidrs.append(ipaddress.ip_network(value, strict=False))
+        except ValueError:
+            continue
 
     log_step(f"Извлечено уникальных IP: {len(ips)}, CIDR: {len(cidrs)}")
     return ips, cidrs
 
 
 def load_domains() -> Set[str]:
-    """Парсит JSON с доменами из поля 'sans'"""
-    content = download_text(SNI_JSON_URL)
-    data = json.loads(content)
-    domains: Set[str] = set()
+    """Загружает домены SNI из локального TXT файла"""
+    if not SNI_DOMAINS_FILE.exists():
+        raise FileNotFoundError(f"Не найден файл: {SNI_DOMAINS_FILE}. Сначала запустите prepare_reference_data.py")
 
-    # JSON - это массив объектов с полем "sans"
-    if isinstance(data, list):
-        for item in data:
-            if isinstance(item, dict):
-                # Извлекаем домены из поля "sans"
-                if "sans" in item and isinstance(item["sans"], list):
-                    for domain in item["sans"]:
-                        if domain and isinstance(domain, str):
-                            # Убираем wildcards и очищаем
-                            clean_domain = domain.replace("*.", "").strip().lower()
-                            if clean_domain and not clean_domain.startswith("."):
-                                domains.add(clean_domain)
-                
-                # Также берем из "cn" если есть
-                if "cn" in item and isinstance(item["cn"], str):
-                    clean_cn = item["cn"].replace("*.", "").strip().lower()
-                    if clean_cn and not clean_cn.startswith("."):
-                        domains.add(clean_cn)
+    domains: Set[str] = set()
+    for line in SNI_DOMAINS_FILE.read_text(encoding="utf-8").splitlines():
+        value = line.strip().lower()
+        if value:
+            domains.add(value)
 
     log_step(f"Извлечено уникальных доменов: {len(domains)}")
     return domains
@@ -230,6 +224,14 @@ def check_link(link: str, sni_domains: Set[str], exact_ips: Set[ipaddress._BaseA
         if not host:
             return (link, False)
 
+        # Блокируем локальные/приватные IP сразу
+        try:
+            host_ip = ipaddress.ip_address(host)
+            if is_private_ip(host_ip):
+                return (link, False)
+        except ValueError:
+            pass
+
         # Проверка по доменам SNI (с поддоменами)
         if domain_matches_sni(host, sni_domains):
             return (link, True)
@@ -263,6 +265,7 @@ def main() -> None:
     source_urls = load_source_urls()
     log_step(f"Найдено источников: {len(source_urls)}")
     
+    log_step(f"Загрузка локальных файлов: {IP_LIST_FILE}, {CIDR_LIST_FILE}, {SNI_DOMAINS_FILE}")
     exact_ips, cidr_rules = parse_ip_rules()
     sni_domains = load_domains()
 
