@@ -6,7 +6,6 @@ import subprocess
 import tempfile
 import time
 import urllib.parse
-import urllib.request
 from pathlib import Path
 import concurrent.futures
 import threading
@@ -20,7 +19,6 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 
-# Глобальные переменные для счетчиков и портов в многопотоке
 port_lock = threading.Lock()
 current_port = 20000
 checked_count = 0
@@ -95,7 +93,7 @@ def parse_vless_for_xray(link: str, local_port: int) -> dict:
         stream["grpcSettings"] = {"serviceName": get("serviceName") or get("path")}
 
     return {
-        "log": {"loglevel": "none"}, # Отключаем логи самого Xray для экономии ресурсов
+        "log": {"loglevel": "none"},
         "inbounds": [{
             "tag": "socks-in",
             "port": local_port,
@@ -122,20 +120,24 @@ def check_vless_with_xray(link: str, timeout: int = 7) -> bool:
 
     proc = None
     try:
-        # Запускаем Xray
         proc = subprocess.Popen(["xray", "run", "-config", cfg_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        time.sleep(0.3) # Ждем всего 300мс, Xray стартует очень быстро
+        time.sleep(0.5) # Даем Xray полсекунды на запуск
 
         if proc.poll() is not None:
-            return False # Xray упал сразу (кривой конфиг)
+            return False # Xray упал из-за кривого конфига
 
-        req = urllib.request.Request("http://cp.cloudflare.com/generate_204", headers={"User-Agent": "Mozilla/5.0"})
-        opener = urllib.request.build_opener(
-            urllib.request.ProxyHandler({"http": f"socks5h://127.0.0.1:{local_port}", "https": f"socks5h://127.0.0.1:{local_port}"})
-        )
+        # Используем системный cURL для проверки SOCKS5 (с резолвом DNS через прокси)
+        curl_cmd = [
+            "curl", "-s", "-o", "/dev/null", "-w", "%{http_code}",
+            "--socks5-hostname", f"127.0.0.1:{local_port}",
+            "--connect-timeout", str(timeout),
+            "--max-time", str(timeout),
+            "http://cp.cloudflare.com/generate_204"
+        ]
         
-        with opener.open(req, timeout=timeout) as resp:
-            return resp.status in (200, 204)
+        result = subprocess.run(curl_cmd, capture_output=True, text=True)
+        return result.stdout.strip() in ("200", "204")
+        
     except Exception:
         return False
     finally:
@@ -157,7 +159,6 @@ def process_link(link: str):
         if is_working:
             working_count += 1
         
-        # Выводим лог каждые 100 проверок, чтобы не засорять консоль GitHub Actions
         if checked_count % 100 == 0 or checked_count == total_links:
             log_step(f"Прогресс: {checked_count}/{total_links} | Рабочих: {working_count}")
             
@@ -179,8 +180,7 @@ def main() -> None:
 
     working = []
     
-    # max_workers=20 означает 20 одновременных проверок. 
-    # Не ставьте слишком много (>40), иначе GitHub Runner зависнет от нехватки RAM
+    # 20 потоков оптимально для бесплатного раннера GitHub
     with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
         futures = [executor.submit(process_link, link) for link in links]
         
