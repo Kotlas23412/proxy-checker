@@ -1,4 +1,3 @@
-
 {
   "dns": {
     "tag": "dns-in",
@@ -20,7 +19,6 @@
           "domain:*-courier.push.apple.com"
         ],
         "outboundTag": "direct"
-
       },
       {
         "ip": [
@@ -42,7 +40,6 @@
         "udp": true,
         "auth": "noauth"
       },
-
       "sniffing": {
         "enabled": true,
         "routeOnly": false,
@@ -64,7 +61,120 @@
       "sniffing": {
         "enabled": true,
         "routeOnly": false,
-
+        "destOverride": [
+          "http",
+          "tls",
+          "quic"
+        ]
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "mld.scroogethebest.com",
+            "port": 443,
+            "users": [
+              {
+                "id": "5f5114c6-ad1f-4e4a-baad-aacb4634f275",
+                "encryption": "none",
+                "flow": "xtls-rprx-vision"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "tcpSettings": {},
+        "security": "reality",
+        "realitySettings": {
+          "serverName": "mld.scroogethebest.com",
+          "publicKey": "FCn-TskVdziNbjayFlLFzlijmsLt55AngLzjFZN3oTc",
+          "shortId": "9c2378562188c3cb",
+          "spiderX": "/",
+          "fingerprint": "chrome"
+        }
+      }
+    },
+    {
+      "tag": "direct",
+      "protocol": "freedom"
+    },
+    {
+      "tag": "block",
+      "protocol": "blackhole"
+    }
+  ],
+  "remarks": "🇲🇩 Молдова"
+}
+{
+  "dns": {
+    "tag": "dns-in",
+    "servers": [
+      "8.8.8.8",
+      "9.9.9.9"
+    ],
+    "queryStrategy": "UseIPv4"
+  },
+  "routing": {
+    "rules": [
+      {
+        "type": "field",
+        "domain": [
+          "domain:mtalk.google.com",
+          "domain:push.apple.com",
+          "domain:api.push.apple.com",
+          "domain:push-apple.com.akadns.net",
+          "domain:*-courier.push.apple.com"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "ip": [
+          "17.0.0.0/8"
+        ],
+        "type": "field",
+        "outboundTag": "direct"
+      }
+    ],
+    "domainStrategy": "IPIfNonMatch"
+  },
+  "inbounds": [
+    {
+      "tag": "socks",
+      "port": 10808,
+      "listen": "127.0.0.1",
+      "protocol": "socks",
+      "settings": {
+        "udp": true,
+        "auth": "noauth"
+      },
+      "sniffing": {
+        "enabled": true,
+        "routeOnly": false,
+        "destOverride": [
+          "http",
+          "tls",
+          "quic"
+        ]
+      }
+    },
+    {
+      "tag": "http",
+      "port": 10809,
+      "listen": "127.0.0.1",
+      "protocol": "http",
+      "settings": {
+        "allowTransparent": false
+      },
+      "sniffing": {
+        "enabled": true,
+        "routeOnly": false,
         "destOverride": [
           "http",
           "tls",
@@ -85,7 +195,6 @@
             "users": [
               {
                 "id": "5f5114c6-ad1f-4e4a-baad-aacb4634f275",
-
                 "encryption": "none",
                 "flow": "xtls-rprx-vision"
               }
@@ -105,7 +214,6 @@
           "fingerprint": "qq"
         }
       }
-
     },
     {
       "tag": "direct",
@@ -127,7 +235,6 @@
     ],
     "queryStrategy": "UseIPv4"
   },
-
   "routing": {
     "rules": [
       {
@@ -149,7 +256,6 @@
         "outboundTag": "direct"
       }
     ],
-
     "domainStrategy": "IPIfNonMatch"
   },
   "inbounds": [
@@ -171,7 +277,6 @@
           "quic"
         ]
       }
-
     },
     {
       "tag": "http",
@@ -193,7 +298,6 @@
     }
   ],
   "outbounds": [
-
     {
       "tag": "proxy",
       "protocol": "vless",
@@ -214,7 +318,6 @@
       },
       "streamSettings": {
         "network": "tcp",
-
         "tcpSettings": {},
         "security": "reality",
         "realitySettings": {
@@ -234,7 +337,6 @@
       "tag": "block",
       "protocol": "blackhole"
     }
-
   ],
   "remarks": "🇱🇹 Литва"
 }
@@ -256,7 +358,6 @@
           "domain:push.apple.com",
           "domain:api.push.apple.com",
           "domain:push-apple.com.akadns.net",
-
           "domain:*-courier.push.apple.com"
         ],
         "outboundTag": "direct"
@@ -278,7 +379,6 @@
       "listen": "127.0.0.1",
       "protocol": "socks",
       "settings": {
-
         "udp": true,
         "auth": "noauth"
       },
@@ -300,7 +400,6 @@
       "settings": {
         "allowTransparent": false
       },
-
       "sniffing": {
         "enabled": true,
         "routeOnly": false,
@@ -310,126 +409,6 @@
           "quic"
         ]
       }
-    }
-  ],
-  "outbounds": [
-    {
-      "tag": "proxy",
-      "protocol": "vless",
-      "settings": {
-        "vnext": [
-          {
-            "address": "moldova.scroogethebest.com",
-            "port": 443,
-
-            "users": [
-              {
-                "id": "5f5114c6-ad1f-4e4a-baad-aacb4634f275",
-                "encryption": "none",
-                "flow": "xtls-rprx-vision"
-              }
-            ]
-          }
-        ]
-      },
-      "streamSettings": {
-        "network": "tcp",
-        "tcpSettings": {},
-        "security": "reality",
-        "realitySettings": {
-          "serverName": "deepl.com",
-          "publicKey": "I1jWe7nJUp964tu-U41mY6hgu5Jfzz5yuZqPs6g6zVI",
-          "shortId": "8ac278112fadebd1",
-          "spiderX": "/",
-
-          "fingerprint": "qq"
-        }
-      }
-    },
-    {
-      "tag": "direct",
-      "protocol": "freedom"
-    },
-    {
-      "tag": "block",
-      "protocol": "blackhole"
-    }
-  ],
-  "remarks": "🇲🇩 Молдова"
-}
-{
-  "dns": {
-    "tag": "dns-in",
-    "servers": [
-      "8.8.8.8",
-      "9.9.9.9"
-
-    ],
-    "queryStrategy": "UseIPv4"
-  },
-  "routing": {
-    "rules": [
-      {
-        "type": "field",
-        "domain": [
-          "domain:mtalk.google.com",
-          "domain:push.apple.com",
-          "domain:api.push.apple.com",
-          "domain:push-apple.com.akadns.net",
-          "domain:*-courier.push.apple.com"
-        ],
-        "outboundTag": "direct"
-      },
-      {
-        "ip": [
-          "17.0.0.0/8"
-        ],
-        "type": "field",
-
-        "outboundTag": "direct"
-      }
-    ],
-    "domainStrategy": "IPIfNonMatch"
-  },
-  "inbounds": [
-    {
-      "tag": "socks",
-      "port": 10808,
-      "listen": "127.0.0.1",
-      "protocol": "socks",
-      "settings": {
-        "udp": true,
-        "auth": "noauth"
-      },
-      "sniffing": {
-        "enabled": true,
-        "routeOnly": false,
-        "destOverride": [
-          "http",
-          "tls",
-
-          "quic"
-        ]
-      }
-    },
-    {
-      "tag": "http",
-      "port": 10809,
-      "listen": "127.0.0.1",
-      "protocol": "http",
-      "settings": {
-        "allowTransparent": false
-      },
-      "sniffing": {
-        "enabled": true,
-        "routeOnly": false,
-        "destOverride": [
-          "http",
-          "tls",
-          "quic"
-        ]
-      }
-
     }
   ],
   "outbounds": [
@@ -450,7 +429,6 @@
             ]
           }
         ]
-
       },
       "streamSettings": {
         "network": "tcp",
@@ -470,7 +448,6 @@
       "protocol": "freedom"
     },
     {
-
       "tag": "block",
       "protocol": "blackhole"
     }
@@ -492,7 +469,6 @@
         "type": "field",
         "domain": [
           "domain:mtalk.google.com",
-
           "domain:push.apple.com",
           "domain:api.push.apple.com",
           "domain:push-apple.com.akadns.net",
@@ -514,7 +490,6 @@
     {
       "tag": "socks",
       "port": 10808,
-
       "listen": "127.0.0.1",
       "protocol": "socks",
       "settings": {
@@ -536,7 +511,6 @@
       "port": 10809,
       "listen": "127.0.0.1",
       "protocol": "http",
-
       "settings": {
         "allowTransparent": false
       },
@@ -558,7 +532,6 @@
       "settings": {
         "vnext": [
           {
-
             "address": "84.32.70.206",
             "port": 443,
             "users": [
@@ -577,9 +550,7 @@
         "security": "reality",
         "realitySettings": {
           "serverName": "google.com",
-          "publicKey": "FhYXVO-0BlCdga4MFczEVVC_clTA2UaIh
-
-WUiaWvYlR0",
+          "publicKey": "FhYXVO-0BlCdga4MFczEVVC_clTA2UaIhWUiaWvYlR0",
           "shortId": "fb2a682d44bdc70c",
           "spiderX": "/",
           "fingerprint": "qq"
@@ -600,7 +571,6 @@ WUiaWvYlR0",
 {
   "dns": {
     "tag": "dns-in",
-
     "servers": [
       "8.8.8.8",
       "9.9.9.9"
@@ -622,7 +592,6 @@ WUiaWvYlR0",
       },
       {
         "ip": [
-
           "17.0.0.0/8"
         ],
         "type": "field",
@@ -644,7 +613,6 @@ WUiaWvYlR0",
       "sniffing": {
         "enabled": true,
         "routeOnly": false,
-
         "destOverride": [
           "http",
           "tls",
@@ -666,7 +634,6 @@ WUiaWvYlR0",
         "destOverride": [
           "http",
           "tls",
-
           "quic"
         ]
       }
@@ -687,7 +654,6 @@ WUiaWvYlR0",
                 "encryption": "none",
                 "flow": "xtls-rprx-vision"
               }
-
             ]
           }
         ]
@@ -706,7 +672,6 @@ WUiaWvYlR0",
       }
     },
     {
-
       "tag": "direct",
       "protocol": "freedom"
     },
@@ -728,7 +693,6 @@ WUiaWvYlR0",
   },
   "routing": {
     "rules": [
-
       {
         "type": "field",
         "domain": [
@@ -750,7 +714,6 @@ WUiaWvYlR0",
     ],
     "domainStrategy": "IPIfNonMatch"
   },
-
   "inbounds": [
     {
       "tag": "socks",
@@ -772,7 +735,6 @@ WUiaWvYlR0",
       }
     },
     {
-
       "tag": "http",
       "port": 10809,
       "listen": "127.0.0.1",
@@ -794,7 +756,6 @@ WUiaWvYlR0",
   "outbounds": [
     {
       "tag": "proxy",
-
       "protocol": "vless",
       "settings": {
         "vnext": [
@@ -815,7 +776,6 @@ WUiaWvYlR0",
         "network": "tcp",
         "tcpSettings": {},
         "security": "reality",
-
         "realitySettings": {
           "serverName": "api-maps.yandex.ru",
           "publicKey": "su8tIyeRdTZZHPvZn1AjBZPCv0_FsI7msHP_s8x4Oj0",
@@ -835,7 +795,6 @@ WUiaWvYlR0",
     }
   ],
   "remarks": "🇪🇺 1-2. LTE | Все операторы"
-
 }
 {
   "dns": {
@@ -857,7 +816,6 @@ WUiaWvYlR0",
           "domain:push-apple.com.akadns.net",
           "domain:*-courier.push.apple.com"
         ],
-
         "outboundTag": "direct"
       },
       {
@@ -879,7 +837,6 @@ WUiaWvYlR0",
       "settings": {
         "udp": true,
         "auth": "noauth"
-
       },
       "sniffing": {
         "enabled": true,
@@ -901,7 +858,6 @@ WUiaWvYlR0",
       },
       "sniffing": {
         "enabled": true,
-
         "routeOnly": false,
         "destOverride": [
           "http",
@@ -922,9 +878,7 @@ WUiaWvYlR0",
             "port": 443,
             "users": [
               {
-                "id": "5f5114c6-ad1f-4e4a-baad-
-
-aacb4634f275",
+                "id": "5f5114c6-ad1f-4e4a-baad-aacb4634f275",
                 "encryption": "none",
                 "flow": "xtls-rprx-vision"
               }
@@ -943,7 +897,6 @@ aacb4634f275",
           "spiderX": "/",
           "fingerprint": "qq"
         }
-
       }
     },
     {
@@ -965,7 +918,6 @@ aacb4634f275",
       "9.9.9.9"
     ],
     "queryStrategy": "UseIPv4"
-
   },
   "routing": {
     "rules": [
@@ -987,7 +939,6 @@ aacb4634f275",
         "type": "field",
         "outboundTag": "direct"
       }
-
     ],
     "domainStrategy": "IPIfNonMatch"
   },
@@ -1009,7 +960,6 @@ aacb4634f275",
           "tls",
           "quic"
         ]
-
       }
     },
     {
@@ -1031,7 +981,6 @@ aacb4634f275",
       }
     }
   ],
-
   "outbounds": [
     {
       "tag": "proxy",
@@ -1052,7 +1001,6 @@ aacb4634f275",
         ]
       },
       "streamSettings": {
-
         "network": "tcp",
         "tcpSettings": {},
         "security": "reality",
@@ -1071,7 +1019,6 @@ aacb4634f275",
     },
     {
       "tag": "block",
-
       "protocol": "blackhole"
     }
   ],
@@ -1093,7 +1040,6 @@ aacb4634f275",
         "domain": [
           "domain:mtalk.google.com",
           "domain:push.apple.com",
-
           "domain:api.push.apple.com",
           "domain:push-apple.com.akadns.net",
           "domain:*-courier.push.apple.com"
@@ -1115,7 +1061,6 @@ aacb4634f275",
       "tag": "socks",
       "port": 10808,
       "listen": "127.0.0.1",
-
       "protocol": "socks",
       "settings": {
         "udp": true,
@@ -1137,7 +1082,6 @@ aacb4634f275",
       "listen": "127.0.0.1",
       "protocol": "http",
       "settings": {
-
         "allowTransparent": false
       },
       "sniffing": {
@@ -1159,7 +1103,6 @@ aacb4634f275",
         "vnext": [
           {
             "address": "178.154.208.143",
-
             "port": 443,
             "users": [
               {
@@ -1178,7 +1121,6 @@ aacb4634f275",
         "realitySettings": {
           "serverName": "api-maps.yandex.ru",
           "publicKey": "su8tIyeRdTZZHPvZn1AjBZPCv0_FsI7msHP_s8x4Oj0",
-
           "shortId": "c3be66103c6cba50",
           "spiderX": "/",
           "fingerprint": "qq"
@@ -1200,7 +1142,6 @@ aacb4634f275",
   "dns": {
     "tag": "dns-in",
     "servers": [
-
       "8.8.8.8",
       "9.9.9.9"
     ],
@@ -1222,7 +1163,6 @@ aacb4634f275",
       {
         "ip": [
           "17.0.0.0/8"
-
         ],
         "type": "field",
         "outboundTag": "direct"
@@ -1244,7 +1184,6 @@ aacb4634f275",
         "enabled": true,
         "routeOnly": false,
         "destOverride": [
-
           "http",
           "tls",
           "quic"
@@ -1266,7 +1205,6 @@ aacb4634f275",
           "http",
           "tls",
           "quic"
-
         ]
       }
     }
@@ -1287,7 +1225,6 @@ aacb4634f275",
                 "flow": "xtls-rprx-vision"
               }
             ]
-
           }
         ]
       },
@@ -1307,7 +1244,6 @@ aacb4634f275",
     {
       "tag": "direct",
       "protocol": "freedom"
-
     },
     {
       "tag": "block",
