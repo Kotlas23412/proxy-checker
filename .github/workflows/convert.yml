@@ -21,11 +21,29 @@ jobs:
       uses: actions/checkout@v3
       with:
         persist-credentials: true
+        fetch-depth: 2
         
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
+    
+    - name: Check what triggered the workflow
+      id: trigger_check
+      run: |
+        if [ "${{ github.event_name }}" = "push" ]; then
+          CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
+          echo "Changed files: $CHANGED_FILES"
+          if echo "$CHANGED_FILES" | grep -q "configs.txt\|configs2.txt"; then
+            echo "triggered_by_config=true" >> $GITHUB_OUTPUT
+            echo "✅ Triggered by configs.txt or configs2.txt update"
+          else
+            echo "triggered_by_config=false" >> $GITHUB_OUTPUT
+          fi
+        else
+          echo "triggered_by_config=false" >> $GITHUB_OUTPUT
+          echo "ℹ️ Triggered by: ${{ github.event_name }}"
+        fi
         
     - name: Run conversion script
       run: python convert.py
@@ -36,6 +54,7 @@ jobs:
         import json
         import base64
         from urllib.parse import urlparse, parse_qs
+        import os
         
         def parse_vless_to_json(vless_url, index, apply_spoofing=False):
             """Конвертирует VLESS ссылку в JSON объект для V2Ray"""
@@ -312,15 +331,45 @@ jobs:
             print(f"✅ Created {output_file} with {len(vless_links)} proxies")
         
         # Создаем auto.json из output.txt
-        create_auto_json('output.txt', 'auto.json', 'Main Servers')
+        if os.path.exists('output.txt'):
+            create_auto_json('output.txt', 'auto.json', 'Main Servers')
+        else:
+            print("⚠️ output.txt not found")
         
         # Опционально: создаем auto2.json из output2.txt если он существует
-        try:
+        if os.path.exists('output2.txt'):
             create_auto_json('output2.txt', 'auto2.json', 'Secondary Servers', apply_spoofing=True)
-        except:
+        else:
             print("⚠️ output2.txt not found, skipping auto2.json")
         
         EOF
+    
+    - name: Display trigger information
+      run: |
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "📋 Workflow Execution Summary"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "🎯 Triggered by: ${{ github.event_name }}"
+        echo "⚡ Config file updated: ${{ steps.trigger_check.outputs.triggered_by_config }}"
+        echo "📅 Time: $(date +'%Y-%m-%d %H:%M:%S UTC')"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        
+        if [ -f output.txt ]; then
+          echo "📊 output.txt lines: $(wc -l < output.txt)"
+        fi
+        
+        if [ -f output2.txt ]; then
+          echo "📊 output2.txt lines: $(wc -l < output2.txt)"
+        fi
+        
+        if [ -f auto.json ]; then
+          echo "✅ auto.json created successfully"
+        fi
+        
+        if [ -f auto2.json ]; then
+          echo "✅ auto2.json created successfully"
+        fi
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         
     - name: Check for changes
       id: verify_diff
@@ -332,6 +381,22 @@ jobs:
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
-        git add output.txt output.json output2.txt auto.json auto2.json
-        git commit -m "🔄 Update VLESS configs + auto.json [$(date +'%Y-%m-%d %H:%M:%S')]"
-        git push
+        git add output.txt output.json output2.txt auto.json auto2.json 2>/dev/null || true
+        
+        COMMIT_MSG="🔄 Update VLESS configs + auto.json [$(date +'%Y-%m-%d %H:%M:%S')]"
+        
+        if [ "${{ steps.trigger_check.outputs.triggered_by_config }}" = "true" ]; then
+          COMMIT_MSG="⚡ Auto-update triggered by configs.txt change [$(date +'%Y-%m-%d %H:%M:%S')]"
+        fi
+        
+        git commit -m "$COMMIT_MSG" || echo "No changes to commit"
+        git push || echo "Nothing to push"
+    
+    - name: Workflow completion notification
+      if: always()
+      run: |
+        if [ "${{ steps.verify_diff.outputs.changed }}" = "true" ]; then
+          echo "✅ Workflow completed successfully - Changes committed and pushed"
+        else
+          echo "ℹ️ Workflow completed - No changes detected"
+        fi
