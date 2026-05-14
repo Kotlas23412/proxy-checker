@@ -1,4 +1,4 @@
-name: Process JSON Configs
+name: Convert JSON to Links and Back
 
 on:
   push:
@@ -25,56 +25,84 @@ jobs:
       with:
         python-version: '3.10'
         
-    - name: Build Valid JSON Arrays
+    - name: Process Configs
       run: |
         python3 << 'EOF'
         import json
         import os
         import re
+        from urllib.parse import urlencode, quote
 
-        def process_config_file(input_file, output_file):
+        def json_to_vless(obj):
+            """Преобразует JSON объект в vless:// ссылку"""
+            try:
+                outbound = obj['outbounds'][0]
+                user = outbound['settings']['vnext'][0]['users'][0]
+                server = outbound['settings']['vnext'][0]
+                stream = outbound['streamSettings']
+                
+                uuid = user['id']
+                addr = server['address']
+                port = server['port']
+                
+                params = {
+                    "type": stream.get('network', 'tcp'),
+                    "security": stream.get('security', 'none'),
+                }
+                
+                if params['security'] == 'reality':
+                    r_settings = stream.get('realitySettings', {})
+                    params.update({
+                        "sni": r_settings.get('serverName', ''),
+                        "pbk": r_settings.get('publicKey', ''),
+                        "sid": r_settings.get('shortId', ''),
+                        "fp": r_settings.get('fingerprint', 'chrome'),
+                        "flow": user.get('flow', '')
+                    })
+                
+                remark = obj.get('remarks', 'Unnamed')
+                query = urlencode({k: v for k, v in params.items() if v})
+                return f"vless://{uuid}@{addr}:{port}?{query}#{quote(remark)}"
+            except Exception as e:
+                return None
+
+        def process_file(input_file, json_output, link_output):
             if not os.path.exists(input_file):
-                print(f"⚠️ {input_file} не найден")
                 return
 
             with open(input_file, 'r', encoding='utf-8') as f:
                 content = f.read().strip()
-
-            if not content:
-                print(f"⚠️ {input_file} пуст")
-                return
-
-            # Если файл начинается с vless://, это ссылки (на случай ошибки)
-            if content.startswith('vless://'):
-                print(f"ℹ️ {input_file} содержит VLESS ссылки, а не JSON.")
-                # Тут можно оставить код конвертации из VLESS в JSON если нужно
-                return
-
-            # Если это JSON объекты, идущие друг за другом {..}{..}
-            # Мы превращаем их в массив [ {..}, {..} ]
+            
+            # 1. Исправляем JSON (если объекты идут подряд без запятых)
+            fixed_content = re.sub(r'}\s*{', '},{', content)
+            if not fixed_content.startswith('['):
+                fixed_content = '[' + fixed_content + ']'
+            
             try:
-                # Пытаемся распарсить как один объект или массив сразу
-                data = json.loads(content)
-                if not isinstance(data, list):
-                    data = [data]
-            except json.JSONDecodeError:
-                # Если ошибка, значит объекты склеены без запятых
-                # Добавляем запятые между всеми } и {
-                fixed_content = re.sub(r'}\s*{', '},{', content)
-                if not fixed_content.startswith('['):
-                    fixed_content = '[' + fixed_content + ']'
-                try:
-                    data = json.loads(fixed_content)
-                except Exception as e:
-                    print(f"❌ Ошибка парсинга JSON в {input_file}: {e}")
-                    return
+                data = json.loads(fixed_content)
+            except:
+                print(f"Ошибка в файле {input_file}")
+                return
 
-            with open(output_file, 'w', encoding='utf-8') as f:
+            # 2. Сохраняем как правильный массив JSON
+            with open(json_output, 'w', encoding='utf-8') as f:
                 json.dump(data, f, indent=2, ensure_ascii=False)
-            print(f"✅ Создан {output_file} (объектов: {len(data)})")
+            
+            # 3. Генерируем ссылки VLESS
+            links = []
+            for item in data:
+                link = json_to_vless(item)
+                if link:
+                    links.append(link)
+            
+            with open(link_output, 'w', encoding='utf-8') as f:
+                f.write('\n'.join(links))
+            
+            print(f"✅ Обработан {input_file}: Создано {len(links)} ссылок")
 
-        process_config_file('configs.txt', 'vless_list.json')
-        process_config_file('configs2.txt', 'vless_list2.json')
+        # Обработка обоих наборов файлов
+        process_file('configs.txt', 'vless_full.json', 'vless_links.txt')
+        process_file('configs2.txt', 'vless_full2.json', 'vless_links2.txt')
         EOF
 
     - name: Commit and Push
@@ -82,12 +110,12 @@ jobs:
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
         
-        # Добавляем новые файлы
-        git add vless_list.json vless_list2.json 2>/dev/null || true
+        # Добавляем все созданные файлы
+        git add vless_full.json vless_links.txt vless_full2.json vless_links2.txt 2>/dev/null || true
         
         if git diff --staged --quiet; then
-          echo "Нет изменений для коммита"
+          echo "No changes"
         else
-          git commit -m "🔄 Сгенерирован vless_list.json из configs.txt [$(date +'%Y-%m-%d %H:%M:%S')]"
+          git commit -m "🔄 Update VLESS: JSON and Links [$(date +'%Y-%m-%d %H:%M:%S')]"
           git push
         fi
