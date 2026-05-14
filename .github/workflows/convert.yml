@@ -48,24 +48,32 @@ jobs:
     - name: Run conversion script
       run: python convert.py
       
-    - name: Generate auto.json config
+    - name: Generate vless_list.json (unique name)
       run: |
         python3 << 'EOF'
         import json
-        import base64
+        import re
         from urllib.parse import urlparse, parse_qs
         import os
         
-        def parse_vless_to_json(vless_url, index, apply_spoofing=False):
-            """Конвертирует VLESS ссылку в JSON объект для V2Ray"""
+        def extract_remark_from_vless(vless_url):
+            try:
+                if '#' in vless_url:
+                    return vless_url.split('#')[-1].strip()
+                return "Unnamed Server"
+            except:
+                return "Unnamed Server"
+        
+        def parse_vless_to_simple_json(vless_url):
             try:
                 if not vless_url.startswith('vless://'):
                     return None
-                    
+                
+                remarks = extract_remark_from_vless(vless_url)
                 url = urlparse(vless_url.replace('vless://', 'http://'))
                 params = parse_qs(url.query)
                 
-                protocol = url.scheme if url.scheme in ['vless', 'vmess', 'trojan', 'ss'] else 'vless'
+                protocol = "vless"
                 network = params.get('type', ['tcp'])[0]
                 security = params.get('security', ['reality'])[0]
                 
@@ -74,329 +82,91 @@ jobs:
                 if network in ['ws', 'httpupgrade'] and security == 'reality':
                     security = 'tls'
                 
-                # Базовая конфигурация прокси
-                proxy_config = {
-                    "tag": f"proxy-{index}",
+                config = {
+                    "dns": {
+                        "tag": "dns-in",
+                        "servers": ["8.8.8.8", "9.9.9.9"],
+                        "queryStrategy": "UseIPv4"
+                    },
+                    "routing": {
+                        "rules": [
+                            {"type": "field", "domain": ["domain:mtalk.google.com"], "outboundTag": "direct"},
+                            {"ip": ["17.0.0.0/8"], "type": "field", "outboundTag": "direct"}
+                        ],
+                        "domainStrategy": "IPIfNonMatch"
+                    },
+                    "inbounds": [
+                        {"tag": "socks", "port": 10808, "listen": "127.0.0.1", "protocol": "socks", "settings": {"udp": True, "auth": "noauth"}},
+                        {"tag": "http", "port": 10809, "listen": "127.0.0.1", "protocol": "http", "settings": {"allowTransparent": False}}
+                    ],
+                    "outbounds": []
+                }
+                
+                user = {"id": url.username or "", "encryption": "none"}
+                if network == "tcp": user["flow"] = "xtls-rprx-vision"
+                
+                proxy_outbound = {
+                    "tag": "proxy",
                     "protocol": protocol,
-                    "mux": {
-                        "enabled": True,
-                        "concurrency": -1,
-                        "xudpConcurrency": 16,
-                        "xudpProxyUDP443": "reject"
-                    }
+                    "settings": {"vnext": [{"address": url.hostname, "port": url.port or 443, "users": [user]}]},
+                    "streamSettings": {"network": network, "security": security}
                 }
                 
-                # Настройки пользователя
-                user = {
-                    "id": url.username or ""
-                }
-                
-                if protocol == "vless":
-                    user["encryption"] = "none"
-                    if network == "tcp":
-                        user["flow"] = "xtls-rprx-vision"
-                
-                # Настройки сервера
-                if protocol in ["vless", "vmess"]:
-                    proxy_config["settings"] = {
-                        "vnext": [{
-                            "address": url.hostname,
-                            "port": url.port or 443,
-                            "users": [user]
-                        }]
-                    }
-                else:
-                    proxy_config["settings"] = {
-                        "servers": [{
-                            "address": url.hostname,
-                            "port": url.port or 443,
-                            "password": url.username or ""
-                        }]
-                    }
-                
-                # Stream настройки
-                stream = {
-                    "network": network,
-                    "security": security
-                }
-                
-                # Настройки транспорта
                 if network == "ws":
-                    stream["wsSettings"] = {
+                    proxy_outbound["streamSettings"]["wsSettings"] = {
                         "path": params.get('path', ['/'])[0],
-                        "headers": {
-                            "Host": params.get('host', [url.hostname])[0]
-                        }
-                    }
-                elif network == "httpupgrade":
-                    stream["httpupgradeSettings"] = {
-                        "path": params.get('path', ['/'])[0],
-                        "headers": {
-                            "Host": params.get('host', [url.hostname])[0]
-                        }
+                        "headers": {"Host": params.get('host', [url.hostname])[0]}
                     }
                 elif network == "grpc":
-                    stream["grpcSettings"] = {
-                        "serviceName": params.get('serviceName', [''])[0]
-                    }
+                    proxy_outbound["streamSettings"]["grpcSettings"] = {"serviceName": params.get('serviceName', [''])[0]}
                 
-                # TLS/Reality настройки
                 sni = params.get('sni', [url.hostname])[0]
-                tls_settings = {
-                    "serverName": sni,
-                    "fingerprint": "chrome"
-                }
-                
                 if security == "reality":
-                    tls_settings["publicKey"] = params.get('pbk', ['UsIT-zjeviusx9Av1bItm6yZiZCW56J1P1zvoQAOpU0'])[0]
-                    tls_settings["shortId"] = params.get('sid', [''])[0]
+                    proxy_outbound["streamSettings"]["realitySettings"] = {
+                        "serverName": sni, "publicKey": params.get('pbk', [''])[0],
+                        "shortId": params.get('sid', [''])[0], "spiderX": "/", "fingerprint": params.get('fp', ['chrome'])[0]
+                    }
+                elif security == "tls":
+                    proxy_outbound["streamSettings"]["tlsSettings"] = {"serverName": sni, "fingerprint": params.get('fp', ['chrome'])[0]}
                 
-                stream[f"{security}Settings"] = tls_settings
-                proxy_config["streamSettings"] = stream
-                
-                return proxy_config
+                config["outbounds"].append(proxy_outbound)
+                config["outbounds"].extend([{"tag": "direct", "protocol": "freedom"}, {"tag": "block", "protocol": "blackhole"}])
+                config["remarks"] = remarks
+                return config
             except Exception as e:
-                print(f"Error parsing VLESS URL: {e}")
                 return None
         
-        def create_auto_json(input_file, output_file, category_name="Auto Config", apply_spoofing=False):
-            """Создает auto.json из файла с VLESS ссылками"""
-            
-            # Читаем VLESS ссылки
+        def create_configs_json(input_file, output_file):
             try:
                 with open(input_file, 'r', encoding='utf-8') as f:
                     vless_links = [line.strip() for line in f if line.strip().startswith('vless://')]
-            except FileNotFoundError:
-                print(f"File {input_file} not found, creating empty config")
-                vless_links = []
-            
-            # Базовая конфигурация
-            config = {
-                "remarks": category_name,
-                "burstObservatory": {
-                    "pingConfig": {
-                        "connectivity": "https://gu-st.ru/portal-st/favicon.svg",
-                        "destination": "https://ssl.gstatic.com/ui/v1/icons/mail/rfr/noconnection/default_400.png",
-                        "httpMethod": "HEAD",
-                        "interval": "15m",
-                        "sampling": 3,
-                        "timeout": "3s"
-                    },
-                    "subjectSelector": ["proxy-"]
-                },
-                "dns": {
-                    "queryStrategy": "UseIPv4",
-                    "disableFallback": True,
-                    "servers": [
-                        {
-                            "address": "77.88.8.8",
-                            "detour": "direct",
-                            "tag": "dns-ru",
-                            "domains": [
-                                "geosite:category-ru",
-                                "domain:magnit.ru",
-                                "domain:tander.ru",
-                                "regexp:.*\\.magnit$",
-                                "regexp:.*\\.tander$",
-                                "regexp:.*tander.*magnit.*",
-                                "domain:yandex.ru"
-                            ]
-                        },
-                        {
-                            "address": "https://dns.google/dns-query",
-                            "detour": "loop-stream-direct",
-                            "tag": "dns-stream",
-                            "domains": ["geosite:youtube", "geosite:instagram", "geosite:tiktok"]
-                        },
-                        {
-                            "address": "https://cloudflare-dns.com/dns-query",
-                            "detour": "loop-ai-direct",
-                            "tag": "dns-ai",
-                            "domains": ["geosite:openai", "domain:chatgpt.com"]
-                        },
-                        {
-                            "address": "https://cloudflare-dns.com/dns-query",
-                            "detour": "proxy-0",
-                            "tag": "dns-default"
-                        },
-                        {"address": "1.1.1.1", "detour": "direct"}
-                    ]
-                },
-                "inbounds": [
-                    {
-                        "listen": "127.0.0.1",
-                        "port": 10808,
-                        "protocol": "socks",
-                        "settings": {"udp": True},
-                        "sniffing": {
-                            "destOverride": ["http", "tls", "quic"],
-                            "enabled": True,
-                            "routeOnly": True
-                        },
-                        "tag": "socks"
-                    },
-                    {
-                        "listen": "127.0.0.1",
-                        "port": 10809,
-                        "protocol": "http",
-                        "sniffing": {
-                            "destOverride": ["http", "tls", "quic"],
-                            "enabled": True,
-                            "routeOnly": True
-                        },
-                        "tag": "http"
-                    }
-                ],
-                "outbounds": [],
-                "routing": {
-                    "domainMatcher": "hybrid",
-                    "domainStrategy": "AsIs",
-                    "balancers": [{
-                        "tag": "balancer-main",
-                        "fallbackTag": "proxy-0",
-                        "selector": ["proxy-"],
-                        "strategy": {
-                            "type": "leastLoad",
-                            "settings": {
-                                "expected": 1,
-                                "maxRTT": "5s",
-                                "tolerance": 0.5,
-                                "baselines": ["800ms", "2000ms"]
-                            }
-                        }
-                    }],
-                    "rules": [
-                        {"network": "udp", "port": "443", "outboundTag": "block", "type": "field"},
-                        {"protocol": ["bittorrent"], "outboundTag": "block", "type": "field"},
-                        {"ip": ["geoip:private", "geoip:ru"], "outboundTag": "direct", "type": "field"},
-                        {
-                            "domain": [
-                                "full:ru.tander.magnit",
-                                "domain:tander.ru",
-                                "domain:magnit.ru",
-                                "regexp:.*\\.tander\\..*",
-                                "regexp:.*tander.*magnit.*",
-                                "regexp:.*magnit.*tander.*"
-                            ],
-                            "outboundTag": "direct",
-                            "type": "field"
-                        },
-                        {
-                            "domain": ["geosite:category-ru", "regexp:.*\\.ru$", "regexp:.*\\.рф$"],
-                            "outboundTag": "direct",
-                            "type": "field"
-                        },
-                        {"inboundTag": ["REROUTE-STREAM", "REROUTE-AI"], "balancerTag": "balancer-main", "type": "field"},
-                        {"domain": ["geosite:openai"], "outboundTag": "loop-ai-direct", "type": "field"},
-                        {
-                            "domain": ["geosite:youtube", "geosite:instagram", "domain:netflix.com"],
-                            "outboundTag": "loop-stream-direct",
-                            "type": "field"
-                        },
-                        {"network": "tcp,udp", "balancerTag": "balancer-main", "type": "field"}
-                    ]
-                }
-            }
-            
-            # Парсим и добавляем прокси
-            for idx, vless_link in enumerate(vless_links):
-                proxy = parse_vless_to_json(vless_link, idx, apply_spoofing)
-                if proxy:
-                    config["outbounds"].append(proxy)
-            
-            # Добавляем служебные outbounds
-            config["outbounds"].extend([
-                {
-                    "tag": "direct",
-                    "protocol": "freedom",
-                    "streamSettings": {"sockopt": {"domainStrategy": "ForceIPv4"}}
-                },
-                {"tag": "block", "protocol": "blackhole"},
-                {
-                    "tag": "loop-stream-direct",
-                    "protocol": "loopback",
-                    "settings": {"inboundTag": "REROUTE-STREAM"}
-                },
-                {
-                    "tag": "loop-ai-direct",
-                    "protocol": "loopback",
-                    "settings": {"inboundTag": "REROUTE-AI"}
-                }
-            ])
-            
-            # Сохраняем JSON
-            with open(output_file, 'w', encoding='utf-8') as f:
-                json.dump([config], f, indent=2, ensure_ascii=False)
-            
-            print(f"✅ Created {output_file} with {len(vless_links)} proxies")
+                configs = [parse_vless_to_simple_json(l) for l in vless_links if parse_vless_to_simple_json(l)]
+                with open(output_file, 'w', encoding='utf-8') as f:
+                    json.dump(configs, f, indent=2, ensure_ascii=False)
+                print(f"✅ Created {output_file}")
+            except Exception as e:
+                print(f"Error: {e}")
         
-        # Создаем auto.json из output.txt
-        if os.path.exists('output.txt'):
-            create_auto_json('output.txt', 'auto.json', 'Main Servers')
-        else:
-            print("⚠️ output.txt not found")
-        
-        # Опционально: создаем auto2.json из output2.txt если он существует
-        if os.path.exists('output2.txt'):
-            create_auto_json('output2.txt', 'auto2.json', 'Secondary Servers', apply_spoofing=True)
-        else:
-            print("⚠️ output2.txt not found, skipping auto2.json")
-        
+        if os.path.exists('output.txt'): create_configs_json('output.txt', 'vless_list.json')
+        if os.path.exists('output2.txt'): create_configs_json('output2.txt', 'vless_list2.json')
         EOF
     
     - name: Display trigger information
       run: |
-        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        echo "📋 Workflow Execution Summary"
-        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        echo "🎯 Triggered by: ${{ github.event_name }}"
-        echo "⚡ Config file updated: ${{ steps.trigger_check.outputs.triggered_by_config }}"
-        echo "📅 Time: $(date +'%Y-%m-%d %H:%M:%S UTC')"
-        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        
-        if [ -f output.txt ]; then
-          echo "📊 output.txt lines: $(wc -l < output.txt)"
-        fi
-        
-        if [ -f output2.txt ]; then
-          echo "📊 output2.txt lines: $(wc -l < output2.txt)"
-        fi
-        
-        if [ -f auto.json ]; then
-          echo "✅ auto.json created successfully"
-        fi
-        
-        if [ -f auto2.json ]; then
-          echo "✅ auto2.json created successfully"
-        fi
-        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "📊 Summary:"
+        [ -f vless_list.json ] && echo "✅ vless_list.json created"
+        [ -f vless_list2.json ] && echo "✅ vless_list2.json created"
         
     - name: Check for changes
       id: verify_diff
       run: |
-        git diff --quiet output.txt output.json output2.txt auto.json auto2.json 2>/dev/null || echo "changed=true" >> $GITHUB_OUTPUT
+        git diff --quiet output.txt output2.txt vless_list.json vless_list2.json 2>/dev/null || echo "changed=true" >> $GITHUB_OUTPUT
         
     - name: Commit and push changes
       if: steps.verify_diff.outputs.changed == 'true'
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
-        git add output.txt output.json output2.txt auto.json auto2.json 2>/dev/null || true
-        
-        COMMIT_MSG="🔄 Update VLESS configs + auto.json [$(date +'%Y-%m-%d %H:%M:%S')]"
-        
-        if [ "${{ steps.trigger_check.outputs.triggered_by_config }}" = "true" ]; then
-          COMMIT_MSG="⚡ Auto-update triggered by configs.txt change [$(date +'%Y-%m-%d %H:%M:%S')]"
-        fi
-        
-        git commit -m "$COMMIT_MSG" || echo "No changes to commit"
+        git add output.txt output2.txt vless_list.json vless_list2.json 2>/dev/null || true
+        git commit -m "🔄 Update VLESS JSON lists [$(date +'%Y-%m-%d %H:%M:%S')]"
         git push || echo "Nothing to push"
-    
-    - name: Workflow completion notification
-      if: always()
-      run: |
-        if [ "${{ steps.verify_diff.outputs.changed }}" = "true" ]; then
-          echo "✅ Workflow completed successfully - Changes committed and pushed"
-        else
-          echo "ℹ️ Workflow completed - No changes detected"
-        fi
