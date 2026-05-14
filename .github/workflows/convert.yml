@@ -1,4 +1,4 @@
-name: Convert V2Ray Configs to VLESS Links
+name: Process JSON Configs
 
 on:
   push:
@@ -19,154 +19,75 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-      with:
-        persist-credentials: true
-        fetch-depth: 2
         
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
-    
-    - name: Check what triggered the workflow
-      id: trigger_check
-      run: |
-        if [ "${{ github.event_name }}" = "push" ]; then
-          CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
-          echo "Changed files: $CHANGED_FILES"
-          if echo "$CHANGED_FILES" | grep -q "configs.txt\|configs2.txt"; then
-            echo "triggered_by_config=true" >> $GITHUB_OUTPUT
-            echo "✅ Triggered by configs.txt or configs2.txt update"
-          else
-            echo "triggered_by_config=false" >> $GITHUB_OUTPUT
-          fi
-        else
-          echo "triggered_by_config=false" >> $GITHUB_OUTPUT
-          echo "ℹ️ Triggered by: ${{ github.event_name }}"
-        fi
         
-    - name: Run conversion script
-      run: python convert.py
-      
-    - name: Generate vless_list.json (unique name)
+    - name: Build Valid JSON Arrays
       run: |
         python3 << 'EOF'
         import json
-        import re
-        from urllib.parse import urlparse, parse_qs
         import os
-        
-        def extract_remark_from_vless(vless_url):
+        import re
+
+        def process_config_file(input_file, output_file):
+            if not os.path.exists(input_file):
+                print(f"⚠️ {input_file} не найден")
+                return
+
+            with open(input_file, 'r', encoding='utf-8') as f:
+                content = f.read().strip()
+
+            if not content:
+                print(f"⚠️ {input_file} пуст")
+                return
+
+            # Если файл начинается с vless://, это ссылки (на случай ошибки)
+            if content.startswith('vless://'):
+                print(f"ℹ️ {input_file} содержит VLESS ссылки, а не JSON.")
+                # Тут можно оставить код конвертации из VLESS в JSON если нужно
+                return
+
+            # Если это JSON объекты, идущие друг за другом {..}{..}
+            # Мы превращаем их в массив [ {..}, {..} ]
             try:
-                if '#' in vless_url:
-                    return vless_url.split('#')[-1].strip()
-                return "Unnamed Server"
-            except:
-                return "Unnamed Server"
-        
-        def parse_vless_to_simple_json(vless_url):
-            try:
-                if not vless_url.startswith('vless://'):
-                    return None
-                
-                remarks = extract_remark_from_vless(vless_url)
-                url = urlparse(vless_url.replace('vless://', 'http://'))
-                params = parse_qs(url.query)
-                
-                protocol = "vless"
-                network = params.get('type', ['tcp'])[0]
-                security = params.get('security', ['reality'])[0]
-                
-                if security == 'none' or security == '':
-                    security = 'reality'
-                if network in ['ws', 'httpupgrade'] and security == 'reality':
-                    security = 'tls'
-                
-                config = {
-                    "dns": {
-                        "tag": "dns-in",
-                        "servers": ["8.8.8.8", "9.9.9.9"],
-                        "queryStrategy": "UseIPv4"
-                    },
-                    "routing": {
-                        "rules": [
-                            {"type": "field", "domain": ["domain:mtalk.google.com"], "outboundTag": "direct"},
-                            {"ip": ["17.0.0.0/8"], "type": "field", "outboundTag": "direct"}
-                        ],
-                        "domainStrategy": "IPIfNonMatch"
-                    },
-                    "inbounds": [
-                        {"tag": "socks", "port": 10808, "listen": "127.0.0.1", "protocol": "socks", "settings": {"udp": True, "auth": "noauth"}},
-                        {"tag": "http", "port": 10809, "listen": "127.0.0.1", "protocol": "http", "settings": {"allowTransparent": False}}
-                    ],
-                    "outbounds": []
-                }
-                
-                user = {"id": url.username or "", "encryption": "none"}
-                if network == "tcp": user["flow"] = "xtls-rprx-vision"
-                
-                proxy_outbound = {
-                    "tag": "proxy",
-                    "protocol": protocol,
-                    "settings": {"vnext": [{"address": url.hostname, "port": url.port or 443, "users": [user]}]},
-                    "streamSettings": {"network": network, "security": security}
-                }
-                
-                if network == "ws":
-                    proxy_outbound["streamSettings"]["wsSettings"] = {
-                        "path": params.get('path', ['/'])[0],
-                        "headers": {"Host": params.get('host', [url.hostname])[0]}
-                    }
-                elif network == "grpc":
-                    proxy_outbound["streamSettings"]["grpcSettings"] = {"serviceName": params.get('serviceName', [''])[0]}
-                
-                sni = params.get('sni', [url.hostname])[0]
-                if security == "reality":
-                    proxy_outbound["streamSettings"]["realitySettings"] = {
-                        "serverName": sni, "publicKey": params.get('pbk', [''])[0],
-                        "shortId": params.get('sid', [''])[0], "spiderX": "/", "fingerprint": params.get('fp', ['chrome'])[0]
-                    }
-                elif security == "tls":
-                    proxy_outbound["streamSettings"]["tlsSettings"] = {"serverName": sni, "fingerprint": params.get('fp', ['chrome'])[0]}
-                
-                config["outbounds"].append(proxy_outbound)
-                config["outbounds"].extend([{"tag": "direct", "protocol": "freedom"}, {"tag": "block", "protocol": "blackhole"}])
-                config["remarks"] = remarks
-                return config
-            except Exception as e:
-                return None
-        
-        def create_configs_json(input_file, output_file):
-            try:
-                with open(input_file, 'r', encoding='utf-8') as f:
-                    vless_links = [line.strip() for line in f if line.strip().startswith('vless://')]
-                configs = [parse_vless_to_simple_json(l) for l in vless_links if parse_vless_to_simple_json(l)]
-                with open(output_file, 'w', encoding='utf-8') as f:
-                    json.dump(configs, f, indent=2, ensure_ascii=False)
-                print(f"✅ Created {output_file}")
-            except Exception as e:
-                print(f"Error: {e}")
-        
-        if os.path.exists('output.txt'): create_configs_json('output.txt', 'vless_list.json')
-        if os.path.exists('output2.txt'): create_configs_json('output2.txt', 'vless_list2.json')
+                # Пытаемся распарсить как один объект или массив сразу
+                data = json.loads(content)
+                if not isinstance(data, list):
+                    data = [data]
+            except json.JSONDecodeError:
+                # Если ошибка, значит объекты склеены без запятых
+                # Добавляем запятые между всеми } и {
+                fixed_content = re.sub(r'}\s*{', '},{', content)
+                if not fixed_content.startswith('['):
+                    fixed_content = '[' + fixed_content + ']'
+                try:
+                    data = json.loads(fixed_content)
+                except Exception as e:
+                    print(f"❌ Ошибка парсинга JSON в {input_file}: {e}")
+                    return
+
+            with open(output_file, 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
+            print(f"✅ Создан {output_file} (объектов: {len(data)})")
+
+        process_config_file('configs.txt', 'vless_list.json')
+        process_config_file('configs2.txt', 'vless_list2.json')
         EOF
-    
-    - name: Display trigger information
-      run: |
-        echo "📊 Summary:"
-        [ -f vless_list.json ] && echo "✅ vless_list.json created"
-        [ -f vless_list2.json ] && echo "✅ vless_list2.json created"
-        
-    - name: Check for changes
-      id: verify_diff
-      run: |
-        git diff --quiet output.txt output2.txt vless_list.json vless_list2.json 2>/dev/null || echo "changed=true" >> $GITHUB_OUTPUT
-        
-    - name: Commit and push changes
-      if: steps.verify_diff.outputs.changed == 'true'
+
+    - name: Commit and Push
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
-        git add output.txt output2.txt vless_list.json vless_list2.json 2>/dev/null || true
-        git commit -m "🔄 Update VLESS JSON lists [$(date +'%Y-%m-%d %H:%M:%S')]"
-        git push || echo "Nothing to push"
+        
+        # Добавляем новые файлы
+        git add vless_list.json vless_list2.json 2>/dev/null || true
+        
+        if git diff --staged --quiet; then
+          echo "Нет изменений для коммита"
+        else
+          git commit -m "🔄 Сгенерирован vless_list.json из configs.txt [$(date +'%Y-%m-%d %H:%M:%S')]"
+          git push
+        fi
