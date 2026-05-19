@@ -100,7 +100,7 @@
     "outbounds": [
       {
         "tag": "proxy-0",
-        "protocol": "trojan",
+        "protocol": "vless",
         "mux": {
           "enabled": true,
           "concurrency": -1,
@@ -108,26 +108,28 @@
           "xudpProxyUDP443": "reject"
         },
         "settings": {
-          "servers": [
+          "vnext": [
             {
-              "address": "138.124.117.96",
-              "port": 8443,
-              "password": "8r<[9'l6hAO#8ZQi"
+              "address": "87.228.101.64",
+              "port": 443,
+              "users": [
+                {
+                  "id": "6bcc0a8a-a7cc-0004-8448-14ec5e516912",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
+                }
+              ]
             }
           ]
         },
         "streamSettings": {
-          "network": "ws",
-          "security": "tls",
-          "wsSettings": {
-            "path": "\/trTelegram🇨🇳+@WangCai2",
-            "headers": {
-              "Host": "Koma-YT.PAGeS.Dev"
-            }
-          },
-          "tlsSettings": {
-            "serverName": "Koma-YT.PAGeS.Dev",
-            "fingerprint": "chrome"
+          "network": "tcp",
+          "security": "reality",
+          "realitySettings": {
+            "serverName": "87.228.101.64",
+            "fingerprint": "chrome",
+            "publicKey": "KdAzR0Ytx0LJhK058NvjOg0nV7-vbxxoRL7-y-eSvA0",
+            "shortId": ""
           }
         }
       },
@@ -143,7 +145,7 @@
         "settings": {
           "servers": [
             {
-              "address": "185.65.202.101",
+              "address": "89.169.1.76",
               "port": 8443,
               "password": "8r<[9'l6hAO#8ZQi"
             }
@@ -176,8 +178,8 @@
         "settings": {
           "servers": [
             {
-              "address": "77.221.157.251",
-              "port": 2053,
+              "address": "89.110.111.27",
+              "port": 8443,
               "password": "8r<[9'l6hAO#8ZQi"
             }
           ]
@@ -199,7 +201,7 @@
       },
       {
         "tag": "proxy-3",
-        "protocol": "vless",
+        "protocol": "trojan",
         "mux": {
           "enabled": true,
           "concurrency": -1,
@@ -207,103 +209,31 @@
           "xudpProxyUDP443": "reject"
         },
         "settings": {
-          "vnext": [
+          "servers": [
             {
-              "address": "144.31.50.90",
-              "port": 499,
-              "users": [
-                {
-                  "id": "62162b09-0920-4b4d-9a3f-1fe2383300fd",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
+              "address": "138.124.52.54",
+              "port": 2083,
+              "password": "8r<[9'l6hAO#8ZQi"
             }
           ]
         },
         "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "my.selectel.ru",
-            "fingerprint": "chrome",
-            "publicKey": "nDq00UeDI5TKKFipI6rgdVCqiTO98ncHKn90Qp3EsBE",
-            "shortId": "f2b78452f9233f26"
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "\/trTelegram🇨🇳+@WangCai2",
+            "headers": {
+              "Host": "Koma-YT.PAGeS.Dev"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "Koma-YT.PAGeS.Dev",
+            "fingerprint": "chrome"
           }
         }
       },
       {
         "tag": "proxy-4",
-        "protocol": "vless",
-        "mux": {
-          "enabled": true,
-          "concurrency": -1,
-          "xudpConcurrency": 16,
-          "xudpProxyUDP443": "reject"
-        },
-        "settings": {
-          "vnext": [
-            {
-              "address": "ninka.api.dznn.net",
-              "port": 443,
-              "users": [
-                {
-                  "id": "92f3b80e-90a2-457f-b766-2e5cdeffbfa0",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "ninka.api.dznn.net",
-            "fingerprint": "chrome",
-            "publicKey": "9F7JxyyP-TNLt0dY2xOB0_34I8W0xXIpFY7rZ7-L0Gg",
-            "shortId": "19aa22f681923dc8"
-          }
-        }
-      },
-      {
-        "tag": "proxy-5",
-        "protocol": "vless",
-        "mux": {
-          "enabled": true,
-          "concurrency": -1,
-          "xudpConcurrency": 16,
-          "xudpProxyUDP443": "reject"
-        },
-        "settings": {
-          "vnext": [
-            {
-              "address": "51.250.84.1",
-              "port": 443,
-              "users": [
-                {
-                  "id": "62a9ba22-6829-488a-a75c-f2d7e4f8f133",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "ads.x5.ru",
-            "fingerprint": "chrome",
-            "publicKey": "SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc",
-            "shortId": ""
-          }
-        }
-      },
-      {
-        "tag": "proxy-6",
         "protocol": "trojan",
         "mux": {
           "enabled": true,
@@ -314,106 +244,7 @@
         "settings": {
           "servers": [
             {
-              "address": "77.221.156.92",
-              "port": 8443,
-              "password": "8r<[9'l6hAO#8ZQi"
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "ws",
-          "security": "tls",
-          "wsSettings": {
-            "path": "\/trTelegram🇨🇳+@WangCai2",
-            "headers": {
-              "Host": "Koma-YT.PAGeS.Dev"
-            }
-          },
-          "tlsSettings": {
-            "serverName": "Koma-YT.PAGeS.Dev",
-            "fingerprint": "chrome"
-          }
-        }
-      },
-      {
-        "tag": "proxy-7",
-        "protocol": "trojan",
-        "mux": {
-          "enabled": true,
-          "concurrency": -1,
-          "xudpConcurrency": 16,
-          "xudpProxyUDP443": "reject"
-        },
-        "settings": {
-          "servers": [
-            {
-              "address": "212.192.0.13",
-              "port": 8443,
-              "password": "8r<[9'l6hAO#8ZQi"
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "ws",
-          "security": "tls",
-          "wsSettings": {
-            "path": "\/trTelegram🇨🇳+@WangCai2",
-            "headers": {
-              "Host": "Koma-YT.PAGeS.Dev"
-            }
-          },
-          "tlsSettings": {
-            "serverName": "Koma-YT.PAGeS.Dev",
-            "fingerprint": "chrome"
-          }
-        }
-      },
-      {
-        "tag": "proxy-8",
-        "protocol": "vless",
-        "mux": {
-          "enabled": true,
-          "concurrency": -1,
-          "xudpConcurrency": 16,
-          "xudpProxyUDP443": "reject"
-        },
-        "settings": {
-          "vnext": [
-            {
-              "address": "cz.rumost.top",
-              "port": 443,
-              "users": [
-                {
-                  "id": "f42c93f3-755b-4e12-a856-e7c6878b34ab",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "tls",
-          "tlsSettings": {
-            "serverName": "cz.rumost.top",
-            "fingerprint": "chrome"
-          }
-        }
-      },
-      {
-        "tag": "proxy-9",
-        "protocol": "trojan",
-        "mux": {
-          "enabled": true,
-          "concurrency": -1,
-          "xudpConcurrency": 16,
-          "xudpProxyUDP443": "reject"
-        },
-        "settings": {
-          "servers": [
-            {
-              "address": "85.155.98.71",
+              "address": "91.108.242.148",
               "port": 2053,
               "password": "8r<[9'l6hAO#8ZQi"
             }
@@ -435,7 +266,7 @@
         }
       },
       {
-        "tag": "proxy-10",
+        "tag": "proxy-5",
         "protocol": "trojan",
         "mux": {
           "enabled": true,
@@ -468,40 +299,7 @@
         }
       },
       {
-        "tag": "proxy-11",
-        "protocol": "trojan",
-        "mux": {
-          "enabled": true,
-          "concurrency": -1,
-          "xudpConcurrency": 16,
-          "xudpProxyUDP443": "reject"
-        },
-        "settings": {
-          "servers": [
-            {
-              "address": "213.176.113.98",
-              "port": 2053,
-              "password": "8r<[9'l6hAO#8ZQi"
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "ws",
-          "security": "tls",
-          "wsSettings": {
-            "path": "\/trTelegram🇨🇳+@WangCai2",
-            "headers": {
-              "Host": "Koma-YT.PAGeS.Dev"
-            }
-          },
-          "tlsSettings": {
-            "serverName": "Koma-YT.PAGeS.Dev",
-            "fingerprint": "chrome"
-          }
-        }
-      },
-      {
-        "tag": "proxy-12",
+        "tag": "proxy-6",
         "protocol": "vless",
         "mux": {
           "enabled": true,
@@ -516,7 +314,7 @@
               "port": 8454,
               "users": [
                 {
-                  "id": "f7f7bf17-ba38-4908-a31a-12568439b1f7",
+                  "id": "df7a0373-473f-4edf-b298-70e385e139f6",
                   "encryption": "none",
                   "flow": "xtls-rprx-vision"
                 }
@@ -536,7 +334,7 @@
         }
       },
       {
-        "tag": "proxy-13",
+        "tag": "proxy-7",
         "protocol": "vless",
         "mux": {
           "enabled": true,
@@ -547,11 +345,11 @@
         "settings": {
           "vnext": [
             {
-              "address": "ussun.api.dznn.net",
-              "port": 443,
+              "address": "72.56.32.79",
+              "port": 9877,
               "users": [
                 {
-                  "id": "92f3b80e-90a2-457f-b766-2e5cdeffbfa0",
+                  "id": "aea66cfd-494b-4fba-8c62-658a5df71e59",
                   "encryption": "none",
                   "flow": "xtls-rprx-vision"
                 }
@@ -563,15 +361,15 @@
           "network": "tcp",
           "security": "reality",
           "realitySettings": {
-            "serverName": "ussun.api.dznn.net",
+            "serverName": "www.io.ozone.ru",
             "fingerprint": "chrome",
-            "publicKey": "9F7JxyyP-TNLt0dY2xOB0_34I8W0xXIpFY7rZ7-L0Gg",
-            "shortId": "0a6ba2716a409da6"
+            "publicKey": "im7-98zxWz_OGimQfeoN_Y5p1tAy8KoZCxOe2wOeWS4",
+            "shortId": ""
           }
         }
       },
       {
-        "tag": "proxy-14",
+        "tag": "proxy-8",
         "protocol": "trojan",
         "mux": {
           "enabled": true,
@@ -582,7 +380,7 @@
         "settings": {
           "servers": [
             {
-              "address": "138.124.89.211",
+              "address": "89.110.82.148",
               "port": 8443,
               "password": "8r<[9'l6hAO#8ZQi"
             }
@@ -604,7 +402,7 @@
         }
       },
       {
-        "tag": "proxy-15",
+        "tag": "proxy-9",
         "protocol": "trojan",
         "mux": {
           "enabled": true,
@@ -637,6 +435,206 @@
         }
       },
       {
+        "tag": "proxy-10",
+        "protocol": "trojan",
+        "mux": {
+          "enabled": true,
+          "concurrency": -1,
+          "xudpConcurrency": 16,
+          "xudpProxyUDP443": "reject"
+        },
+        "settings": {
+          "servers": [
+            {
+              "address": "77.221.157.251",
+              "port": 2083,
+              "password": "8r<[9'l6hAO#8ZQi"
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "\/trTelegram🇨🇳+@WangCai2",
+            "headers": {
+              "Host": "Koma-YT.PAGeS.Dev"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "Koma-YT.PAGeS.Dev",
+            "fingerprint": "chrome"
+          }
+        }
+      },
+      {
+        "tag": "proxy-11",
+        "protocol": "trojan",
+        "mux": {
+          "enabled": true,
+          "concurrency": -1,
+          "xudpConcurrency": 16,
+          "xudpProxyUDP443": "reject"
+        },
+        "settings": {
+          "servers": [
+            {
+              "address": "109.120.156.122",
+              "port": 8443,
+              "password": "8r<[9'l6hAO#8ZQi"
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "\/trTelegram🇨🇳+@WangCai2",
+            "headers": {
+              "Host": "Koma-YT.PAGeS.Dev"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "Koma-YT.PAGeS.Dev",
+            "fingerprint": "chrome"
+          }
+        }
+      },
+      {
+        "tag": "proxy-12",
+        "protocol": "vless",
+        "mux": {
+          "enabled": true,
+          "concurrency": -1,
+          "xudpConcurrency": 16,
+          "xudpProxyUDP443": "reject"
+        },
+        "settings": {
+          "vnext": [
+            {
+              "address": "37.18.15.75",
+              "port": 50445,
+              "users": [
+                {
+                  "id": "3f1a6d17-5856-4c1d-9405-b432fd9fef12",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
+                }
+              ]
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "tcp",
+          "security": "reality",
+          "realitySettings": {
+            "serverName": "river-5-557.rtbcdn.ru",
+            "fingerprint": "chrome",
+            "publicKey": "ZSzB9TQPGNcCiC0WLmciF5Jc8doJDvdRgbqTi8SCoEM",
+            "shortId": "a1b2c3d4e5f6789a"
+          }
+        }
+      },
+      {
+        "tag": "proxy-13",
+        "protocol": "trojan",
+        "mux": {
+          "enabled": true,
+          "concurrency": -1,
+          "xudpConcurrency": 16,
+          "xudpProxyUDP443": "reject"
+        },
+        "settings": {
+          "servers": [
+            {
+              "address": "138.124.117.96",
+              "port": 8443,
+              "password": "8r<[9'l6hAO#8ZQi"
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "\/trTelegram🇨🇳+@WangCai2",
+            "headers": {
+              "Host": "Koma-YT.PAGeS.Dev"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "Koma-YT.PAGeS.Dev",
+            "fingerprint": "chrome"
+          }
+        }
+      },
+      {
+        "tag": "proxy-14",
+        "protocol": "trojan",
+        "mux": {
+          "enabled": true,
+          "concurrency": -1,
+          "xudpConcurrency": 16,
+          "xudpProxyUDP443": "reject"
+        },
+        "settings": {
+          "servers": [
+            {
+              "address": "89.110.100.76",
+              "port": 8443,
+              "password": "8r<[9'l6hAO#8ZQi"
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "\/trTelegram🇨🇳+@WangCai2",
+            "headers": {
+              "Host": "Koma-YT.PAGeS.Dev"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "Koma-YT.PAGeS.Dev",
+            "fingerprint": "chrome"
+          }
+        }
+      },
+      {
+        "tag": "proxy-15",
+        "protocol": "trojan",
+        "mux": {
+          "enabled": true,
+          "concurrency": -1,
+          "xudpConcurrency": 16,
+          "xudpProxyUDP443": "reject"
+        },
+        "settings": {
+          "servers": [
+            {
+              "address": "138.124.89.211",
+              "port": 8443,
+              "password": "8r<[9'l6hAO#8ZQi"
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "\/trTelegram🇨🇳+@WangCai2",
+            "headers": {
+              "Host": "Koma-YT.PAGeS.Dev"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "Koma-YT.PAGeS.Dev",
+            "fingerprint": "chrome"
+          }
+        }
+      },
+      {
         "tag": "proxy-16",
         "protocol": "trojan",
         "mux": {
@@ -648,7 +646,7 @@
         "settings": {
           "servers": [
             {
-              "address": "89.208.105.59",
+              "address": "138.124.60.93",
               "port": 8443,
               "password": "8r<[9'l6hAO#8ZQi"
             }
@@ -671,7 +669,7 @@
       },
       {
         "tag": "proxy-17",
-        "protocol": "vless",
+        "protocol": "trojan",
         "mux": {
           "enabled": true,
           "concurrency": -1,
@@ -679,28 +677,26 @@
           "xudpProxyUDP443": "reject"
         },
         "settings": {
-          "vnext": [
+          "servers": [
             {
-              "address": "swe-8t.freeonline.pro",
-              "port": 443,
-              "users": [
-                {
-                  "id": "8546145579",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
+              "address": "104.167.196.91",
+              "port": 2053,
+              "password": "8r<[9'l6hAO#8ZQi"
             }
           ]
         },
         "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "www.microsoft.com",
-            "fingerprint": "chrome",
-            "publicKey": "978-Yxgtd3AWTVfiXEQqCstdwrT1qgsgleGPIRGQDl8",
-            "shortId": "bdac121c7debdaba"
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "\/trTelegram🇨🇳+@WangCai2",
+            "headers": {
+              "Host": "Koma-YT.PAGeS.Dev"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "Koma-YT.PAGeS.Dev",
+            "fingerprint": "chrome"
           }
         }
       },
@@ -716,8 +712,8 @@
         "settings": {
           "servers": [
             {
-              "address": "5.255.118.107",
-              "port": 8443,
+              "address": "109.120.184.43",
+              "port": 2053,
               "password": "8r<[9'l6hAO#8ZQi"
             }
           ]
@@ -749,8 +745,8 @@
         "settings": {
           "servers": [
             {
-              "address": "89.110.111.27",
-              "port": 8443,
+              "address": "89.110.108.189",
+              "port": 2053,
               "password": "8r<[9'l6hAO#8ZQi"
             }
           ]
@@ -998,7 +994,7 @@
     "outbounds": [
       {
         "tag": "proxy-0",
-        "protocol": "trojan",
+        "protocol": "vless",
         "mux": {
           "enabled": true,
           "concurrency": -1,
@@ -1006,26 +1002,28 @@
           "xudpProxyUDP443": "reject"
         },
         "settings": {
-          "servers": [
+          "vnext": [
             {
-              "address": "138.124.117.96",
-              "port": 8443,
-              "password": "8r<[9'l6hAO#8ZQi"
+              "address": "87.228.101.64",
+              "port": 443,
+              "users": [
+                {
+                  "id": "6bcc0a8a-a7cc-0004-8448-14ec5e516912",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
+                }
+              ]
             }
           ]
         },
         "streamSettings": {
-          "network": "ws",
-          "security": "tls",
-          "wsSettings": {
-            "path": "\/trTelegram🇨🇳+@WangCai2",
-            "headers": {
-              "Host": "Koma-YT.PAGeS.Dev"
-            }
-          },
-          "tlsSettings": {
-            "serverName": "Koma-YT.PAGeS.Dev",
-            "fingerprint": "chrome"
+          "network": "tcp",
+          "security": "reality",
+          "realitySettings": {
+            "serverName": "87.228.101.64",
+            "fingerprint": "chrome",
+            "publicKey": "KdAzR0Ytx0LJhK058NvjOg0nV7-vbxxoRL7-y-eSvA0",
+            "shortId": ""
           }
         }
       },
@@ -1041,7 +1039,7 @@
         "settings": {
           "servers": [
             {
-              "address": "185.65.202.101",
+              "address": "89.169.1.76",
               "port": 8443,
               "password": "8r<[9'l6hAO#8ZQi"
             }
@@ -1074,8 +1072,8 @@
         "settings": {
           "servers": [
             {
-              "address": "77.221.157.251",
-              "port": 2053,
+              "address": "89.110.111.27",
+              "port": 8443,
               "password": "8r<[9'l6hAO#8ZQi"
             }
           ]
@@ -1097,7 +1095,7 @@
       },
       {
         "tag": "proxy-3",
-        "protocol": "vless",
+        "protocol": "trojan",
         "mux": {
           "enabled": true,
           "concurrency": -1,
@@ -1105,103 +1103,31 @@
           "xudpProxyUDP443": "reject"
         },
         "settings": {
-          "vnext": [
+          "servers": [
             {
-              "address": "144.31.50.90",
-              "port": 499,
-              "users": [
-                {
-                  "id": "62162b09-0920-4b4d-9a3f-1fe2383300fd",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
+              "address": "138.124.52.54",
+              "port": 2083,
+              "password": "8r<[9'l6hAO#8ZQi"
             }
           ]
         },
         "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "my.selectel.ru",
-            "fingerprint": "chrome",
-            "publicKey": "nDq00UeDI5TKKFipI6rgdVCqiTO98ncHKn90Qp3EsBE",
-            "shortId": "f2b78452f9233f26"
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "\/trTelegram🇨🇳+@WangCai2",
+            "headers": {
+              "Host": "Koma-YT.PAGeS.Dev"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "Koma-YT.PAGeS.Dev",
+            "fingerprint": "chrome"
           }
         }
       },
       {
         "tag": "proxy-4",
-        "protocol": "vless",
-        "mux": {
-          "enabled": true,
-          "concurrency": -1,
-          "xudpConcurrency": 16,
-          "xudpProxyUDP443": "reject"
-        },
-        "settings": {
-          "vnext": [
-            {
-              "address": "ninka.api.dznn.net",
-              "port": 443,
-              "users": [
-                {
-                  "id": "92f3b80e-90a2-457f-b766-2e5cdeffbfa0",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "ninka.api.dznn.net",
-            "fingerprint": "chrome",
-            "publicKey": "9F7JxyyP-TNLt0dY2xOB0_34I8W0xXIpFY7rZ7-L0Gg",
-            "shortId": "19aa22f681923dc8"
-          }
-        }
-      },
-      {
-        "tag": "proxy-5",
-        "protocol": "vless",
-        "mux": {
-          "enabled": true,
-          "concurrency": -1,
-          "xudpConcurrency": 16,
-          "xudpProxyUDP443": "reject"
-        },
-        "settings": {
-          "vnext": [
-            {
-              "address": "51.250.84.1",
-              "port": 443,
-              "users": [
-                {
-                  "id": "62a9ba22-6829-488a-a75c-f2d7e4f8f133",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "ads.x5.ru",
-            "fingerprint": "chrome",
-            "publicKey": "SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc",
-            "shortId": ""
-          }
-        }
-      },
-      {
-        "tag": "proxy-6",
         "protocol": "trojan",
         "mux": {
           "enabled": true,
@@ -1212,106 +1138,7 @@
         "settings": {
           "servers": [
             {
-              "address": "77.221.156.92",
-              "port": 8443,
-              "password": "8r<[9'l6hAO#8ZQi"
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "ws",
-          "security": "tls",
-          "wsSettings": {
-            "path": "\/trTelegram🇨🇳+@WangCai2",
-            "headers": {
-              "Host": "Koma-YT.PAGeS.Dev"
-            }
-          },
-          "tlsSettings": {
-            "serverName": "Koma-YT.PAGeS.Dev",
-            "fingerprint": "chrome"
-          }
-        }
-      },
-      {
-        "tag": "proxy-7",
-        "protocol": "trojan",
-        "mux": {
-          "enabled": true,
-          "concurrency": -1,
-          "xudpConcurrency": 16,
-          "xudpProxyUDP443": "reject"
-        },
-        "settings": {
-          "servers": [
-            {
-              "address": "212.192.0.13",
-              "port": 8443,
-              "password": "8r<[9'l6hAO#8ZQi"
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "ws",
-          "security": "tls",
-          "wsSettings": {
-            "path": "\/trTelegram🇨🇳+@WangCai2",
-            "headers": {
-              "Host": "Koma-YT.PAGeS.Dev"
-            }
-          },
-          "tlsSettings": {
-            "serverName": "Koma-YT.PAGeS.Dev",
-            "fingerprint": "chrome"
-          }
-        }
-      },
-      {
-        "tag": "proxy-8",
-        "protocol": "vless",
-        "mux": {
-          "enabled": true,
-          "concurrency": -1,
-          "xudpConcurrency": 16,
-          "xudpProxyUDP443": "reject"
-        },
-        "settings": {
-          "vnext": [
-            {
-              "address": "cz.rumost.top",
-              "port": 443,
-              "users": [
-                {
-                  "id": "f42c93f3-755b-4e12-a856-e7c6878b34ab",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "tls",
-          "tlsSettings": {
-            "serverName": "cz.rumost.top",
-            "fingerprint": "chrome"
-          }
-        }
-      },
-      {
-        "tag": "proxy-9",
-        "protocol": "trojan",
-        "mux": {
-          "enabled": true,
-          "concurrency": -1,
-          "xudpConcurrency": 16,
-          "xudpProxyUDP443": "reject"
-        },
-        "settings": {
-          "servers": [
-            {
-              "address": "85.155.98.71",
+              "address": "91.108.242.148",
               "port": 2053,
               "password": "8r<[9'l6hAO#8ZQi"
             }
@@ -1333,7 +1160,7 @@
         }
       },
       {
-        "tag": "proxy-10",
+        "tag": "proxy-5",
         "protocol": "trojan",
         "mux": {
           "enabled": true,
@@ -1366,40 +1193,7 @@
         }
       },
       {
-        "tag": "proxy-11",
-        "protocol": "trojan",
-        "mux": {
-          "enabled": true,
-          "concurrency": -1,
-          "xudpConcurrency": 16,
-          "xudpProxyUDP443": "reject"
-        },
-        "settings": {
-          "servers": [
-            {
-              "address": "213.176.113.98",
-              "port": 2053,
-              "password": "8r<[9'l6hAO#8ZQi"
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "ws",
-          "security": "tls",
-          "wsSettings": {
-            "path": "\/trTelegram🇨🇳+@WangCai2",
-            "headers": {
-              "Host": "Koma-YT.PAGeS.Dev"
-            }
-          },
-          "tlsSettings": {
-            "serverName": "Koma-YT.PAGeS.Dev",
-            "fingerprint": "chrome"
-          }
-        }
-      },
-      {
-        "tag": "proxy-12",
+        "tag": "proxy-6",
         "protocol": "vless",
         "mux": {
           "enabled": true,
@@ -1414,7 +1208,7 @@
               "port": 8454,
               "users": [
                 {
-                  "id": "f7f7bf17-ba38-4908-a31a-12568439b1f7",
+                  "id": "df7a0373-473f-4edf-b298-70e385e139f6",
                   "encryption": "none",
                   "flow": "xtls-rprx-vision"
                 }
@@ -1434,7 +1228,7 @@
         }
       },
       {
-        "tag": "proxy-13",
+        "tag": "proxy-7",
         "protocol": "vless",
         "mux": {
           "enabled": true,
@@ -1445,11 +1239,11 @@
         "settings": {
           "vnext": [
             {
-              "address": "ussun.api.dznn.net",
-              "port": 443,
+              "address": "72.56.32.79",
+              "port": 9877,
               "users": [
                 {
-                  "id": "92f3b80e-90a2-457f-b766-2e5cdeffbfa0",
+                  "id": "aea66cfd-494b-4fba-8c62-658a5df71e59",
                   "encryption": "none",
                   "flow": "xtls-rprx-vision"
                 }
@@ -1461,15 +1255,15 @@
           "network": "tcp",
           "security": "reality",
           "realitySettings": {
-            "serverName": "ussun.api.dznn.net",
+            "serverName": "www.io.ozone.ru",
             "fingerprint": "chrome",
-            "publicKey": "9F7JxyyP-TNLt0dY2xOB0_34I8W0xXIpFY7rZ7-L0Gg",
-            "shortId": "0a6ba2716a409da6"
+            "publicKey": "im7-98zxWz_OGimQfeoN_Y5p1tAy8KoZCxOe2wOeWS4",
+            "shortId": ""
           }
         }
       },
       {
-        "tag": "proxy-14",
+        "tag": "proxy-8",
         "protocol": "trojan",
         "mux": {
           "enabled": true,
@@ -1480,7 +1274,7 @@
         "settings": {
           "servers": [
             {
-              "address": "138.124.89.211",
+              "address": "89.110.82.148",
               "port": 8443,
               "password": "8r<[9'l6hAO#8ZQi"
             }
@@ -1502,7 +1296,7 @@
         }
       },
       {
-        "tag": "proxy-15",
+        "tag": "proxy-9",
         "protocol": "trojan",
         "mux": {
           "enabled": true,
@@ -1535,6 +1329,206 @@
         }
       },
       {
+        "tag": "proxy-10",
+        "protocol": "trojan",
+        "mux": {
+          "enabled": true,
+          "concurrency": -1,
+          "xudpConcurrency": 16,
+          "xudpProxyUDP443": "reject"
+        },
+        "settings": {
+          "servers": [
+            {
+              "address": "77.221.157.251",
+              "port": 2083,
+              "password": "8r<[9'l6hAO#8ZQi"
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "\/trTelegram🇨🇳+@WangCai2",
+            "headers": {
+              "Host": "Koma-YT.PAGeS.Dev"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "Koma-YT.PAGeS.Dev",
+            "fingerprint": "chrome"
+          }
+        }
+      },
+      {
+        "tag": "proxy-11",
+        "protocol": "trojan",
+        "mux": {
+          "enabled": true,
+          "concurrency": -1,
+          "xudpConcurrency": 16,
+          "xudpProxyUDP443": "reject"
+        },
+        "settings": {
+          "servers": [
+            {
+              "address": "109.120.156.122",
+              "port": 8443,
+              "password": "8r<[9'l6hAO#8ZQi"
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "\/trTelegram🇨🇳+@WangCai2",
+            "headers": {
+              "Host": "Koma-YT.PAGeS.Dev"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "Koma-YT.PAGeS.Dev",
+            "fingerprint": "chrome"
+          }
+        }
+      },
+      {
+        "tag": "proxy-12",
+        "protocol": "vless",
+        "mux": {
+          "enabled": true,
+          "concurrency": -1,
+          "xudpConcurrency": 16,
+          "xudpProxyUDP443": "reject"
+        },
+        "settings": {
+          "vnext": [
+            {
+              "address": "37.18.15.75",
+              "port": 50445,
+              "users": [
+                {
+                  "id": "3f1a6d17-5856-4c1d-9405-b432fd9fef12",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
+                }
+              ]
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "tcp",
+          "security": "reality",
+          "realitySettings": {
+            "serverName": "river-5-557.rtbcdn.ru",
+            "fingerprint": "chrome",
+            "publicKey": "ZSzB9TQPGNcCiC0WLmciF5Jc8doJDvdRgbqTi8SCoEM",
+            "shortId": "a1b2c3d4e5f6789a"
+          }
+        }
+      },
+      {
+        "tag": "proxy-13",
+        "protocol": "trojan",
+        "mux": {
+          "enabled": true,
+          "concurrency": -1,
+          "xudpConcurrency": 16,
+          "xudpProxyUDP443": "reject"
+        },
+        "settings": {
+          "servers": [
+            {
+              "address": "138.124.117.96",
+              "port": 8443,
+              "password": "8r<[9'l6hAO#8ZQi"
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "\/trTelegram🇨🇳+@WangCai2",
+            "headers": {
+              "Host": "Koma-YT.PAGeS.Dev"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "Koma-YT.PAGeS.Dev",
+            "fingerprint": "chrome"
+          }
+        }
+      },
+      {
+        "tag": "proxy-14",
+        "protocol": "trojan",
+        "mux": {
+          "enabled": true,
+          "concurrency": -1,
+          "xudpConcurrency": 16,
+          "xudpProxyUDP443": "reject"
+        },
+        "settings": {
+          "servers": [
+            {
+              "address": "89.110.100.76",
+              "port": 8443,
+              "password": "8r<[9'l6hAO#8ZQi"
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "\/trTelegram🇨🇳+@WangCai2",
+            "headers": {
+              "Host": "Koma-YT.PAGeS.Dev"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "Koma-YT.PAGeS.Dev",
+            "fingerprint": "chrome"
+          }
+        }
+      },
+      {
+        "tag": "proxy-15",
+        "protocol": "trojan",
+        "mux": {
+          "enabled": true,
+          "concurrency": -1,
+          "xudpConcurrency": 16,
+          "xudpProxyUDP443": "reject"
+        },
+        "settings": {
+          "servers": [
+            {
+              "address": "138.124.89.211",
+              "port": 8443,
+              "password": "8r<[9'l6hAO#8ZQi"
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "\/trTelegram🇨🇳+@WangCai2",
+            "headers": {
+              "Host": "Koma-YT.PAGeS.Dev"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "Koma-YT.PAGeS.Dev",
+            "fingerprint": "chrome"
+          }
+        }
+      },
+      {
         "tag": "proxy-16",
         "protocol": "trojan",
         "mux": {
@@ -1546,7 +1540,7 @@
         "settings": {
           "servers": [
             {
-              "address": "89.208.105.59",
+              "address": "138.124.60.93",
               "port": 8443,
               "password": "8r<[9'l6hAO#8ZQi"
             }
@@ -1569,7 +1563,7 @@
       },
       {
         "tag": "proxy-17",
-        "protocol": "vless",
+        "protocol": "trojan",
         "mux": {
           "enabled": true,
           "concurrency": -1,
@@ -1577,28 +1571,26 @@
           "xudpProxyUDP443": "reject"
         },
         "settings": {
-          "vnext": [
+          "servers": [
             {
-              "address": "swe-8t.freeonline.pro",
-              "port": 443,
-              "users": [
-                {
-                  "id": "8546145579",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
+              "address": "104.167.196.91",
+              "port": 2053,
+              "password": "8r<[9'l6hAO#8ZQi"
             }
           ]
         },
         "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "www.microsoft.com",
-            "fingerprint": "chrome",
-            "publicKey": "978-Yxgtd3AWTVfiXEQqCstdwrT1qgsgleGPIRGQDl8",
-            "shortId": "bdac121c7debdaba"
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "\/trTelegram🇨🇳+@WangCai2",
+            "headers": {
+              "Host": "Koma-YT.PAGeS.Dev"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "Koma-YT.PAGeS.Dev",
+            "fingerprint": "chrome"
           }
         }
       },
@@ -1614,8 +1606,8 @@
         "settings": {
           "servers": [
             {
-              "address": "5.255.118.107",
-              "port": 8443,
+              "address": "109.120.184.43",
+              "port": 2053,
               "password": "8r<[9'l6hAO#8ZQi"
             }
           ]
@@ -1647,8 +1639,8 @@
         "settings": {
           "servers": [
             {
-              "address": "89.110.111.27",
-              "port": 8443,
+              "address": "89.110.108.189",
+              "port": 2053,
               "password": "8r<[9'l6hAO#8ZQi"
             }
           ]
@@ -1896,7 +1888,7 @@
     "outbounds": [
       {
         "tag": "proxy-0",
-        "protocol": "trojan",
+        "protocol": "vless",
         "mux": {
           "enabled": true,
           "concurrency": -1,
@@ -1904,26 +1896,28 @@
           "xudpProxyUDP443": "reject"
         },
         "settings": {
-          "servers": [
+          "vnext": [
             {
-              "address": "138.124.117.96",
-              "port": 8443,
-              "password": "8r<[9'l6hAO#8ZQi"
+              "address": "87.228.101.64",
+              "port": 443,
+              "users": [
+                {
+                  "id": "6bcc0a8a-a7cc-0004-8448-14ec5e516912",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
+                }
+              ]
             }
           ]
         },
         "streamSettings": {
-          "network": "ws",
-          "security": "tls",
-          "wsSettings": {
-            "path": "\/trTelegram🇨🇳+@WangCai2",
-            "headers": {
-              "Host": "Koma-YT.PAGeS.Dev"
-            }
-          },
-          "tlsSettings": {
-            "serverName": "Koma-YT.PAGeS.Dev",
-            "fingerprint": "chrome"
+          "network": "tcp",
+          "security": "reality",
+          "realitySettings": {
+            "serverName": "87.228.101.64",
+            "fingerprint": "chrome",
+            "publicKey": "KdAzR0Ytx0LJhK058NvjOg0nV7-vbxxoRL7-y-eSvA0",
+            "shortId": ""
           }
         }
       },
@@ -1939,7 +1933,7 @@
         "settings": {
           "servers": [
             {
-              "address": "185.65.202.101",
+              "address": "89.169.1.76",
               "port": 8443,
               "password": "8r<[9'l6hAO#8ZQi"
             }
@@ -1972,8 +1966,8 @@
         "settings": {
           "servers": [
             {
-              "address": "77.221.157.251",
-              "port": 2053,
+              "address": "89.110.111.27",
+              "port": 8443,
               "password": "8r<[9'l6hAO#8ZQi"
             }
           ]
@@ -1995,7 +1989,7 @@
       },
       {
         "tag": "proxy-3",
-        "protocol": "vless",
+        "protocol": "trojan",
         "mux": {
           "enabled": true,
           "concurrency": -1,
@@ -2003,103 +1997,31 @@
           "xudpProxyUDP443": "reject"
         },
         "settings": {
-          "vnext": [
+          "servers": [
             {
-              "address": "144.31.50.90",
-              "port": 499,
-              "users": [
-                {
-                  "id": "62162b09-0920-4b4d-9a3f-1fe2383300fd",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
+              "address": "138.124.52.54",
+              "port": 2083,
+              "password": "8r<[9'l6hAO#8ZQi"
             }
           ]
         },
         "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "my.selectel.ru",
-            "fingerprint": "chrome",
-            "publicKey": "nDq00UeDI5TKKFipI6rgdVCqiTO98ncHKn90Qp3EsBE",
-            "shortId": "f2b78452f9233f26"
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "\/trTelegram🇨🇳+@WangCai2",
+            "headers": {
+              "Host": "Koma-YT.PAGeS.Dev"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "Koma-YT.PAGeS.Dev",
+            "fingerprint": "chrome"
           }
         }
       },
       {
         "tag": "proxy-4",
-        "protocol": "vless",
-        "mux": {
-          "enabled": true,
-          "concurrency": -1,
-          "xudpConcurrency": 16,
-          "xudpProxyUDP443": "reject"
-        },
-        "settings": {
-          "vnext": [
-            {
-              "address": "ninka.api.dznn.net",
-              "port": 443,
-              "users": [
-                {
-                  "id": "92f3b80e-90a2-457f-b766-2e5cdeffbfa0",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "ninka.api.dznn.net",
-            "fingerprint": "chrome",
-            "publicKey": "9F7JxyyP-TNLt0dY2xOB0_34I8W0xXIpFY7rZ7-L0Gg",
-            "shortId": "19aa22f681923dc8"
-          }
-        }
-      },
-      {
-        "tag": "proxy-5",
-        "protocol": "vless",
-        "mux": {
-          "enabled": true,
-          "concurrency": -1,
-          "xudpConcurrency": 16,
-          "xudpProxyUDP443": "reject"
-        },
-        "settings": {
-          "vnext": [
-            {
-              "address": "51.250.84.1",
-              "port": 443,
-              "users": [
-                {
-                  "id": "62a9ba22-6829-488a-a75c-f2d7e4f8f133",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "ads.x5.ru",
-            "fingerprint": "chrome",
-            "publicKey": "SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc",
-            "shortId": ""
-          }
-        }
-      },
-      {
-        "tag": "proxy-6",
         "protocol": "trojan",
         "mux": {
           "enabled": true,
@@ -2110,106 +2032,7 @@
         "settings": {
           "servers": [
             {
-              "address": "77.221.156.92",
-              "port": 8443,
-              "password": "8r<[9'l6hAO#8ZQi"
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "ws",
-          "security": "tls",
-          "wsSettings": {
-            "path": "\/trTelegram🇨🇳+@WangCai2",
-            "headers": {
-              "Host": "Koma-YT.PAGeS.Dev"
-            }
-          },
-          "tlsSettings": {
-            "serverName": "Koma-YT.PAGeS.Dev",
-            "fingerprint": "chrome"
-          }
-        }
-      },
-      {
-        "tag": "proxy-7",
-        "protocol": "trojan",
-        "mux": {
-          "enabled": true,
-          "concurrency": -1,
-          "xudpConcurrency": 16,
-          "xudpProxyUDP443": "reject"
-        },
-        "settings": {
-          "servers": [
-            {
-              "address": "212.192.0.13",
-              "port": 8443,
-              "password": "8r<[9'l6hAO#8ZQi"
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "ws",
-          "security": "tls",
-          "wsSettings": {
-            "path": "\/trTelegram🇨🇳+@WangCai2",
-            "headers": {
-              "Host": "Koma-YT.PAGeS.Dev"
-            }
-          },
-          "tlsSettings": {
-            "serverName": "Koma-YT.PAGeS.Dev",
-            "fingerprint": "chrome"
-          }
-        }
-      },
-      {
-        "tag": "proxy-8",
-        "protocol": "vless",
-        "mux": {
-          "enabled": true,
-          "concurrency": -1,
-          "xudpConcurrency": 16,
-          "xudpProxyUDP443": "reject"
-        },
-        "settings": {
-          "vnext": [
-            {
-              "address": "cz.rumost.top",
-              "port": 443,
-              "users": [
-                {
-                  "id": "f42c93f3-755b-4e12-a856-e7c6878b34ab",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "tls",
-          "tlsSettings": {
-            "serverName": "cz.rumost.top",
-            "fingerprint": "chrome"
-          }
-        }
-      },
-      {
-        "tag": "proxy-9",
-        "protocol": "trojan",
-        "mux": {
-          "enabled": true,
-          "concurrency": -1,
-          "xudpConcurrency": 16,
-          "xudpProxyUDP443": "reject"
-        },
-        "settings": {
-          "servers": [
-            {
-              "address": "85.155.98.71",
+              "address": "91.108.242.148",
               "port": 2053,
               "password": "8r<[9'l6hAO#8ZQi"
             }
@@ -2231,7 +2054,7 @@
         }
       },
       {
-        "tag": "proxy-10",
+        "tag": "proxy-5",
         "protocol": "trojan",
         "mux": {
           "enabled": true,
@@ -2264,40 +2087,7 @@
         }
       },
       {
-        "tag": "proxy-11",
-        "protocol": "trojan",
-        "mux": {
-          "enabled": true,
-          "concurrency": -1,
-          "xudpConcurrency": 16,
-          "xudpProxyUDP443": "reject"
-        },
-        "settings": {
-          "servers": [
-            {
-              "address": "213.176.113.98",
-              "port": 2053,
-              "password": "8r<[9'l6hAO#8ZQi"
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "ws",
-          "security": "tls",
-          "wsSettings": {
-            "path": "\/trTelegram🇨🇳+@WangCai2",
-            "headers": {
-              "Host": "Koma-YT.PAGeS.Dev"
-            }
-          },
-          "tlsSettings": {
-            "serverName": "Koma-YT.PAGeS.Dev",
-            "fingerprint": "chrome"
-          }
-        }
-      },
-      {
-        "tag": "proxy-12",
+        "tag": "proxy-6",
         "protocol": "vless",
         "mux": {
           "enabled": true,
@@ -2312,7 +2102,7 @@
               "port": 8454,
               "users": [
                 {
-                  "id": "f7f7bf17-ba38-4908-a31a-12568439b1f7",
+                  "id": "df7a0373-473f-4edf-b298-70e385e139f6",
                   "encryption": "none",
                   "flow": "xtls-rprx-vision"
                 }
@@ -2332,7 +2122,7 @@
         }
       },
       {
-        "tag": "proxy-13",
+        "tag": "proxy-7",
         "protocol": "vless",
         "mux": {
           "enabled": true,
@@ -2343,11 +2133,11 @@
         "settings": {
           "vnext": [
             {
-              "address": "ussun.api.dznn.net",
-              "port": 443,
+              "address": "72.56.32.79",
+              "port": 9877,
               "users": [
                 {
-                  "id": "92f3b80e-90a2-457f-b766-2e5cdeffbfa0",
+                  "id": "aea66cfd-494b-4fba-8c62-658a5df71e59",
                   "encryption": "none",
                   "flow": "xtls-rprx-vision"
                 }
@@ -2359,15 +2149,15 @@
           "network": "tcp",
           "security": "reality",
           "realitySettings": {
-            "serverName": "ussun.api.dznn.net",
+            "serverName": "www.io.ozone.ru",
             "fingerprint": "chrome",
-            "publicKey": "9F7JxyyP-TNLt0dY2xOB0_34I8W0xXIpFY7rZ7-L0Gg",
-            "shortId": "0a6ba2716a409da6"
+            "publicKey": "im7-98zxWz_OGimQfeoN_Y5p1tAy8KoZCxOe2wOeWS4",
+            "shortId": ""
           }
         }
       },
       {
-        "tag": "proxy-14",
+        "tag": "proxy-8",
         "protocol": "trojan",
         "mux": {
           "enabled": true,
@@ -2378,7 +2168,7 @@
         "settings": {
           "servers": [
             {
-              "address": "138.124.89.211",
+              "address": "89.110.82.148",
               "port": 8443,
               "password": "8r<[9'l6hAO#8ZQi"
             }
@@ -2400,7 +2190,7 @@
         }
       },
       {
-        "tag": "proxy-15",
+        "tag": "proxy-9",
         "protocol": "trojan",
         "mux": {
           "enabled": true,
@@ -2433,6 +2223,206 @@
         }
       },
       {
+        "tag": "proxy-10",
+        "protocol": "trojan",
+        "mux": {
+          "enabled": true,
+          "concurrency": -1,
+          "xudpConcurrency": 16,
+          "xudpProxyUDP443": "reject"
+        },
+        "settings": {
+          "servers": [
+            {
+              "address": "77.221.157.251",
+              "port": 2083,
+              "password": "8r<[9'l6hAO#8ZQi"
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "\/trTelegram🇨🇳+@WangCai2",
+            "headers": {
+              "Host": "Koma-YT.PAGeS.Dev"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "Koma-YT.PAGeS.Dev",
+            "fingerprint": "chrome"
+          }
+        }
+      },
+      {
+        "tag": "proxy-11",
+        "protocol": "trojan",
+        "mux": {
+          "enabled": true,
+          "concurrency": -1,
+          "xudpConcurrency": 16,
+          "xudpProxyUDP443": "reject"
+        },
+        "settings": {
+          "servers": [
+            {
+              "address": "109.120.156.122",
+              "port": 8443,
+              "password": "8r<[9'l6hAO#8ZQi"
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "\/trTelegram🇨🇳+@WangCai2",
+            "headers": {
+              "Host": "Koma-YT.PAGeS.Dev"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "Koma-YT.PAGeS.Dev",
+            "fingerprint": "chrome"
+          }
+        }
+      },
+      {
+        "tag": "proxy-12",
+        "protocol": "vless",
+        "mux": {
+          "enabled": true,
+          "concurrency": -1,
+          "xudpConcurrency": 16,
+          "xudpProxyUDP443": "reject"
+        },
+        "settings": {
+          "vnext": [
+            {
+              "address": "37.18.15.75",
+              "port": 50445,
+              "users": [
+                {
+                  "id": "3f1a6d17-5856-4c1d-9405-b432fd9fef12",
+                  "encryption": "none",
+                  "flow": "xtls-rprx-vision"
+                }
+              ]
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "tcp",
+          "security": "reality",
+          "realitySettings": {
+            "serverName": "river-5-557.rtbcdn.ru",
+            "fingerprint": "chrome",
+            "publicKey": "ZSzB9TQPGNcCiC0WLmciF5Jc8doJDvdRgbqTi8SCoEM",
+            "shortId": "a1b2c3d4e5f6789a"
+          }
+        }
+      },
+      {
+        "tag": "proxy-13",
+        "protocol": "trojan",
+        "mux": {
+          "enabled": true,
+          "concurrency": -1,
+          "xudpConcurrency": 16,
+          "xudpProxyUDP443": "reject"
+        },
+        "settings": {
+          "servers": [
+            {
+              "address": "138.124.117.96",
+              "port": 8443,
+              "password": "8r<[9'l6hAO#8ZQi"
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "\/trTelegram🇨🇳+@WangCai2",
+            "headers": {
+              "Host": "Koma-YT.PAGeS.Dev"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "Koma-YT.PAGeS.Dev",
+            "fingerprint": "chrome"
+          }
+        }
+      },
+      {
+        "tag": "proxy-14",
+        "protocol": "trojan",
+        "mux": {
+          "enabled": true,
+          "concurrency": -1,
+          "xudpConcurrency": 16,
+          "xudpProxyUDP443": "reject"
+        },
+        "settings": {
+          "servers": [
+            {
+              "address": "89.110.100.76",
+              "port": 8443,
+              "password": "8r<[9'l6hAO#8ZQi"
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "\/trTelegram🇨🇳+@WangCai2",
+            "headers": {
+              "Host": "Koma-YT.PAGeS.Dev"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "Koma-YT.PAGeS.Dev",
+            "fingerprint": "chrome"
+          }
+        }
+      },
+      {
+        "tag": "proxy-15",
+        "protocol": "trojan",
+        "mux": {
+          "enabled": true,
+          "concurrency": -1,
+          "xudpConcurrency": 16,
+          "xudpProxyUDP443": "reject"
+        },
+        "settings": {
+          "servers": [
+            {
+              "address": "138.124.89.211",
+              "port": 8443,
+              "password": "8r<[9'l6hAO#8ZQi"
+            }
+          ]
+        },
+        "streamSettings": {
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "\/trTelegram🇨🇳+@WangCai2",
+            "headers": {
+              "Host": "Koma-YT.PAGeS.Dev"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "Koma-YT.PAGeS.Dev",
+            "fingerprint": "chrome"
+          }
+        }
+      },
+      {
         "tag": "proxy-16",
         "protocol": "trojan",
         "mux": {
@@ -2444,7 +2434,7 @@
         "settings": {
           "servers": [
             {
-              "address": "89.208.105.59",
+              "address": "138.124.60.93",
               "port": 8443,
               "password": "8r<[9'l6hAO#8ZQi"
             }
@@ -2467,7 +2457,7 @@
       },
       {
         "tag": "proxy-17",
-        "protocol": "vless",
+        "protocol": "trojan",
         "mux": {
           "enabled": true,
           "concurrency": -1,
@@ -2475,28 +2465,26 @@
           "xudpProxyUDP443": "reject"
         },
         "settings": {
-          "vnext": [
+          "servers": [
             {
-              "address": "swe-8t.freeonline.pro",
-              "port": 443,
-              "users": [
-                {
-                  "id": "8546145579",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
+              "address": "104.167.196.91",
+              "port": 2053,
+              "password": "8r<[9'l6hAO#8ZQi"
             }
           ]
         },
         "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "www.microsoft.com",
-            "fingerprint": "chrome",
-            "publicKey": "978-Yxgtd3AWTVfiXEQqCstdwrT1qgsgleGPIRGQDl8",
-            "shortId": "bdac121c7debdaba"
+          "network": "ws",
+          "security": "tls",
+          "wsSettings": {
+            "path": "\/trTelegram🇨🇳+@WangCai2",
+            "headers": {
+              "Host": "Koma-YT.PAGeS.Dev"
+            }
+          },
+          "tlsSettings": {
+            "serverName": "Koma-YT.PAGeS.Dev",
+            "fingerprint": "chrome"
           }
         }
       },
@@ -2512,8 +2500,8 @@
         "settings": {
           "servers": [
             {
-              "address": "5.255.118.107",
-              "port": 8443,
+              "address": "109.120.184.43",
+              "port": 2053,
               "password": "8r<[9'l6hAO#8ZQi"
             }
           ]
@@ -2545,8 +2533,8 @@
         "settings": {
           "servers": [
             {
-              "address": "89.110.111.27",
-              "port": 8443,
+              "address": "89.110.108.189",
+              "port": 2053,
               "password": "8r<[9'l6hAO#8ZQi"
             }
           ]
@@ -2804,11 +2792,11 @@
         "settings": {
           "vnext": [
             {
-              "address": "ninka.api.dznn.net",
-              "port": 443,
+              "address": "72.56.32.79",
+              "port": 9877,
               "users": [
                 {
-                  "id": "92f3b80e-90a2-457f-b766-2e5cdeffbfa0",
+                  "id": "aea66cfd-494b-4fba-8c62-658a5df71e59",
                   "encryption": "none",
                   "flow": "xtls-rprx-vision"
                 }
@@ -2820,79 +2808,9 @@
           "network": "tcp",
           "security": "reality",
           "realitySettings": {
-            "serverName": "ninka.api.dznn.net",
+            "serverName": "www.io.ozone.ru",
             "fingerprint": "chrome",
-            "publicKey": "9F7JxyyP-TNLt0dY2xOB0_34I8W0xXIpFY7rZ7-L0Gg",
-            "shortId": "19aa22f681923dc8"
-          }
-        }
-      },
-      {
-        "tag": "proxy-1",
-        "protocol": "vless",
-        "mux": {
-          "enabled": true,
-          "concurrency": -1,
-          "xudpConcurrency": 16,
-          "xudpProxyUDP443": "reject"
-        },
-        "settings": {
-          "vnext": [
-            {
-              "address": "se-in.api.dznn.net",
-              "port": 443,
-              "users": [
-                {
-                  "id": "92f3b80e-90a2-457f-b766-2e5cdeffbfa0",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "ya.ru",
-            "fingerprint": "chrome",
-            "publicKey": "9F7JxyyP-TNLt0dY2xOB0_34I8W0xXIpFY7rZ7-L0Gg",
-            "shortId": "19aa22f681923dc8"
-          }
-        }
-      },
-      {
-        "tag": "proxy-2",
-        "protocol": "vless",
-        "mux": {
-          "enabled": true,
-          "concurrency": -1,
-          "xudpConcurrency": 16,
-          "xudpProxyUDP443": "reject"
-        },
-        "settings": {
-          "vnext": [
-            {
-              "address": "87.228.101.64",
-              "port": 443,
-              "users": [
-                {
-                  "id": "6bcc0a8a-a7cc-0004-8448-14ec5e516912",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "87.228.101.64",
-            "fingerprint": "chrome",
-            "publicKey": "KdAzR0Ytx0LJhK058NvjOg0nV7-vbxxoRL7-y-eSvA0",
+            "publicKey": "im7-98zxWz_OGimQfeoN_Y5p1tAy8KoZCxOe2wOeWS4",
             "shortId": ""
           }
         }
@@ -3135,11 +3053,11 @@
         "settings": {
           "vnext": [
             {
-              "address": "51.250.84.1",
-              "port": 443,
+              "address": "37.18.15.75",
+              "port": 50445,
               "users": [
                 {
-                  "id": "62a9ba22-6829-488a-a75c-f2d7e4f8f133",
+                  "id": "3f1a6d17-5856-4c1d-9405-b432fd9fef12",
                   "encryption": "none",
                   "flow": "xtls-rprx-vision"
                 }
@@ -3151,45 +3069,10 @@
           "network": "tcp",
           "security": "reality",
           "realitySettings": {
-            "serverName": "ads.x5.ru",
+            "serverName": "river-5-557.rtbcdn.ru",
             "fingerprint": "chrome",
-            "publicKey": "SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc",
-            "shortId": ""
-          }
-        }
-      },
-      {
-        "tag": "proxy-1",
-        "protocol": "vless",
-        "mux": {
-          "enabled": true,
-          "concurrency": -1,
-          "xudpConcurrency": 16,
-          "xudpProxyUDP443": "reject"
-        },
-        "settings": {
-          "vnext": [
-            {
-              "address": "185.152.92.50",
-              "port": 8454,
-              "users": [
-                {
-                  "id": "f7f7bf17-ba38-4908-a31a-12568439b1f7",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "jobinvest.ru",
-            "fingerprint": "chrome",
-            "publicKey": "SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc",
-            "shortId": ""
+            "publicKey": "ZSzB9TQPGNcCiC0WLmciF5Jc8doJDvdRgbqTi8SCoEM",
+            "shortId": "a1b2c3d4e5f6789a"
           }
         }
       },
@@ -3458,636 +3341,6 @@
         }
       },
       {
-        "tag": "proxy-1",
-        "protocol": "vless",
-        "mux": {
-          "enabled": true,
-          "concurrency": -1,
-          "xudpConcurrency": 16,
-          "xudpProxyUDP443": "reject"
-        },
-        "settings": {
-          "vnext": [
-            {
-              "address": "146.185.243.233",
-              "port": 443,
-              "users": [
-                {
-                  "id": "92f3b80e-90a2-2040-b766-2e5cdeffbfa0",
-                  "encryption": "none"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "ws",
-          "security": "tls",
-          "wsSettings": {
-            "path": "\/upload\/session",
-            "headers": {
-              "Host": "s2.ws.listwhite.cc"
-            }
-          },
-          "tlsSettings": {
-            "serverName": "s3.listwhite.cc",
-            "fingerprint": "chrome"
-          }
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom",
-        "streamSettings": {
-          "sockopt": {
-            "domainStrategy": "ForceIPv4"
-          }
-        }
-      },
-      {
-        "tag": "block",
-        "protocol": "blackhole"
-      },
-      {
-        "tag": "loop-stream-direct",
-        "protocol": "loopback",
-        "settings": {
-          "inboundTag": "REROUTE-STREAM"
-        }
-      },
-      {
-        "tag": "loop-ai-direct",
-        "protocol": "loopback",
-        "settings": {
-          "inboundTag": "REROUTE-AI"
-        }
-      }
-    ],
-    "routing": {
-      "domainMatcher": "hybrid",
-      "domainStrategy": "AsIs",
-      "balancers": [
-        {
-          "tag": "balancer-main",
-          "fallbackTag": "proxy-0",
-          "selector": [
-            "proxy-"
-          ],
-          "strategy": {
-            "type": "leastLoad",
-            "settings": {
-              "expected": 1,
-              "maxRTT": "5s",
-              "tolerance": 0.5,
-              "baselines": [
-                "800ms",
-                "2000ms"
-              ]
-            }
-          }
-        }
-      ],
-      "rules": [
-        {
-          "network": "udp",
-          "port": "443",
-          "outboundTag": "block",
-          "type": "field"
-        },
-        {
-          "protocol": [
-            "bittorrent"
-          ],
-          "outboundTag": "block",
-          "type": "field"
-        },
-        {
-          "ip": [
-            "geoip:private",
-            "geoip:ru"
-          ],
-          "outboundTag": "direct",
-          "type": "field"
-        },
-        {
-          "domain": [
-            "full:ru.tander.magnit",
-            "domain:tander.ru",
-            "domain:magnit.ru",
-            "regexp:.*\\.tander\\..*",
-            "regexp:.*tander.*magnit.*",
-            "regexp:.*magnit.*tander.*"
-          ],
-          "outboundTag": "direct",
-          "type": "field"
-        },
-        {
-          "domain": [
-            "geosite:category-ru",
-            "regexp:.*\\.ru$",
-            "regexp:.*\\.рф$"
-          ],
-          "outboundTag": "direct",
-          "type": "field"
-        },
-        {
-          "inboundTag": [
-            "REROUTE-STREAM",
-            "REROUTE-AI"
-          ],
-          "balancerTag": "balancer-main",
-          "type": "field"
-        },
-        {
-          "domain": [
-            "geosite:openai"
-          ],
-          "outboundTag": "loop-ai-direct",
-          "type": "field"
-        },
-        {
-          "domain": [
-            "geosite:youtube",
-            "geosite:instagram",
-            "domain:netflix.com"
-          ],
-          "outboundTag": "loop-stream-direct",
-          "type": "field"
-        },
-        {
-          "network": "tcp,udp",
-          "balancerTag": "balancer-main",
-          "type": "field"
-        }
-      ]
-    }
-  },
-  {
-    "remarks": "🇫🇮  | ✨ FINLAND",
-    "burstObservatory": {
-      "pingConfig": {
-        "connectivity": "https:\/\/gu-st.ru\/portal-st\/favicon.svg",
-        "destination": "https:\/\/ssl.gstatic.com\/ui\/v1\/icons\/mail\/rfr\/noconnection\/default_400.png",
-        "httpMethod": "HEAD",
-        "interval": "15m",
-        "sampling": 3,
-        "timeout": "3s"
-      },
-      "subjectSelector": [
-        "proxy-"
-      ]
-    },
-    "dns": {
-      "queryStrategy": "UseIPv4",
-      "disableFallback": true,
-      "servers": [
-        {
-          "address": "77.88.8.8",
-          "detour": "direct",
-          "tag": "dns-ru",
-          "domains": [
-            "geosite:category-ru",
-            "domain:magnit.ru",
-            "domain:tander.ru",
-            "regexp:.*\\.magnit$",
-            "regexp:.*\\.tander$",
-            "regexp:.*tander.*magnit.*",
-            "domain:yandex.ru"
-          ]
-        },
-        {
-          "address": "https:\/\/dns.google\/dns-query",
-          "detour": "loop-stream-direct",
-          "tag": "dns-stream",
-          "domains": [
-            "geosite:youtube",
-            "geosite:instagram",
-            "geosite:tiktok"
-          ]
-        },
-        {
-          "address": "https:\/\/cloudflare-dns.com\/dns-query",
-          "detour": "loop-ai-direct",
-          "tag": "dns-ai",
-          "domains": [
-            "geosite:openai",
-            "domain:chatgpt.com"
-          ]
-        },
-        {
-          "address": "https:\/\/cloudflare-dns.com\/dns-query",
-          "detour": "proxy-0",
-          "tag": "dns-default"
-        },
-        {
-          "address": "1.1.1.1",
-          "detour": "direct"
-        }
-      ]
-    },
-    "inbounds": [
-      {
-        "listen": "127.0.0.1",
-        "port": 10808,
-        "protocol": "socks",
-        "settings": {
-          "udp": true
-        },
-        "sniffing": {
-          "destOverride": [
-            "http",
-            "tls",
-            "quic"
-          ],
-          "enabled": true,
-          "routeOnly": true
-        },
-        "tag": "socks"
-      },
-      {
-        "listen": "127.0.0.1",
-        "port": 10809,
-        "protocol": "http",
-        "sniffing": {
-          "destOverride": [
-            "http",
-            "tls",
-            "quic"
-          ],
-          "enabled": true,
-          "routeOnly": true
-        },
-        "tag": "http"
-      }
-    ],
-    "outbounds": [
-      {
-        "tag": "proxy-0",
-        "protocol": "vless",
-        "mux": {
-          "enabled": true,
-          "concurrency": -1,
-          "xudpConcurrency": 16,
-          "xudpProxyUDP443": "reject"
-        },
-        "settings": {
-          "vnext": [
-            {
-              "address": "se-in.api.dznn.net",
-              "port": 443,
-              "users": [
-                {
-                  "id": "92f3b80e-90a2-457f-b766-2e5cdeffbfa0",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "ya.ru",
-            "fingerprint": "chrome",
-            "publicKey": "9F7JxyyP-TNLt0dY2xOB0_34I8W0xXIpFY7rZ7-L0Gg",
-            "shortId": "19aa22f681923dc8"
-          }
-        }
-      },
-      {
-        "tag": "proxy-1",
-        "protocol": "vless",
-        "mux": {
-          "enabled": true,
-          "concurrency": -1,
-          "xudpConcurrency": 16,
-          "xudpProxyUDP443": "reject"
-        },
-        "settings": {
-          "vnext": [
-            {
-              "address": "87.228.101.64",
-              "port": 443,
-              "users": [
-                {
-                  "id": "6bcc0a8a-a7cc-0004-8448-14ec5e516912",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "87.228.101.64",
-            "fingerprint": "chrome",
-            "publicKey": "KdAzR0Ytx0LJhK058NvjOg0nV7-vbxxoRL7-y-eSvA0",
-            "shortId": ""
-          }
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom",
-        "streamSettings": {
-          "sockopt": {
-            "domainStrategy": "ForceIPv4"
-          }
-        }
-      },
-      {
-        "tag": "block",
-        "protocol": "blackhole"
-      },
-      {
-        "tag": "loop-stream-direct",
-        "protocol": "loopback",
-        "settings": {
-          "inboundTag": "REROUTE-STREAM"
-        }
-      },
-      {
-        "tag": "loop-ai-direct",
-        "protocol": "loopback",
-        "settings": {
-          "inboundTag": "REROUTE-AI"
-        }
-      }
-    ],
-    "routing": {
-      "domainMatcher": "hybrid",
-      "domainStrategy": "AsIs",
-      "balancers": [
-        {
-          "tag": "balancer-main",
-          "fallbackTag": "proxy-0",
-          "selector": [
-            "proxy-"
-          ],
-          "strategy": {
-            "type": "leastLoad",
-            "settings": {
-              "expected": 1,
-              "maxRTT": "5s",
-              "tolerance": 0.5,
-              "baselines": [
-                "800ms",
-                "2000ms"
-              ]
-            }
-          }
-        }
-      ],
-      "rules": [
-        {
-          "network": "udp",
-          "port": "443",
-          "outboundTag": "block",
-          "type": "field"
-        },
-        {
-          "protocol": [
-            "bittorrent"
-          ],
-          "outboundTag": "block",
-          "type": "field"
-        },
-        {
-          "ip": [
-            "geoip:private",
-            "geoip:ru"
-          ],
-          "outboundTag": "direct",
-          "type": "field"
-        },
-        {
-          "domain": [
-            "full:ru.tander.magnit",
-            "domain:tander.ru",
-            "domain:magnit.ru",
-            "regexp:.*\\.tander\\..*",
-            "regexp:.*tander.*magnit.*",
-            "regexp:.*magnit.*tander.*"
-          ],
-          "outboundTag": "direct",
-          "type": "field"
-        },
-        {
-          "domain": [
-            "geosite:category-ru",
-            "regexp:.*\\.ru$",
-            "regexp:.*\\.рф$"
-          ],
-          "outboundTag": "direct",
-          "type": "field"
-        },
-        {
-          "inboundTag": [
-            "REROUTE-STREAM",
-            "REROUTE-AI"
-          ],
-          "balancerTag": "balancer-main",
-          "type": "field"
-        },
-        {
-          "domain": [
-            "geosite:openai"
-          ],
-          "outboundTag": "loop-ai-direct",
-          "type": "field"
-        },
-        {
-          "domain": [
-            "geosite:youtube",
-            "geosite:instagram",
-            "domain:netflix.com"
-          ],
-          "outboundTag": "loop-stream-direct",
-          "type": "field"
-        },
-        {
-          "network": "tcp,udp",
-          "balancerTag": "balancer-main",
-          "type": "field"
-        }
-      ]
-    }
-  },
-  {
-    "remarks": "🇺🇸  | ✨ USA",
-    "burstObservatory": {
-      "pingConfig": {
-        "connectivity": "https:\/\/gu-st.ru\/portal-st\/favicon.svg",
-        "destination": "https:\/\/ssl.gstatic.com\/ui\/v1\/icons\/mail\/rfr\/noconnection\/default_400.png",
-        "httpMethod": "HEAD",
-        "interval": "15m",
-        "sampling": 3,
-        "timeout": "3s"
-      },
-      "subjectSelector": [
-        "proxy-"
-      ]
-    },
-    "dns": {
-      "queryStrategy": "UseIPv4",
-      "disableFallback": true,
-      "servers": [
-        {
-          "address": "77.88.8.8",
-          "detour": "direct",
-          "tag": "dns-ru",
-          "domains": [
-            "geosite:category-ru",
-            "domain:magnit.ru",
-            "domain:tander.ru",
-            "regexp:.*\\.magnit$",
-            "regexp:.*\\.tander$",
-            "regexp:.*tander.*magnit.*",
-            "domain:yandex.ru"
-          ]
-        },
-        {
-          "address": "https:\/\/dns.google\/dns-query",
-          "detour": "loop-stream-direct",
-          "tag": "dns-stream",
-          "domains": [
-            "geosite:youtube",
-            "geosite:instagram",
-            "geosite:tiktok"
-          ]
-        },
-        {
-          "address": "https:\/\/cloudflare-dns.com\/dns-query",
-          "detour": "loop-ai-direct",
-          "tag": "dns-ai",
-          "domains": [
-            "geosite:openai",
-            "domain:chatgpt.com"
-          ]
-        },
-        {
-          "address": "https:\/\/cloudflare-dns.com\/dns-query",
-          "detour": "proxy-0",
-          "tag": "dns-default"
-        },
-        {
-          "address": "1.1.1.1",
-          "detour": "direct"
-        }
-      ]
-    },
-    "inbounds": [
-      {
-        "listen": "127.0.0.1",
-        "port": 10808,
-        "protocol": "socks",
-        "settings": {
-          "udp": true
-        },
-        "sniffing": {
-          "destOverride": [
-            "http",
-            "tls",
-            "quic"
-          ],
-          "enabled": true,
-          "routeOnly": true
-        },
-        "tag": "socks"
-      },
-      {
-        "listen": "127.0.0.1",
-        "port": 10809,
-        "protocol": "http",
-        "sniffing": {
-          "destOverride": [
-            "http",
-            "tls",
-            "quic"
-          ],
-          "enabled": true,
-          "routeOnly": true
-        },
-        "tag": "http"
-      }
-    ],
-    "outbounds": [
-      {
-        "tag": "proxy-0",
-        "protocol": "vless",
-        "mux": {
-          "enabled": true,
-          "concurrency": -1,
-          "xudpConcurrency": 16,
-          "xudpProxyUDP443": "reject"
-        },
-        "settings": {
-          "vnext": [
-            {
-              "address": "144.31.50.90",
-              "port": 499,
-              "users": [
-                {
-                  "id": "62162b09-0920-4b4d-9a3f-1fe2383300fd",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "my.selectel.ru",
-            "fingerprint": "chrome",
-            "publicKey": "nDq00UeDI5TKKFipI6rgdVCqiTO98ncHKn90Qp3EsBE",
-            "shortId": "f2b78452f9233f26"
-          }
-        }
-      },
-      {
-        "tag": "proxy-1",
-        "protocol": "vless",
-        "mux": {
-          "enabled": true,
-          "concurrency": -1,
-          "xudpConcurrency": 16,
-          "xudpProxyUDP443": "reject"
-        },
-        "settings": {
-          "vnext": [
-            {
-              "address": "ussun.api.dznn.net",
-              "port": 443,
-              "users": [
-                {
-                  "id": "92f3b80e-90a2-457f-b766-2e5cdeffbfa0",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "ussun.api.dznn.net",
-            "fingerprint": "chrome",
-            "publicKey": "9F7JxyyP-TNLt0dY2xOB0_34I8W0xXIpFY7rZ7-L0Gg",
-            "shortId": "0a6ba2716a409da6"
-          }
-        }
-      },
-      {
         "tag": "direct",
         "protocol": "freedom",
         "streamSettings": {
@@ -4325,11 +3578,11 @@
         "settings": {
           "vnext": [
             {
-              "address": "144.31.50.90",
-              "port": 499,
+              "address": "185.152.92.50",
+              "port": 8454,
               "users": [
                 {
-                  "id": "62162b09-0920-4b4d-9a3f-1fe2383300fd",
+                  "id": "df7a0373-473f-4edf-b298-70e385e139f6",
                   "encryption": "none",
                   "flow": "xtls-rprx-vision"
                 }
@@ -4341,10 +3594,10 @@
           "network": "tcp",
           "security": "reality",
           "realitySettings": {
-            "serverName": "my.selectel.ru",
+            "serverName": "jobinvest.ru",
             "fingerprint": "chrome",
-            "publicKey": "nDq00UeDI5TKKFipI6rgdVCqiTO98ncHKn90Qp3EsBE",
-            "shortId": "f2b78452f9233f26"
+            "publicKey": "SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc",
+            "shortId": ""
           }
         }
       },
@@ -4360,11 +3613,11 @@
         "settings": {
           "vnext": [
             {
-              "address": "84.201.152.16",
-              "port": 8443,
+              "address": "37.18.15.75",
+              "port": 50445,
               "users": [
                 {
-                  "id": "7b921ecd-fc42-4110-b7bf-20f1bd2649b7",
+                  "id": "3f1a6d17-5856-4c1d-9405-b432fd9fef12",
                   "encryption": "none",
                   "flow": "xtls-rprx-vision"
                 }
@@ -4376,532 +3629,10 @@
           "network": "tcp",
           "security": "reality",
           "realitySettings": {
-            "serverName": "max.ru",
+            "serverName": "river-5-557.rtbcdn.ru",
             "fingerprint": "chrome",
-            "publicKey": "SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc",
-            "shortId": "b3bd6f5b168c4d61"
-          }
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom",
-        "streamSettings": {
-          "sockopt": {
-            "domainStrategy": "ForceIPv4"
-          }
-        }
-      },
-      {
-        "tag": "block",
-        "protocol": "blackhole"
-      },
-      {
-        "tag": "loop-stream-direct",
-        "protocol": "loopback",
-        "settings": {
-          "inboundTag": "REROUTE-STREAM"
-        }
-      },
-      {
-        "tag": "loop-ai-direct",
-        "protocol": "loopback",
-        "settings": {
-          "inboundTag": "REROUTE-AI"
-        }
-      }
-    ],
-    "routing": {
-      "domainMatcher": "hybrid",
-      "domainStrategy": "AsIs",
-      "balancers": [
-        {
-          "tag": "balancer-main",
-          "fallbackTag": "proxy-0",
-          "selector": [
-            "proxy-"
-          ],
-          "strategy": {
-            "type": "leastLoad",
-            "settings": {
-              "expected": 1,
-              "maxRTT": "5s",
-              "tolerance": 0.5,
-              "baselines": [
-                "800ms",
-                "2000ms"
-              ]
-            }
-          }
-        }
-      ],
-      "rules": [
-        {
-          "network": "udp",
-          "port": "443",
-          "outboundTag": "block",
-          "type": "field"
-        },
-        {
-          "protocol": [
-            "bittorrent"
-          ],
-          "outboundTag": "block",
-          "type": "field"
-        },
-        {
-          "ip": [
-            "geoip:private",
-            "geoip:ru"
-          ],
-          "outboundTag": "direct",
-          "type": "field"
-        },
-        {
-          "domain": [
-            "full:ru.tander.magnit",
-            "domain:tander.ru",
-            "domain:magnit.ru",
-            "regexp:.*\\.tander\\..*",
-            "regexp:.*tander.*magnit.*",
-            "regexp:.*magnit.*tander.*"
-          ],
-          "outboundTag": "direct",
-          "type": "field"
-        },
-        {
-          "domain": [
-            "geosite:category-ru",
-            "regexp:.*\\.ru$",
-            "regexp:.*\\.рф$"
-          ],
-          "outboundTag": "direct",
-          "type": "field"
-        },
-        {
-          "inboundTag": [
-            "REROUTE-STREAM",
-            "REROUTE-AI"
-          ],
-          "balancerTag": "balancer-main",
-          "type": "field"
-        },
-        {
-          "domain": [
-            "geosite:openai"
-          ],
-          "outboundTag": "loop-ai-direct",
-          "type": "field"
-        },
-        {
-          "domain": [
-            "geosite:youtube",
-            "geosite:instagram",
-            "domain:netflix.com"
-          ],
-          "outboundTag": "loop-stream-direct",
-          "type": "field"
-        },
-        {
-          "network": "tcp,udp",
-          "balancerTag": "balancer-main",
-          "type": "field"
-        }
-      ]
-    }
-  },
-  {
-    "remarks": "🇸🇪  | ✨ SWEDEN",
-    "burstObservatory": {
-      "pingConfig": {
-        "connectivity": "https:\/\/gu-st.ru\/portal-st\/favicon.svg",
-        "destination": "https:\/\/ssl.gstatic.com\/ui\/v1\/icons\/mail\/rfr\/noconnection\/default_400.png",
-        "httpMethod": "HEAD",
-        "interval": "15m",
-        "sampling": 3,
-        "timeout": "3s"
-      },
-      "subjectSelector": [
-        "proxy-"
-      ]
-    },
-    "dns": {
-      "queryStrategy": "UseIPv4",
-      "disableFallback": true,
-      "servers": [
-        {
-          "address": "77.88.8.8",
-          "detour": "direct",
-          "tag": "dns-ru",
-          "domains": [
-            "geosite:category-ru",
-            "domain:magnit.ru",
-            "domain:tander.ru",
-            "regexp:.*\\.magnit$",
-            "regexp:.*\\.tander$",
-            "regexp:.*tander.*magnit.*",
-            "domain:yandex.ru"
-          ]
-        },
-        {
-          "address": "https:\/\/dns.google\/dns-query",
-          "detour": "loop-stream-direct",
-          "tag": "dns-stream",
-          "domains": [
-            "geosite:youtube",
-            "geosite:instagram",
-            "geosite:tiktok"
-          ]
-        },
-        {
-          "address": "https:\/\/cloudflare-dns.com\/dns-query",
-          "detour": "loop-ai-direct",
-          "tag": "dns-ai",
-          "domains": [
-            "geosite:openai",
-            "domain:chatgpt.com"
-          ]
-        },
-        {
-          "address": "https:\/\/cloudflare-dns.com\/dns-query",
-          "detour": "proxy-0",
-          "tag": "dns-default"
-        },
-        {
-          "address": "1.1.1.1",
-          "detour": "direct"
-        }
-      ]
-    },
-    "inbounds": [
-      {
-        "listen": "127.0.0.1",
-        "port": 10808,
-        "protocol": "socks",
-        "settings": {
-          "udp": true
-        },
-        "sniffing": {
-          "destOverride": [
-            "http",
-            "tls",
-            "quic"
-          ],
-          "enabled": true,
-          "routeOnly": true
-        },
-        "tag": "socks"
-      },
-      {
-        "listen": "127.0.0.1",
-        "port": 10809,
-        "protocol": "http",
-        "sniffing": {
-          "destOverride": [
-            "http",
-            "tls",
-            "quic"
-          ],
-          "enabled": true,
-          "routeOnly": true
-        },
-        "tag": "http"
-      }
-    ],
-    "outbounds": [
-      {
-        "tag": "proxy-0",
-        "protocol": "vless",
-        "mux": {
-          "enabled": true,
-          "concurrency": -1,
-          "xudpConcurrency": 16,
-          "xudpProxyUDP443": "reject"
-        },
-        "settings": {
-          "vnext": [
-            {
-              "address": "swe-8t.freeonline.pro",
-              "port": 443,
-              "users": [
-                {
-                  "id": "8546145579",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "www.microsoft.com",
-            "fingerprint": "chrome",
-            "publicKey": "978-Yxgtd3AWTVfiXEQqCstdwrT1qgsgleGPIRGQDl8",
-            "shortId": "bdac121c7debdaba"
-          }
-        }
-      },
-      {
-        "tag": "direct",
-        "protocol": "freedom",
-        "streamSettings": {
-          "sockopt": {
-            "domainStrategy": "ForceIPv4"
-          }
-        }
-      },
-      {
-        "tag": "block",
-        "protocol": "blackhole"
-      },
-      {
-        "tag": "loop-stream-direct",
-        "protocol": "loopback",
-        "settings": {
-          "inboundTag": "REROUTE-STREAM"
-        }
-      },
-      {
-        "tag": "loop-ai-direct",
-        "protocol": "loopback",
-        "settings": {
-          "inboundTag": "REROUTE-AI"
-        }
-      }
-    ],
-    "routing": {
-      "domainMatcher": "hybrid",
-      "domainStrategy": "AsIs",
-      "balancers": [
-        {
-          "tag": "balancer-main",
-          "fallbackTag": "proxy-0",
-          "selector": [
-            "proxy-"
-          ],
-          "strategy": {
-            "type": "leastLoad",
-            "settings": {
-              "expected": 1,
-              "maxRTT": "5s",
-              "tolerance": 0.5,
-              "baselines": [
-                "800ms",
-                "2000ms"
-              ]
-            }
-          }
-        }
-      ],
-      "rules": [
-        {
-          "network": "udp",
-          "port": "443",
-          "outboundTag": "block",
-          "type": "field"
-        },
-        {
-          "protocol": [
-            "bittorrent"
-          ],
-          "outboundTag": "block",
-          "type": "field"
-        },
-        {
-          "ip": [
-            "geoip:private",
-            "geoip:ru"
-          ],
-          "outboundTag": "direct",
-          "type": "field"
-        },
-        {
-          "domain": [
-            "full:ru.tander.magnit",
-            "domain:tander.ru",
-            "domain:magnit.ru",
-            "regexp:.*\\.tander\\..*",
-            "regexp:.*tander.*magnit.*",
-            "regexp:.*magnit.*tander.*"
-          ],
-          "outboundTag": "direct",
-          "type": "field"
-        },
-        {
-          "domain": [
-            "geosite:category-ru",
-            "regexp:.*\\.ru$",
-            "regexp:.*\\.рф$"
-          ],
-          "outboundTag": "direct",
-          "type": "field"
-        },
-        {
-          "inboundTag": [
-            "REROUTE-STREAM",
-            "REROUTE-AI"
-          ],
-          "balancerTag": "balancer-main",
-          "type": "field"
-        },
-        {
-          "domain": [
-            "geosite:openai"
-          ],
-          "outboundTag": "loop-ai-direct",
-          "type": "field"
-        },
-        {
-          "domain": [
-            "geosite:youtube",
-            "geosite:instagram",
-            "domain:netflix.com"
-          ],
-          "outboundTag": "loop-stream-direct",
-          "type": "field"
-        },
-        {
-          "network": "tcp,udp",
-          "balancerTag": "balancer-main",
-          "type": "field"
-        }
-      ]
-    }
-  },
-  {
-    "remarks": "🇱🇻  | ✨ LATVIA",
-    "burstObservatory": {
-      "pingConfig": {
-        "connectivity": "https:\/\/gu-st.ru\/portal-st\/favicon.svg",
-        "destination": "https:\/\/ssl.gstatic.com\/ui\/v1\/icons\/mail\/rfr\/noconnection\/default_400.png",
-        "httpMethod": "HEAD",
-        "interval": "15m",
-        "sampling": 3,
-        "timeout": "3s"
-      },
-      "subjectSelector": [
-        "proxy-"
-      ]
-    },
-    "dns": {
-      "queryStrategy": "UseIPv4",
-      "disableFallback": true,
-      "servers": [
-        {
-          "address": "77.88.8.8",
-          "detour": "direct",
-          "tag": "dns-ru",
-          "domains": [
-            "geosite:category-ru",
-            "domain:magnit.ru",
-            "domain:tander.ru",
-            "regexp:.*\\.magnit$",
-            "regexp:.*\\.tander$",
-            "regexp:.*tander.*magnit.*",
-            "domain:yandex.ru"
-          ]
-        },
-        {
-          "address": "https:\/\/dns.google\/dns-query",
-          "detour": "loop-stream-direct",
-          "tag": "dns-stream",
-          "domains": [
-            "geosite:youtube",
-            "geosite:instagram",
-            "geosite:tiktok"
-          ]
-        },
-        {
-          "address": "https:\/\/cloudflare-dns.com\/dns-query",
-          "detour": "loop-ai-direct",
-          "tag": "dns-ai",
-          "domains": [
-            "geosite:openai",
-            "domain:chatgpt.com"
-          ]
-        },
-        {
-          "address": "https:\/\/cloudflare-dns.com\/dns-query",
-          "detour": "proxy-0",
-          "tag": "dns-default"
-        },
-        {
-          "address": "1.1.1.1",
-          "detour": "direct"
-        }
-      ]
-    },
-    "inbounds": [
-      {
-        "listen": "127.0.0.1",
-        "port": 10808,
-        "protocol": "socks",
-        "settings": {
-          "udp": true
-        },
-        "sniffing": {
-          "destOverride": [
-            "http",
-            "tls",
-            "quic"
-          ],
-          "enabled": true,
-          "routeOnly": true
-        },
-        "tag": "socks"
-      },
-      {
-        "listen": "127.0.0.1",
-        "port": 10809,
-        "protocol": "http",
-        "sniffing": {
-          "destOverride": [
-            "http",
-            "tls",
-            "quic"
-          ],
-          "enabled": true,
-          "routeOnly": true
-        },
-        "tag": "http"
-      }
-    ],
-    "outbounds": [
-      {
-        "tag": "proxy-0",
-        "protocol": "vless",
-        "mux": {
-          "enabled": true,
-          "concurrency": -1,
-          "xudpConcurrency": 16,
-          "xudpProxyUDP443": "reject"
-        },
-        "settings": {
-          "vnext": [
-            {
-              "address": "est-1.hotservice.icu",
-              "port": 2066,
-              "users": [
-                {
-                  "id": "b720d027-5ac1-4058-baa3-ee080f4ebbc5",
-                  "encryption": "none",
-                  "flow": "xtls-rprx-vision"
-                }
-              ]
-            }
-          ]
-        },
-        "streamSettings": {
-          "network": "tcp",
-          "security": "reality",
-          "realitySettings": {
-            "serverName": "apple.com",
-            "fingerprint": "chrome",
-            "publicKey": "u4lNvUk5pLZGl0XN-QK4xQgPQBhoJiMkOP2XZoQ99GA",
-            "shortId": "d18f4e"
+            "publicKey": "ZSzB9TQPGNcCiC0WLmciF5Jc8doJDvdRgbqTi8SCoEM",
+            "shortId": "a1b2c3d4e5f6789a"
           }
         }
       },
