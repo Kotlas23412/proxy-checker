@@ -107,15 +107,19 @@ jobs:
         EOF
 
     # Шаг 3: Сохраняем изменения обратно в ПРИВАТНЫЙ репозиторий
-    - name: Commit and Push to Private Repo
+- name: Commit and Push to Private Repo
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
         
-        git add vless_full.json vless_links.txt vless_full2.json vless_links2.txt 2>/dev/null || true
+        # Проверяем наличие каждого файла перед добавлением
+        [ -f vless_full.json ] && git add vless_full.json
+        [ -f vless_links.txt ] && git add vless_links.txt
+        [ -f vless_full2.json ] && git add vless_full2.json
+        [ -f vless_links2.txt ] && git add vless_links2.txt
         
         if git diff --staged --quiet; then
-          echo "No changes"
+          echo "No changes to commit"
         else
           git commit -m "🔄 Update VLESS: JSON and Links [$(date +'%Y-%m-%d %H:%M:%S')]"
           git push
