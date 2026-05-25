@@ -1,10 +1,9 @@
 name: Convert JSON to Links and Back
 
 on:
-  push:
-    paths:
-      - 'configs.txt'
-      - 'configs2.txt'
+  # Обратите внимание: триггер push на файлы configs больше не будет работать автоматически,
+  # так как эти файлы теперь лежат в другом (приватном) репозитории.
+  # Экшен будет запускаться по расписанию (каждые 6 часов) или вручную.
   workflow_dispatch:
   schedule:
     - cron: '0 */6 * * *'
@@ -17,8 +16,14 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout repository
+    # Шаг 1: Скачиваем приватный репозиторий вместо текущего публичного
+    - name: Checkout private repository
       uses: actions/checkout@v3
+      with:
+        # Укажите здесь ваш никнейм на GitHub и имя ПРИВАТНОГО репозитория
+        repository: 'Kotlas23412/listproxy'
+        # Передаем созданный ранее секретный токен доступа
+        token: ${{ secrets.PRIVATE_REPO_TOKEN }}
         
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -34,7 +39,6 @@ jobs:
         from urllib.parse import urlencode, quote
 
         def json_to_vless(obj):
-            """Преобразует JSON объект в vless:// ссылку"""
             try:
                 outbound = obj['outbounds'][0]
                 user = outbound['settings']['vnext'][0]['users'][0]
@@ -68,12 +72,12 @@ jobs:
 
         def process_file(input_file, json_output, link_output):
             if not os.path.exists(input_file):
+                print(f"Файл {input_file} не найден в приватном репозитории")
                 return
 
             with open(input_file, 'r', encoding='utf-8') as f:
                 content = f.read().strip()
             
-            # 1. Исправляем JSON (если объекты идут подряд без запятых)
             fixed_content = re.sub(r'}\s*{', '},{', content)
             if not fixed_content.startswith('['):
                 fixed_content = '[' + fixed_content + ']'
@@ -84,11 +88,9 @@ jobs:
                 print(f"Ошибка в файле {input_file}")
                 return
 
-            # 2. Сохраняем как правильный массив JSON
             with open(json_output, 'w', encoding='utf-8') as f:
                 json.dump(data, f, indent=2, ensure_ascii=False)
             
-            # 3. Генерируем ссылки VLESS
             links = []
             for item in data:
                 link = json_to_vless(item)
@@ -100,17 +102,16 @@ jobs:
             
             print(f"✅ Обработан {input_file}: Создано {len(links)} ссылок")
 
-        # Обработка обоих наборов файлов
         process_file('configs.txt', 'vless_full.json', 'vless_links.txt')
         process_file('configs2.txt', 'vless_full2.json', 'vless_links2.txt')
         EOF
 
-    - name: Commit and Push
+    # Шаг 3: Сохраняем изменения обратно в ПРИВАТНЫЙ репозиторий
+    - name: Commit and Push to Private Repo
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
         
-        # Добавляем все созданные файлы
         git add vless_full.json vless_links.txt vless_full2.json vless_links2.txt 2>/dev/null || true
         
         if git diff --staged --quiet; then
