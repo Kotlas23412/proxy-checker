@@ -1,126 +1,139 @@
 name: Convert JSON to Links and Back
 
 on:
-  # Обратите внимание: триггер push на файлы configs больше не будет работать автоматически,
-  # так как эти файлы теперь лежат в другом (приватном) репозитории.
-  # Экшен будет запускаться по расписанию (каждые 6 часов) или вручную.
   workflow_dispatch:
   schedule:
     - cron: '0 */6 * * *'
 
 permissions:
-  contents: write
+  contents: read
+
+concurrency:
+  group: convert-listproxy
+  cancel-in-progress: false
 
 jobs:
   convert:
     runs-on: ubuntu-latest
-    
     steps:
-    # Шаг 1: Скачиваем приватный репозиторий вместо текущего публичного
-    - name: Checkout private repository
-      uses: actions/checkout@v3
-      with:
-        # Укажите здесь ваш никнейм на GitHub и имя ПРИВАТНОГО репозитория
-        repository: 'Kotlas23412/listproxy'
-        # Передаем созданный ранее секретный токен доступа
-        token: ${{ secrets.PRIVATE_REPO_TOKEN }}
-        
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-        
-    - name: Process Configs
-      run: |
-        python3 << 'EOF'
-        import json
-        import os
-        import re
-        from urllib.parse import urlencode, quote
+      # Keep this public repository checked out in the workspace root.
+      - name: Checkout proxy-checker
+        uses: actions/checkout@v4
+        with:
+          path: proxy-checker
 
-        def json_to_vless(obj):
-            try:
-                outbound = obj['outbounds'][0]
-                user = outbound['settings']['vnext'][0]['users'][0]
-                server = outbound['settings']['vnext'][0]
-                stream = outbound['streamSettings']
-                
-                uuid = user['id']
-                addr = server['address']
-                port = server['port']
-                
-                params = {
-                    "type": stream.get('network', 'tcp'),
-                    "security": stream.get('security', 'none'),
-                }
-                
-                if params['security'] == 'reality':
-                    r_settings = stream.get('realitySettings', {})
-                    params.update({
-                        "sni": r_settings.get('serverName', ''),
-                        "pbk": r_settings.get('publicKey', ''),
-                        "sid": r_settings.get('shortId', ''),
-                        "fp": r_settings.get('fingerprint', 'chrome'),
-                        "flow": user.get('flow', '')
-                    })
-                
-                remark = obj.get('remarks', 'Unnamed')
-                query = urlencode({k: v for k, v in params.items() if v})
-                return f"vless://{uuid}@{addr}:{port}?{query}#{quote(remark)}"
-            except Exception as e:
-                return None
+      # Store the private source/output repository in a separate folder.
+      - name: Checkout private listproxy
+        uses: actions/checkout@v4
+        with:
+          repository: Kotlas23412/listproxy
+          ref: main
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          path: listproxy
+          persist-credentials: true
 
-        def process_file(input_file, json_output, link_output):
-            if not os.path.exists(input_file):
-                print(f"Файл {input_file} не найден в приватном репозитории")
-                return
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-            with open(input_file, 'r', encoding='utf-8') as f:
-                content = f.read().strip()
-            
-            fixed_content = re.sub(r'}\s*{', '},{', content)
-            if not fixed_content.startswith('['):
-                fixed_content = '[' + fixed_content + ']'
-            
-            try:
-                data = json.loads(fixed_content)
-            except:
-                print(f"Ошибка в файле {input_file}")
-                return
+      - name: Convert configs
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          import json
+          import re
+          from pathlib import Path
+          from urllib.parse import urlencode, quote
 
-            with open(json_output, 'w', encoding='utf-8') as f:
-                json.dump(data, f, indent=2, ensure_ascii=False)
-            
-            links = []
-            for item in data:
-                link = json_to_vless(item)
-                if link:
-                    links.append(link)
-            
-            with open(link_output, 'w', encoding='utf-8') as f:
-                f.write('\n'.join(links))
-            
-            print(f"✅ Обработан {input_file}: Создано {len(links)} ссылок")
+          repo = Path("listproxy")
 
-        process_file('configs.txt', 'vless_full.json', 'vless_links.txt')
-        process_file('configs2.txt', 'vless_full2.json', 'vless_links2.txt')
-        EOF
+          def json_to_vless(obj):
+              try:
+                  outbound = obj["outbounds"][0]
+                  server = outbound["settings"]["vnext"][0]
+                  user = server["users"][0]
+                  stream = outbound["streamSettings"]
+                  params = {
+                      "type": stream.get("network", "tcp"),
+                      "security": stream.get("security", "none"),
+                  }
+                  if params["security"] == "reality":
+                      reality = stream.get("realitySettings", {})
+                      params.update({
+                          "sni": reality.get("serverName", ""),
+                          "pbk": reality.get("publicKey", ""),
+                          "sid": reality.get("shortId", ""),
+                          "fp": reality.get("fingerprint", "chrome"),
+                          "flow": user.get("flow", ""),
+                      })
+                  query = urlencode({k: v for k, v in params.items() if v})
+                  remark = obj.get("remarks", "Unnamed")
+                  return f"vless://{user['id']}@{server['address']}:{server['port']}?{query}#{quote(remark)}"
+              except (KeyError, IndexError, TypeError):
+                  return None
 
-    # Шаг 3: Сохраняем изменения обратно в ПРИВАТНЫЙ репозиторий
-    - name: Commit and Push to Private Repo
-      run: |
-        git config --local user.email "github-actions[bot]@users.noreply.github.com"
-        git config --local user.name "github-actions[bot]"
-        
-        # Проверяем наличие каждого файла перед добавлением
-        [ -f vless_full.json ] && git add vless_full.json
-        [ -f vless_links.txt ] && git add vless_links.txt
-        [ -f vless_full2.json ] && git add vless_full2.json
-        [ -f vless_links2.txt ] && git add vless_links2.txt
-        
-        if git diff --staged --quiet; then
-          echo "No changes to commit"
-        else
-          git commit -m "🔄 Update VLESS: JSON and Links [$(date +'%Y-%m-%d %H:%M:%S')]"
-          git push
-        fi
+          def process_file(input_name, json_name, links_name):
+              input_path = repo / input_name
+              if not input_path.is_file():
+                  raise FileNotFoundError(f"Required input not found: {input_path}")
+
+              content = input_path.read_text(encoding="utf-8").strip()
+              if not content:
+                  raise ValueError(f"Input file is empty: {input_path}")
+
+              # Accept either a JSON array/object or adjacent JSON objects.
+              try:
+                  data = json.loads(content)
+                  if isinstance(data, dict):
+                      data = [data]
+                  elif not isinstance(data, list):
+                      raise ValueError(f"Expected JSON object/array in {input_path}")
+              except json.JSONDecodeError:
+                  fixed = re.sub(r"}\s*{", "},{", content)
+                  if not fixed.startswith("["):
+                      fixed = "[" + fixed + "]"
+                  data = json.loads(fixed)
+                  if not isinstance(data, list):
+                      raise ValueError(f"Expected JSON array in {input_path}")
+
+              json_path = repo / json_name
+              json_path.write_text(
+                  json.dumps(data, indent=2, ensure_ascii=False) + "\n",
+                  encoding="utf-8",
+              )
+
+              links = [link for item in data if isinstance(item, dict)
+                       and (link := json_to_vless(item))]
+              (repo / links_name).write_text(
+                  "\n".join(links) + ("\n" if links else ""),
+                  encoding="utf-8",
+              )
+              print(f"✅ {input_name}: profiles={len(data)}, generated_links={len(links)}")
+
+          process_file("configs.txt", "vless_full.json", "vless_links.txt")
+          process_file("configs2.txt", "vless_full2.json", "vless_links2.txt")
+          PY
+
+      - name: Commit and push to private listproxy
+        shell: bash
+        working-directory: listproxy
+        run: |
+          set -euo pipefail
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+
+          git add vless_full.json vless_links.txt vless_full2.json vless_links2.txt
+
+          echo "Changes detected in generated files:"
+          git diff --cached --stat || true
+
+          if git diff --cached --quiet; then
+            echo "Inputs processed successfully. Generated files are unchanged; nothing to push."
+            exit 0
+          fi
+
+          git commit -m "Update generated VLESS JSON and links"
+          git push origin HEAD:main
+          echo "✅ Successfully pushed generated files to Kotlas23412/listproxy:main"
