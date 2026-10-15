@@ -1,3 +1,35 @@
+"sniffing": {
+                    "enabled": True,
+                    "destOverride": [
+                        "http",
+                        "tls"
+                    ]
+                }
+            }
+        ],
+        "outbounds": [
+            outbound_data,
+            {
+                "tag": "direct",
+                "protocol": "freedom"
+            },
+            {
+                "tag": "block",
+                "protocol": "blackhole"
+            }
+        ],
+        "routing": {
+            "domainStrategy": "IPIfNonMatch",
+            "rules": [
+                {
+                    "type": "field",
+                    "outboundTag": "direct",
+                    "domain": [
+                        "regexp:.*\\.ru$",
+                        "regexp:.*\\.рф$",
+                        "regexp:.*\\.su$",
+                        "domain:yandex.ru",
+                        "domain:yandex.net",
                         "domain:ya.ru",
                         "domain:vk.com",
                         "domain:mail.ru",
@@ -158,35 +190,3 @@ def process_simple_vless_config(config_obj, idx):
             if not fp:
                 fp = reality_data['fingerprint']
             print(f"  ℹ️  Использованы Reality параметры из базы для {address}")
-        else:
-            print(f"  ⚠️  Reality параметры не найдены для {address}")
-            # Пробуем найти по похожему домену
-            for db_address, reality_data in REALITY_DATABASE.items():
-                if address in db_address or db_address in address:
-                    pbk = reality_data['publicKey']
-                    sid = reality_data['shortId']
-                    if not sni:
-                        sni = reality_data['serverName']
-                    if not fp:
-                        fp = reality_data['fingerprint']
-                    print(f"  ℹ️  Найдены похожие Reality параметры от {db_address}")
-                    break
-    
-    # Если всё ещё нет параметров, это ошибка
-    if not pbk:
-        print(f"  ✗ КРИТИЧЕСКАЯ ОШИБКА: publicKey не найден для {address}")
-        print(f"     Добавьте сервер в configs2.txt или укажите параметры вручную")
-        return None, None
-    
-    # Определяем security
-    if pbk or sid:
-        security = 'reality'
-    else:
-        security = config_obj.get('security', 'none')
-    
-    if not sni and security == 'reality':
-        sni = address  # Используем адрес сервера как SNI
-    
-    if not fp or fp == '':
-        fp = 'chrome'
-    
