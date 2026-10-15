@@ -1,6 +1,9 @@
 name: Convert JSON to Links and Back
 
 on:
+  push:
+    paths:
+      - '.github/workflows/convert.yml'
   workflow_dispatch:
   schedule:
     - cron: '0 */6 * * *'
@@ -19,8 +22,6 @@ jobs:
       # Keep this public repository checked out in the workspace root.
       - name: Checkout proxy-checker
         uses: actions/checkout@v4
-        with:
-          path: proxy-checker
 
       # Store the private source/output repository in a separate folder.
       - name: Checkout private listproxy
