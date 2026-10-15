@@ -75,6 +75,48 @@ jobs:
               except (KeyError, IndexError, TypeError):
                   return None
 
+          COUNTRY_BY_FLAG = {
+              "🇫🇮": "Финляндия", "🇨🇿": "Чехия", "🇩🇪": "Германия",
+              "🇳🇱": "Нидерланды", "🇫🇷": "Франция", "🇸🇪": "Швеция",
+              "🇨🇭": "Швейцария", "🇵🇱": "Польша", "🇪🇪": "Эстония",
+              "🇱🇻": "Латвия", "🇱🇹": "Литва", "🇬🇧": "Великобритания",
+              "🇺🇸": "США", "🇨🇦": "Канада", "🇯🇵": "Япония",
+              "🇸🇬": "Сингапур", "🇹🇷": "Турция", "🇷🇺": "Россия",
+              "🇦🇹": "Австрия", "🇧🇪": "Бельгия", "🇮🇹": "Италия",
+              "🇪🇸": "Испания", "🇳🇴": "Норвегия", "🇩🇰": "Дания",
+              "🇮🇪": "Ирландия", "🇷🇴": "Румыния", "🇧🇬": "Болгария",
+              "🇭🇺": "Венгрия", "🇸🇰": "Словакия", "🇸🇮": "Словения",
+              "🇭🇷": "Хорватия", "🇬🇷": "Греция", "🇵🇹": "Португалия",
+              "🇮🇸": "Исландия", "🇱🇺": "Люксембург", "🇺🇦": "Украина",
+              "🇰🇷": "Южная Корея", "🇮🇳": "Индия", "🇧🇷": "Бразилия",
+              "🇦🇺": "Австралия",
+          }
+
+          def server_description(item):
+              remark = str(item.get("remarks", "")).strip()
+              old_meta = item.get("meta")
+              old_description = (
+                  old_meta.get("serverDescription", "")
+                  if isinstance(old_meta, dict) else ""
+              )
+
+              # White-list bypass profiles always get this description, regardless of flag.
+              if ("обход бс" in remark.casefold()
+                      or "использовать только при бс" in str(old_description).casefold()):
+                  return "Использовать только при БС"
+
+              for flag, country in COUNTRY_BY_FLAG.items():
+                  if flag in remark:
+                      return country
+
+              # Fallback to the profile name without leading emoji/symbols.
+              readable_name = re.sub(r"^[^\wА-Яа-я]+", "", remark).strip()
+              if readable_name:
+                  return readable_name
+              if old_description:
+                  return str(old_description)
+              return "Неизвестная страна"
+
           def process_file(input_name, json_name, links_name):
               input_path = repo / input_name
               if not input_path.is_file():
@@ -98,6 +140,13 @@ jobs:
                   data = json.loads(fixed)
                   if not isinstance(data, list):
                       raise ValueError(f"Expected JSON array in {input_path}")
+
+              # Ensure every profile has a meaningful meta.serverDescription.
+              for item in data:
+                  if isinstance(item, dict):
+                      item["meta"] = {
+                          "serverDescription": server_description(item)
+                      }
 
               json_path = repo / json_name
               json_path.write_text(
